@@ -10,27 +10,26 @@ class PreparationMode(ModeOfOperation):
     """
     def operate(self, current_situation):
         self.initialize()
-        result = None
 
-        while not result:
+        while True:
+            ms = self.clock.tick(60)
+            
             events = pygame.event.get()
             for event in events:
-                if event.type == KEYDOWN:
-                    result = "Onslaught"
+                if event.type == QUIT:
+                    return None
+                elif event.type == KEYDOWN:
+                    return "Onslaught"
             
             self.render()
-
-        return result
        
     def initialize(self):
-        self.screen = pygame.display.get_surface()
         self.font = pygame.font.Font(data.filepath("Anaktoria.otf"),28)
         self.titletext = self.font.render("Mode of Preparation:",
                                           True, (255,255,255))
 
     def render(self):
-        s = self.screen
-        s.fill((0,0,0))
-        s.blit(self.titletext,(10,10))
+        self.clear_screen(colour=(0,0,100))
+        self.screen.blit(self.titletext,(10,10))
 
         pygame.display.flip()
