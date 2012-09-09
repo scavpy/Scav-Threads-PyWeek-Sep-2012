@@ -4,7 +4,7 @@ Your Game Title
 Entry in PyWeek #12  <http://www.pyweek.org/12/>
 URL: yourgameurl
 Team: YOUR TEAM NAME (leave the "Team: bit")
-Members: YOUR TEAM MEMBERS (leave the "Members: bit")
+Members: yourgameauthors
 License: see LICENSE.txt
 
 
