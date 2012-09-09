@@ -9,9 +9,9 @@ from pygame.font import Font
 import data
 
 TITLE_SIZE = 48
-SUBTITLE_SIZE = 20
-NORMAL_SIZE = 16
-SMALL_SIZE = 8
+SUBTITLE_SIZE = 36
+NORMAL_SIZE = 24
+SMALL_SIZE = 16
 
 TYPEFACE_PATH = data.filepath("Anaktoria.otf")
 

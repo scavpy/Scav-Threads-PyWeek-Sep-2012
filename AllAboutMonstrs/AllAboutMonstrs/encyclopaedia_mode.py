@@ -13,38 +13,39 @@ PAGES = [
     Animal,
     ]
 
-MARGIN = 10
+MARGIN = 24
 
 class EncyclopaediaMode(ModeOfOperation):
     """ Whereby the operator of the device can be presented with
     the fruits of the latest researches in Natural Philosophy """
     def operate(self, current_situation):
         self.page = 0
-        self.disp = get_surface()
         self.draw_current_page()
         flip()
         while True:
-            for evt in pygame.event.get_events():
-                if evt.type = pygame.KEYDOWN:
+            for evt in pygame.event.get():
+                if evt.type == pygame.KEYDOWN:
                     return
 
     def draw_current_page(self):
-        disp = self.disp
-        disp.fill((255,255,240))
+        paint = self.screen.blit
+        self.clear_screen(colour=(255,255,240))
         page = PAGES[self.page]
-        title = typefaces.TITLE.render(page.name, True, (0,0,0))
-        disp.render(title,(MARGIN, MARGIN))
+        title = typefaces.TITLE.render(page.name.title(), True, (0,0,0))
+        paint(title,(MARGIN, MARGIN))
         y = title.get_rect().height + MARGIN
-        x = disp.get_size()[0] // 2
+        x = self.screen.get_size()[0] // 2
         heading = typefaces.SUBTITLE.render("Notable Attributes",True, (0,0,0))
-        disp.render(heading, (x,y))
+        paint(heading, (x,y))
         y += heading.get_rect().height + MARGIN
-        labels = [typeface.NORMAL.render(n, True, (0,0,0))
-                  for n in page.notable_attributes]
-        values = [getattr(page, n.lower())
-                  for n in page.notable_attributes]
-        for i, (lab, val) in enumerate(zip(labels, values)):
-            pass
+        notables = [typefaces.NORMAL.render("{0}: {1}"
+                                            .format(n, getattr(page, n.lower())),
+                                            True, (0,0,0))
+                    for n in page.notable_attributes]
+        for notable in notables:
+            paint(notable, (x, y))
+            y += notable.get_rect().height
+        information = page.__doc__
 
         
         
