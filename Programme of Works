@@ -9,4 +9,4 @@ art-font		Procure a suitable typeface                                           
 wrk-states		Outline the workings of the state machine                               satisfactory
 tst-states		Test transition between modes of operation
 wrk-bestiary		Exploratory visualisation of the Bestiary
-wrk-typeface		Mechanism for the casting of movable typefaces
+wrk-typeface		Mechanism for the casting of movable typefaces				satisfactory
