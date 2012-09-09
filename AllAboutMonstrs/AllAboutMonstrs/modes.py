@@ -12,7 +12,7 @@ class ModeOfOperation(object):
     """ Being a mould from which other modes of operation can be cast and
     forged into their divers forms """
     def operate(self, current_situation):
-        return None
+        return "Preparation"
 
 MODES_IN_USE = {"DoingNoThing":ModeOfOperation()}
 
@@ -23,8 +23,8 @@ class ShepherdOfModes(object):
             try:
                 mode = MODES_IN_USE[mode_name]
             except KeyError:
-                module_name = result.lower() + "_mode"
+                module_name = mode_name.lower() + "_mode"
                 module = __import__(module_name)
-                mode = getattr(module, mode_name + "Mode")
+                mode = getattr(module, mode_name + "Mode")()
                 MODES_IN_USE[mode_name] = mode
             mode_name = mode.operate(current_situation)
