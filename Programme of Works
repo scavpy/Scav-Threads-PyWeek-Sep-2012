@@ -13,7 +13,7 @@ wrk-typeface		Mechanism for the casting of movable typefaces                    
 wrk-eventloop           Refactoring of methods back into ModeOfOperations and event handling.   satisfactory
 wrk-typeface		Mechanism for the casting of movable typefaces				satisfactory
 art-scenery		The exotic location and scenery of unparalleled splendour               satisfactory
-wrk-grid		A scheme for the orderly placement of facilities
+wrk-grid		A scheme for the orderly placement of facilities			pending
 wrk-prep-1		Exploratory visualisation of the Preparation Mode
 art-bestiary-1		Depictions of the native fauna
 
