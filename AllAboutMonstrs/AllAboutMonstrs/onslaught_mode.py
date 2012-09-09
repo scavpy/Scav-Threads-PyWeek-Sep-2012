@@ -3,6 +3,7 @@ from pygame.locals import *
 
 import data
 from modes import ModeOfOperation
+import typefaces
 
 class OnslaughtMode(ModeOfOperation):
     """ Wherein reptilian foes descend upon you and you must fight them
@@ -24,9 +25,8 @@ class OnslaughtMode(ModeOfOperation):
             self.render()
        
     def initialize(self):
-        self.font = pygame.font.Font(data.filepath("Anaktoria.otf"),28)
-        self.titletext = self.font.render("Mode of Onslaught:",
-                                          True, (255,255,255))
+        self.titletext = typefaces.TITLE.render("Mode of Onslaught:",
+                                                True, (255,255,255))
 
     def render(self):
         self.clear_screen()

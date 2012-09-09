@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 
 import data
+import typefaces
 from modes import ModeOfOperation
 
 class PreparationMode(ModeOfOperation):
@@ -24,9 +25,8 @@ class PreparationMode(ModeOfOperation):
             self.render()
        
     def initialize(self):
-        self.font = pygame.font.Font(data.filepath("Anaktoria.otf"),28)
-        self.titletext = self.font.render("Mode of Preparation:",
-                                          True, (255,255,255))
+        self.titletext = typefaces.TITLE.render("Mode of Preparation:",
+                                                True, (255,255,255))
 
     def render(self):
         self.clear_screen(colour=(0,0,100))

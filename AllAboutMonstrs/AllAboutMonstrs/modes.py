@@ -17,7 +17,7 @@ class ModeOfOperation(object):
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
     def operate(self, current_situation):
-        return "Preparation"
+        return None
     def clear_screen(self, colour=(0,0,0), image=None):
         if image:
             self.screen.blit(image,(0,0))
