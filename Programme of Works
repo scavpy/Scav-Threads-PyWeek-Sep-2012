@@ -10,3 +10,4 @@ wrk-states		Outline the workings of the state machine                           
 tst-states		Test transition between modes of operation                              satisfactory
 wrk-bestiary		Exploratory visualisation of the Bestiary
 wrk-typeface		Mechanism for the casting of movable typefaces
+wrk-eventloop           Refactoring of methods back into ModeOfOperations and event handling.   
