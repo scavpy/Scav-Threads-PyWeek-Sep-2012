@@ -8,6 +8,8 @@ wrk-primary		Deploy the Skellington apparatus     					satisfactory
 art-font		Procure a suitable typeface                                             satisfactory
 wrk-states		Outline the workings of the state machine                               satisfactory
 tst-states		Test transition between modes of operation                              satisfactory
-wrk-bestiary		Exploratory visualisation of the Bestiary
+wrk-bestiary		Exploratory visualisation of the Bestiary				pending
 wrk-typeface		Mechanism for the casting of movable typefaces                          satisfactory
-wrk-eventloop           Refactoring of methods back into ModeOfOperations and event handling.   
+wrk-eventloop           Refactoring of methods back into ModeOfOperations and event handling.   satisfactory
+wrk-typeface		Mechanism for the casting of movable typefaces				satisfactory
+
