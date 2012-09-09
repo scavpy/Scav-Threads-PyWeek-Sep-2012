@@ -1,0 +1,11 @@
+include CHANGES.txt
+include TODO.txt
+include LICENSE.txt
+include README.txt
+include android.txt
+include AllAboutMonstrs/__init__.py
+include AllAboutMonstrs/__main__.py
+include AllAboutMonstrs/data.py
+include pyweek_upload.py
+include run_game.py
+include setup.py

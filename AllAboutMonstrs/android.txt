@@ -1,0 +1,4 @@
+title=AllAboutMonstrs
+author=Scav,Threads
+api=1
+orientation=landscape
