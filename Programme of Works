@@ -7,6 +7,6 @@ fix-skellington		Minor adjustments to the Skellington apparatus				satisfactory
 wrk-primary		Deploy the Skellington apparatus     					satisfactory
 art-font		Procure a suitable typeface                                             satisfactory
 wrk-states		Outline the workings of the state machine                               satisfactory
-tst-states		Test transition between modes of operation
+tst-states		Test transition between modes of operation                              satisfactory
 wrk-bestiary		Exploratory visualisation of the Bestiary
 wrk-typeface		Mechanism for the casting of movable typefaces
