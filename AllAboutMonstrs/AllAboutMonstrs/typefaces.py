@@ -86,9 +86,9 @@ def prepare_paragraph(text, width, size="normal", colour=(0,0,0)):
     parawidth = max(font.size(each)[0] for each in lines)
     lineheight = font.get_height()
     paraheight = lineheight*len(lines)
-    paragraph = Surface(parawidth,paraheight,pygame.SRCALPHA)
+    paragraph = Surface((parawidth,paraheight),pygame.SRCALPHA)
     paragraph.fill((255,255,255,0))
-    for y,line in enumerate(lines)
+    for y,line in enumerate(lines):
         text = prepare(line,size,colour)
         paragraph.blit(text,(0,y*lineheight))
     return paragraph
