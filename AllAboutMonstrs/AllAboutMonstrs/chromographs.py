@@ -8,6 +8,7 @@ import pygame
 import data
 
 CHROMOGRAPHS = {}
+PORTIONS = {}
 
 def obtain(chromograph_name):
     chromograph = CHROMOGRAPHS.get(chromograph_name)
@@ -16,6 +17,10 @@ def obtain(chromograph_name):
             path = data.filepath(
                 os.path.join("tessellated_chromographs", chromograph_name))
             chromograph = pygame.image.load(path)
+            if chromograph.get_flags() & pygame.SRCALPHA:
+                chromograph = chromograph.convert_alpha()
+            else:
+                chromograph = chromograph.convert()
             CHROMOGRAPHS[chromograph_name] = chromograph
         except pygame.error:
             chromograph = pygame.surface.Surface((20,20))
@@ -23,3 +28,11 @@ def obtain(chromograph_name):
             pygame.draw.line(chromograph, (255,0,0), (20,0), (0,20))
     return chromograph
 
+def obtain_portion(chromograph_name, portion):
+    key = "{0}{1}".format(chromograph_name, portion)
+    chromograph = PORTIONS.get(key)
+    if not chromograph:
+        surface = obtain(chomograph_name)
+        chromograph = surface.subsurface(portion)
+        PORTIONS[key] = chromograph
+    return chromograph
