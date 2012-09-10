@@ -9,6 +9,7 @@ from modes import ModeOfOperation
 import typefaces
 import chromographs
 from bestiary import Animal
+import gui
 
 from style import PAGEMARGIN, PAGECOLOUR
 
@@ -22,13 +23,20 @@ class EncyclopaediaMode(ModeOfOperation):
     def operate(self, current_situation):
         self.page = 0
         self.finished = False
+        self.next_mode = None
         self.ribbon = chromographs.obtain("flourish/ribbon-red.png")
+        self.backbutton = gui.make_menu((50,600),[("Regress","back")],200)
         self.draw_current_page()
         flip()
         while not self.finished:
             ms = self.clock.tick(60)
             self.respond_to_the_will_of_the_operator()
-        return
+        return self.next_mode
+
+    def on_keydown(self, e):
+        if e.key in (pygame.K_RETURN,pygame.K_ESCAPE):
+            self.next_mode = "Introductory"
+            self.finished = True
 
     def on_quit(self, e):
         self.finished = True
@@ -51,6 +59,7 @@ class EncyclopaediaMode(ModeOfOperation):
         chromograph = chromographs.obtain(page.depiction)
         paint(chromograph, (PAGEMARGIN, topy))
         paint(self.ribbon,(850,-2))
+        self.backbutton.render(self.screen)
         information = page.__doc__
 
 
