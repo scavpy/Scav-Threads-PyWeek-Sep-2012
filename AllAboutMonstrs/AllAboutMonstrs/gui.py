@@ -1,7 +1,26 @@
+import pygame
 from pygame.transform import flip,scale
 
 import chromographs
 import typefaces
+
+
+def make_textbox(position,text,width,size="normal",colour=(0,0,0)):
+    widget = SurfWidget(
+        typefaces.prepare_passage(text,width,size=size,colour=colour))
+    return TextFrame(position,[widget],width)
+
+def make_menu(position,options,width,prompt=None):
+    contents = []
+    if prompt:
+        p = SurfWidget(typefaces.prepare_paragraph(prompt,width))
+        contents.append(p)
+        contents.append(SpaceWidget(8))
+    for label,command in options:
+        o = ChoiceWidget(label,command)
+        contents.append(o)
+    return TextFrame(position,contents,width)
+
 
 class TextFrame(object):
     head_end = chromographs.obtain("flourish/top-end.png")
@@ -9,16 +28,23 @@ class TextFrame(object):
     head_line = chromographs.obtain("flourish/top-line.png")
     foot_end = chromographs.obtain("flourish/bottom-end.png")
     foot_line = chromographs.obtain("flourish/bottom-line.png")
+    sel_mark = chromographs.obtain("flourish/select-marker.png")
     
-    def __init__(self,position,text_or_surface,width,
+    def __init__(self,position,contents,width,
                  fontsize="normal",colour=(0,0,0)):
         self.position = position
-        try:
-            self.content = typefaces.prepare_passage(
-                text_or_surface,width,size=fontsize,colour=colour)
-        except AttributeError:
-            self.content = text_or_surface
+        self.contents = contents
         self.prepare_size(width)
+        self.selected = None
+        for i,c in enumerate(self.contents):
+            c.set_master(self)
+            if not self.selected and c.selectable:
+                self.selected = (i,c)
+
+    def content_size(self):
+        width = max(c.width for c in self.contents)
+        height = sum(c.height for c in self.contents)
+        return (width,height)
 
     def prepare_size(self,asked_width):
         he = self.head_end
@@ -28,19 +54,31 @@ class TextFrame(object):
         fl = self.foot_line
         self.min_header_width = mhw = he.get_width()*2 + hm.get_width()
         self.min_footer_width = mfw = fe.get_width()*2
-        self.width = max(asked_width,self.content.get_width(),mhw,mfw)
+        cwidth,cheight = self.content_size()
+        self.width = max(asked_width,cwidth,mhw,mfw)
         topgap = (self.width-self.min_header_width)/2
         bottomgap = self.width-self.min_footer_width
         self.top_line = scale(hl,(topgap,hl.get_height()))
         self.bottom_line = scale(fl,(bottomgap,fl.get_height()))
         self.headheight = he.get_height()
         self.footheight = fe.get_height()
-        self.indent = (self.width - self.content.get_width())/2
 
     def render(self,screen):
         x,y = self.position
+        cwidth,cheight = self.content_size()
         self.render_header(screen)
-        screen.blit(self.content,(x+self.indent, y+self.headheight))
+        mark = self.sel_mark
+        dy = y+self.headheight
+        for c in self.contents:
+            surf = c.get_surface()
+            if surf:
+                indent = (self.width-c.width)/2
+                if c == self.selected[1]:
+                    hh = (c.height-mark.get_height())/2
+                    screen.blit(mark,(x+indent-mark.get_width(), dy+hh))
+                    screen.blit(flip(mark,True,False),(x+indent+c.width, dy+hh))
+                screen.blit(surf,(x+indent, dy))
+            dy += c.height
         self.render_footer(screen)
 
     def render_header(self,screen):
@@ -56,9 +94,89 @@ class TextFrame(object):
 
     def render_footer(self,screen):
         x,y = self.position
-        y += self.headheight+self.content.get_height()
+        cwidth,cheight = self.content_size()
+        y += self.headheight+cheight
         ew = self.foot_end.get_width()
         lw = self.bottom_line.get_width()
         screen.blit(self.foot_end,(x,y))
         screen.blit(self.bottom_line,(x+ew,y))
         screen.blit(flip(self.foot_end,True,False),(x+ew+lw,y))
+
+    def get_selected(self):
+        return self.selected[1]
+
+    def key_event(self,event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                i = self.selected[0]-1
+                while i >= 0:
+                    if self.contents[i].selectable:
+                        self.selected = (i,self.contents[i])
+                        break
+                    i -= 1
+            elif event.key == pygame.K_DOWN:
+                i = self.selected[0]+1
+                while i < len(self.contents):
+                    if self.contents[i].selectable:
+                        self.selected = (i,self.contents[i])
+                        break
+                    i += 1
+
+    def mouse_event(self,event):
+        pass
+
+    def make_choice(self):
+        return self.selected[1].choose()
+
+
+class Widget(object):
+    def __init__(self):
+        self.width = 0
+        self.height = 0
+        self.selectable = False
+    def get_surface(self):
+        return
+
+    def choose(self):
+        return
+
+    def set_master(self,textframe):
+        self.master = textframe
+    
+class SurfWidget(Widget):
+    def __init__(self,surface):
+        self.surface = surface
+        self.width = surface.get_width()
+        self.height = surface.get_height()
+        self.selectable = False
+
+    def get_surface(self):
+        return self.surface
+
+class SpaceWidget(Widget):
+    def __init__(self,height):
+        self.width = 0
+        self.height = height
+        self.selectable = False
+
+    def get_surface(self):
+        return 
+    
+class ChoiceWidget(Widget):
+    def __init__(self,text,command,size="normal"):
+        self.on_surf = typefaces.prepare(text,size=size,colour=(0,0,0))
+        self.off_surf = typefaces.prepare(text,size=size,colour=(150,150,150))
+        self.command = command
+        self.width = self.on_surf.get_width()
+        self.height = self.on_surf.get_height()
+        self.selectable = True
+
+    def get_surface(self):
+        sel = self.master.get_selected()
+        if sel == self:
+            return self.on_surf
+        else:
+            return self.off_surf
+
+    def choose(self):
+        return self.command

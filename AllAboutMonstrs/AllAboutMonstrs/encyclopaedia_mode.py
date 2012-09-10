@@ -46,7 +46,7 @@ class EncyclopaediaMode(ModeOfOperation):
         notables = [("{0}: ".format(n), getattr(page, n.lower()))
                     for n in page.notable_attributes]
         table = typefaces.prepare_table(notables)
-        paint(table, (x,y))
+        paint(table, (x,y))        
         chromograph = chromographs.obtain(page.depiction)
         paint(chromograph, (MARGIN, topy))
         information = page.__doc__
