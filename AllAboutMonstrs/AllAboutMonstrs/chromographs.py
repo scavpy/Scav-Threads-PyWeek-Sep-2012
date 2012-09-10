@@ -6,9 +6,11 @@
 import os
 import pygame
 import data
+from pygame.rect import Rect
 
 CHROMOGRAPHS = {}
 PORTIONS = {}
+FRAMES = {}
 
 def obtain(chromograph_name):
     chromograph = CHROMOGRAPHS.get(chromograph_name)
@@ -32,7 +34,27 @@ def obtain_portion(chromograph_name, portion):
     key = "{0}{1}".format(chromograph_name, portion)
     chromograph = PORTIONS.get(key)
     if not chromograph:
-        surface = obtain(chomograph_name)
+        surface = obtain(chromograph_name)
         chromograph = surface.subsurface(portion)
         PORTIONS[key] = chromograph
+    return chromograph
+
+def obtain_frame(chromograph_name, frame_col, frame_row, frames_wide, frames_tall):
+    key = "{0}-{1}of{3},{2}of{4}".format(chromograph_name,
+                                         frame_col,
+                                         frame_row,
+                                         frames_wide,
+                                         frames_tall)
+    chromograph = FRAMES.get(key)
+    if not chromograph:
+        surface = obtain(chromograph_name)
+        width, height = surface.get_size()
+        portion_width = width // frames_wide
+        portion_height = height // frames_tall
+        portion = Rect(portion_width * frame_col,
+                       portion_height * frame_row,
+                       portion_width,
+                       portion_height)
+        chromograph = obtain_portion(chromograph_name, portion)
+        FRAMES[key] = chromograph
     return chromograph
