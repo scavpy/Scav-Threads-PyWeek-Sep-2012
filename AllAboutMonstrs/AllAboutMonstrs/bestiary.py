@@ -33,11 +33,20 @@ class Animal(units.Unit):
         self.image = self.obtain_frame()
         self.attacking = False
         self.walking = False
+        self.finished = False
         self.temporal_accumulator = 0
         self.directions = Rect(0,0,self.velocity, round(self.velocity * 0.8))
         self.directions.center = (0,0)
 
     def orient(self, orientation):
+        self.orientation = orientation
+        self.attend_to_surroundings()
+
+    def move(self, location):
+        self.rect = location
+        self.attend_to_surroundings()
+
+    def attend_to_surroundings(self):
         """ arrange the areas of awareness and attack
         depending on the orientation as a number on
         the octoclock.
@@ -47,13 +56,12 @@ class Animal(units.Unit):
          5   3
            4
         """
-        self.orientation = orientation
-        centre_of_attention = octoclock_direction(orientation, self.rect)
+        centre_of_attention = octoclock_direction(self.orientation, self.rect)
         self.rect_of_awareness = Rect(0,0,*self.area_of_awareness)
         self.rect_of_awareness.center = centre_of_attention
         self.rect_of_attack = Rect(0,0,*self.area_of_attack)
         self.rect_of_attack.center = centre_of_attention
-        
+
 class Trinitroceratops(Animal):
     """What do these beasts want? To rut and feed and trample with
     abandon. Mere fences are little use against their horns.
@@ -68,9 +76,9 @@ class Trinitroceratops(Animal):
     walking_animations = 2
     attacking_animations = 1
     orientation_indices = (1,0,0,0,0,0,1,1,1)
-    footprint = (50,40)
+    footprint = (45,20)
     area_of_awareness = (100,80)
-    area_of_attack = (25,20)
+    area_of_attack = (20,16)
 
     def __init__(self, location):
         super(Trinitroceratops, self).__init__(location)
@@ -94,23 +102,22 @@ class Trinitroceratops(Animal):
         obstacles = [knowledge[i] for i in indices
                      if knowledge[i] is not self]
         if obstacles:
-            print self, "stuck on", obstacles[0]
-            print next_position, obstacles[0].rect
-            assert next_position.colliderect(obstacles[0])
+            directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
+            self.orient(random.choice(directions))
             return False
         bounds = grid.BOUNDS
         if bounds.contains(next_position):
-            self.rect = next_position
+            self.move(next_position)
             return True
         if next_position.right >= bounds.right:
             self.bored = True
             self.orient(6) # go back
             return False
         if next_position.left <= 0:
-            self.rect = next_position
+            self.move(next_position)
             if self.bored:
                 if next_position.right < 0:
-                    self.dead = True
+                    self.finished = True
             else:
                 self.orient(random.randint(1,3))
             return True
