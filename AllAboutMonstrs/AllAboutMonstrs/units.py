@@ -9,6 +9,7 @@ class Unit(object):
     walking_animations = 0
     attacking_animations = 0
     orientation_frames = (0,0,0,0,0,0,0,0)
+    pace = 100
 
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph
@@ -21,7 +22,36 @@ class Unit(object):
         return chromographs.obtain_frame(self.animated_chromograph_name,
                                          anim_col, anim_row,
                                          frames_wide, frames_tall)
+    def attack(self):
+        """ Assume a ferocius aspect """
+        if self.attacking or not self.attacking_animations:
+            return
+        self.temporal_accumulator = 0
+        self.attacking = True
+        self.animation_frame = self.walking_animations + 1
+        self.image = self.obtain_frame()
 
+    def animate(self, ms):
+        """ Create the illusion of movement """
+        self.temporal_accumulator += ms
+        if self.temporal_accumulator < self.pace:
+            return False # nothing to be done
+        self.temporal_accumulator = 0
+        frame = self.animation_frame
+        if self.walking:
+            frame += 1
+            if frame > self.walking_animations:
+                frame = 1
+        elif self.attacking:
+            frame += 1
+            if frame > self.walking_animations + self.attacking_animations:
+                frame = 0
+                self.attacking = False
+        else:
+            assert frame == 0
+        self.animation_frame = frame
+        self.image = self.obtain_frame()
+        return True # something was changed
 
 class Cannon(Unit):
     """ A simple artillery unit """
@@ -32,7 +62,7 @@ class Cannon(Unit):
     depiction = "Cannon.png"
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 0
-    attacking_animations = 1
+    attacking_animations = 2
     orientation_indices = (0,1,1,1,1,1,0,0,0)
 
     def __init__(self, location):
@@ -42,4 +72,6 @@ class Cannon(Unit):
         self.orientation = 6 # o'o'clock
         self.animation_frame = 0
         self.image = self.obtain_frame()
-
+        self.attacking = False
+        self.walking = False
+        self.temporal_accumulator = 0
