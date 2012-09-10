@@ -4,6 +4,7 @@ from pygame.locals import *
 import data
 import typefaces
 import chromographs
+import units
 import grid
 from modes import ModeOfOperation
 
@@ -13,6 +14,7 @@ class PreparationMode(ModeOfOperation):
     """
     def operate(self, current_situation):
         self.initialize()
+        self.situation = current_situation
 
         while not self.finished:
             ms = self.clock.tick(30)
@@ -34,6 +36,14 @@ class PreparationMode(ModeOfOperation):
         self.result = None
         self.finished = True
 
+    def on_mousebuttondown(self, e):
+        if e.button == 1:
+            lot = self.current_lot
+            if not lot:
+                return
+            cannon = units.Cannon(lot)
+            self.situation.add_installation_if_possible(cannon)
+
     def initialize(self):
         self.titletext = typefaces.prepare_title("Prepare for the Onslaught",colour=(255,255,255))
         self.scenery = chromographs.obtain("background.png")
@@ -48,4 +58,9 @@ class PreparationMode(ModeOfOperation):
         self.screen.blit(self.titletext,(10,10))
         if self.indicate_lot and self.current_lot:
             pygame.draw.rect(self.screen, (255,255,0,128), self.current_lot, 1)
+        for that in self.situation.installations:
+            image = that.image
+            position = image.get_rect()
+            position.midbottom = that.rect.midbottom
+            self.screen.blit(image, position)
         pygame.display.flip()
