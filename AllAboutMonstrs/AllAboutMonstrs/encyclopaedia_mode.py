@@ -8,13 +8,13 @@ from pygame.display import get_surface, flip
 from modes import ModeOfOperation
 import typefaces
 import chromographs
-from bestiary import Animal
+from bestiary import Trinitroceratops
 import gui
 
 from style import PAGEMARGIN, PAGECOLOUR
 
 PAGES = [
-    Animal,
+    Trinitroceratops,
     ]
 
 class EncyclopaediaMode(ModeOfOperation):
@@ -25,7 +25,7 @@ class EncyclopaediaMode(ModeOfOperation):
         self.finished = False
         self.next_mode = None
         self.ribbon = chromographs.obtain("flourish/ribbon-red.png")
-        self.backbutton = gui.make_menu((50,600),[("Regress","back")],200)
+        self.backbutton = gui.make_menu((650,600),[("Regress","back")],200)
         self.draw_current_page()
         flip()
         while not self.finished:
@@ -60,7 +60,8 @@ class EncyclopaediaMode(ModeOfOperation):
         paint(chromograph, (PAGEMARGIN, topy))
         paint(self.ribbon,(850,-2))
         self.backbutton.render(self.screen)
-        information = page.__doc__
+        information = typefaces.prepare_paragraph(page.__doc__, 600)
+        paint(information, (PAGEMARGIN, topy + 400 + 2 * PAGEMARGIN))
 
 
 
