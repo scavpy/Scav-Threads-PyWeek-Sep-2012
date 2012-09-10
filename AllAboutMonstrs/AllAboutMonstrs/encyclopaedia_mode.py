@@ -22,6 +22,7 @@ class EncyclopaediaMode(ModeOfOperation):
     def operate(self, current_situation):
         self.page = 0
         self.finished = False
+        self.ribbon = chromographs.obtain("flourish/ribbon-red.png")
         self.draw_current_page()
         flip()
         while not self.finished:
@@ -49,6 +50,7 @@ class EncyclopaediaMode(ModeOfOperation):
         paint(table, (x,y))        
         chromograph = chromographs.obtain(page.depiction)
         paint(chromograph, (PAGEMARGIN, topy))
+        paint(self.ribbon,(850,-2))
         information = page.__doc__
 
 

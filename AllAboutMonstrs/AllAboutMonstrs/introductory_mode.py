@@ -1,5 +1,6 @@
 import pygame
 
+import chromographs
 from modes import ModeOfOperation
 import gui
 
@@ -26,11 +27,13 @@ class IntroductoryMode(ModeOfOperation):
                               ("Continuation","load"),
                               ("Bestiation","bestiary"),
                               ("Termination","quit")],400)
+        self.ribbon = chromographs.obtain("flourish/ribbon-gold.png")
 
     def redraw(self):
         self.clear_screen(colour=PAGECOLOUR)
         self.header.render(self.screen)
         self.menu.render(self.screen)
+        self.screen.blit(self.ribbon,(850,-2))
         pygame.display.flip()
 
     def on_keydown(self, e):
