@@ -38,11 +38,10 @@ class EncyclopaediaMode(ModeOfOperation):
         heading = typefaces.prepare_subtitle("Notable Attributes")
         paint(heading, (x,y))
         y += heading.get_rect().height + MARGIN
-        notables = [typefaces.prepare("{0}: {1}".format(n, getattr(page, n.lower())))
+        notables = [("{0}: ".format(n), getattr(page, n.lower()))
                     for n in page.notable_attributes]
-        for notable in notables:
-            paint(notable, (x, y))
-            y += notable.get_rect().height
+        table = typefaces.prepare_table(notables)
+        paint(table, (x,y))
         information = page.__doc__
 
         

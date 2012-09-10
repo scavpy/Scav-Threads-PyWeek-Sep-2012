@@ -6,6 +6,7 @@ the operator.
 
 import pygame.font
 from pygame.font import Font
+from pygame.surface import Surface
 import data
 
 STYLE_SIZES = {
@@ -37,3 +38,35 @@ def prepare_title(text, colour=(0,0,0)):
 def prepare_subtitle(text, colour=(0,0,0)):
     """ prepare text as a subtitle """
     return prepare(text, size="subtitle", colour=colour)
+
+def prepare_table(rows, alignment="lr", size="normal", colour=(0,0,0), padding=0):
+    f = FONTS[size]
+    numcolumns = len(rows[0])
+    numrows = len(rows)
+    shapes = [[f.size(str(column)) for column in row] for row in rows]
+    maxheight = max(max(shape[1] for shape in shaperow) for shaperow in shapes)
+    widths = [max(shaperow[i][0] for shaperow in shapes) for i in range(numcolumns)]
+    table = Surface((sum(widths) + padding * (numcolumns - 1),
+                     maxheight * numrows + padding * (numrows - 1)),
+                    pygame.SRCALPHA)
+    table.fill((255,255,255,0))
+    y = 0
+    for r, row in enumerate(rows):
+        x = 0
+        for c, col in enumerate(row):
+            w, h = shapes[r][c]
+            text = prepare(str(col), size=size, colour=colour)
+            align = alignment[c]
+            if align == "r":
+                adjustx = widths[c] - w
+            elif align == "c":
+                adjustx = (widths[c] - w) // 2
+            else:
+                adjustx = 0
+            table.blit(text, (x + adjustx, y))
+            x += widths[c] + padding
+        y += maxheight + padding
+    return table
+
+
+
