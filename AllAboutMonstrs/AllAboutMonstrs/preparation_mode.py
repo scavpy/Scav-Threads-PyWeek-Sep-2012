@@ -25,8 +25,7 @@ class PreparationMode(ModeOfOperation):
             self.render()
        
     def initialize(self):
-        self.titletext = typefaces.TITLE.render("Mode of Preparation:",
-                                                True, (255,255,255))
+        self.titletext = typefaces.prepare_title("Mode of Preparation:",colour=(255,255,255))
 
     def render(self):
         self.clear_screen(colour=(0,0,100))

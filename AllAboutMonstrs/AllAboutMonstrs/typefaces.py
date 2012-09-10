@@ -8,15 +8,32 @@ import pygame.font
 from pygame.font import Font
 import data
 
-TITLE_SIZE = 48
-SUBTITLE_SIZE = 36
-NORMAL_SIZE = 24
-SMALL_SIZE = 16
+STYLE_SIZES = {
+    "title":48,
+    "subtitle":36,
+    "normal":24,
+    "small":16,
+    }
 
-TYPEFACE_PATH = data.filepath("Anaktoria.otf")
+FONTS = {}
 
-pygame.font.init()
-TITLE = Font(TYPEFACE_PATH, TITLE_SIZE)
-SUBTITLE = Font(TYPEFACE_PATH, SUBTITLE_SIZE)
-NORMAL = Font(TYPEFACE_PATH, NORMAL_SIZE)
-SMALL = Font(TYPEFACE_PATH, SMALL_SIZE)
+def init():
+    pygame.font.init()
+    path = data.filepath("Anaktoria.otf")
+    for appelation, size in STYLE_SIZES.items():
+        FONTS[appelation] = Font(path, size)
+
+init()
+
+def prepare(text, size="normal", colour=(0,0,0)):
+    """ prepare a section of text """
+    f = FONTS[size]
+    return f.render(text, True, colour)
+
+def prepare_title(text, colour=(0,0,0)):
+    """ prepare text as a title """
+    return prepare(text, size="title", colour=colour)
+
+def prepare_subtitle(text, colour=(0,0,0)):
+    """ prepare text as a subtitle """
+    return prepare(text, size="subtitle", colour=colour)

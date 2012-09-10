@@ -25,8 +25,7 @@ class OnslaughtMode(ModeOfOperation):
             self.render()
        
     def initialize(self):
-        self.titletext = typefaces.TITLE.render("Mode of Onslaught:",
-                                                True, (255,255,255))
+        self.titletext = typefaces.prepare_title("Mode of Onslaught:",colour=(255,255,255))
 
     def render(self):
         self.clear_screen()

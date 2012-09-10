@@ -31,16 +31,14 @@ class EncyclopaediaMode(ModeOfOperation):
         paint = self.screen.blit
         self.clear_screen(colour=(255,255,240))
         page = PAGES[self.page]
-        title = typefaces.TITLE.render(page.name.title(), True, (0,0,0))
+        title = typefaces.prepare_title(page.name.title())
         paint(title,(MARGIN, MARGIN))
         y = title.get_rect().height + MARGIN
         x = self.screen.get_size()[0] // 2
-        heading = typefaces.SUBTITLE.render("Notable Attributes",True, (0,0,0))
+        heading = typefaces.prepare_subtitle("Notable Attributes")
         paint(heading, (x,y))
         y += heading.get_rect().height + MARGIN
-        notables = [typefaces.NORMAL.render("{0}: {1}"
-                                            .format(n, getattr(page, n.lower())),
-                                            True, (0,0,0))
+        notables = [typefaces.prepare("{0}: {1}".format(n, getattr(page, n.lower())))
                     for n in page.notable_attributes]
         for notable in notables:
             paint(notable, (x, y))
