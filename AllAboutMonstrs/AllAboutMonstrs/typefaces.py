@@ -71,20 +71,25 @@ def prepare_table(rows, alignment="lr", size="normal", colour=(0,0,0), padding=0
 def prepare_paragraph(text, width, size="normal", colour=(0,0,0)):
     font = FONTS[size]
     lines = []
-    lastline = None
-    lastsplit = 0
     words = text.split()
-    for i in range(len(words)):
-        line = " ".join(words[lastsplit:i+1])
-        print(i,"Trying line: '%s'"%line)
+    lastline = None
+    line = words[0]
+    for i in range(1,len(words)):
+        lastline = line
+        line = line+" "+words[i]
         w,h = font.size(line)
         if w > width:
-            L = lastline if lastline else line
-            print("Line too big, appending last line: '%s'"%L)
-            lines.append(L)
-            lastsplit = i
-            lastline = None
-        else:
-            lastline = line
-    lines.append(lastline)
-    print(lines)
+            lines.append(lastline)
+            line = words[i]
+    lines.append(line)
+
+    parawidth = max(font.size(each)[0] for each in lines)
+    lineheight = font.get_height()
+    paraheight = lineheight*len(lines)
+    paragraph = Surface(parawidth,paraheight,pygame.SRCALPHA)
+    paragraph.fill((255,255,255,0))
+    for y,line in enumerate(lines)
+        text = prepare(line,size,colour)
+        paragraph.blit(text,(0,y*lineheight))
+    return paragraph
+        
