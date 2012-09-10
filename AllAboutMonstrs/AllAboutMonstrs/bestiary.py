@@ -2,6 +2,7 @@
 The Bestiary of Animals New to The Arts and Sciences
 """
 from pygame.rect import Rect
+import random
 import units
 import grid
 
@@ -26,7 +27,7 @@ class Animal(units.Unit):
     def __init__(self, location):
         self.damage = 0
         self.rect = Rect(0,0,*self.footprint)
-        self.rect.center = location.center
+        self.rect.center = location[:2]
         self.animation_frame = 0
         self.orient(2)
         self.image = self.obtain_frame()
@@ -47,7 +48,7 @@ class Animal(units.Unit):
            4
         """
         self.orientation = orientation
-        centre_of_attention = octoclock_direction(self.rect, orientation)
+        centre_of_attention = octoclock_direction(orientation, self.rect)
         self.rect_of_awareness = Rect(0,0,*self.area_of_awareness)
         self.rect_of_awareness.center = centre_of_attention
         self.rect_of_attack = Rect(0,0,*self.area_of_attack)
@@ -60,7 +61,7 @@ class Trinitroceratops(Animal):
     name = "Trinitroceratops horridus"
     durability = 50
     voracity = 4
-    velocity = 3
+    velocity = 5
     monstrosity = 1
     depiction = "Trinitroceratops.png"
     animated_chromograph_name = "units/trinitroceratops.png"
@@ -76,6 +77,7 @@ class Trinitroceratops(Animal):
         self.bored = False
         self.angry = False
         self.satiety = 0
+        self.walking = True
 
     def think(self, things):
         """ Determine the volition of the beast,
@@ -83,21 +85,40 @@ class Trinitroceratops(Animal):
         indices = self.rect_of_awareness.collidelistall(things)
         knowledge = [things[i] for i in indices]
         food = [] # crops in knowledge
-        vector = octoclock_direction(self.directions, self.orientation)
-        next_position = self.rect.move(vector)
+        if self.walking:
+            vector = octoclock_direction(self.orientation, self.directions)
+            next_position = self.rect.move(vector)
+        else:
+            next_position = self.rect
         indices = next_position.collidelistall(knowledge)
-        obstacles = [things[i] for i in indices
-                     if things[i] is not self]
-        if not obstacles and grid.BOUNDS.contains(next_position):
+        obstacles = [knowledge[i] for i in indices
+                     if knowledge[i] is not self]
+        if obstacles:
+            print self, "stuck on", obstacles[0]
+            print next_position, obstacles[0].rect
+            assert next_position.colliderect(obstacles[0])
+            return False
+        bounds = grid.BOUNDS
+        if bounds.contains(next_position):
             self.rect = next_position
             return True
-        if next_position.right >= grid.BOUNDS.right:
+        if next_position.right >= bounds.right:
             self.bored = True
             self.orient(6) # go back
             return False
-        if self.bored and next_position.left < 0:
+        if next_position.left <= 0:
             self.rect = next_position
-            if next_position.right < 0:
-                self.dead = True
+            if self.bored:
+                if next_position.right < 0:
+                    self.dead = True
+            else:
+                self.orient(random.randint(1,3))
             return True
-        
+        if next_position.top < bounds.top:
+            self.orient(5 if self.bored else 3)
+            return False
+        if next_position.bottom >= bounds.bottom:
+            self.orient(7 if self.bored else 1)
+            return False
+        print "WTF!", id(self), "is stuck for no known reason"
+

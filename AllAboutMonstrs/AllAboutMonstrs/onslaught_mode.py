@@ -7,6 +7,7 @@ from modes import ModeOfOperation
 import chromographs
 import typefaces
 import units
+import bestiary
 
 class OnslaughtMode(ModeOfOperation):
     """ Wherein reptilian foes descend upon you and you must fight them
@@ -34,7 +35,10 @@ class OnslaughtMode(ModeOfOperation):
     def initialize(self):
         self.titletext = typefaces.prepare_title("Onslaught of Enormities",colour=(255,64,64))
         self.scenery = chromographs.obtain("background.png")
-        self.dinosaurs = []
+        trine = bestiary.Trinitroceratops
+        self.dinosaurs = [trine((0, 200)),
+                          trine((10, 400))]
+                                
         self.finished = False
         self.result = "Preparation"
 
@@ -51,7 +55,11 @@ class OnslaughtMode(ModeOfOperation):
         pygame.display.flip()
 
     def move_dinosaurs(self, ms):
-        pass
+        all_the_things = self.situation.installations + self.dinosaurs
+        for d in self.dinosaurs:
+            act = d.animate(ms)
+            if act:
+                d.think(all_the_things)
 
     def move_units(self, ms):
         # make cannon fire randomly
