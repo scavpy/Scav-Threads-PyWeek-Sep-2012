@@ -7,6 +7,7 @@ from pygame.display import get_surface, flip
 
 from modes import ModeOfOperation
 import typefaces
+import chromographs
 from bestiary import Animal
 
 PAGES = [
@@ -33,7 +34,7 @@ class EncyclopaediaMode(ModeOfOperation):
         page = PAGES[self.page]
         title = typefaces.prepare_title(page.name.title())
         paint(title,(MARGIN, MARGIN))
-        y = title.get_rect().height + MARGIN
+        topy = y = title.get_rect().height + MARGIN
         x = self.screen.get_size()[0] // 2
         heading = typefaces.prepare_subtitle("Notable Attributes")
         paint(heading, (x,y))
@@ -42,7 +43,9 @@ class EncyclopaediaMode(ModeOfOperation):
                     for n in page.notable_attributes]
         table = typefaces.prepare_table(notables)
         paint(table, (x,y))
+        chromograph = chromographs.obtain(page.depiction)
+        paint(chromograph, (MARGIN, topy))
         information = page.__doc__
 
-        
-        
+
+
