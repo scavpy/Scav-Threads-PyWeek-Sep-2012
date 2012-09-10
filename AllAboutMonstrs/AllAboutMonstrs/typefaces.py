@@ -68,5 +68,42 @@ def prepare_table(rows, alignment="lr", size="normal", colour=(0,0,0), padding=0
         y += maxheight + padding
     return table
 
+def prepare_paragraph(text, width, size="normal", colour=(0,0,0)):
+    font = FONTS[size]
+    lines = []
+    words = text.split()
+    lastline = None
+    line = words[0]
+    for i in range(1,len(words)):
+        lastline = line
+        line = line+" "+words[i]
+        w,h = font.size(line)
+        if w > width:
+            lines.append(lastline)
+            line = words[i]
+    lines.append(line)
 
+    parawidth = max(font.size(each)[0] for each in lines)
+    lineheight = font.get_height()
+    paraheight = lineheight*len(lines)
+    paragraph = Surface((parawidth,paraheight),pygame.SRCALPHA)
+    paragraph.fill((255,255,255,0))
+    for y,line in enumerate(lines):
+        text = prepare(line,size,colour)
+        paragraph.blit(text,(0,y*lineheight))
+    return paragraph
 
+def prepare_passage(text, width, size="normal", colour=(0,0,0)):
+    sections = text.split("\n")
+    paras = [prepare_paragraph(t,width,size=size,colour=colour)
+             for t in sections]
+    fullwidth = max(p.get_width() for p in paras)
+    fullheight = sum(p.get_height() for p in paras)
+    passage = Surface((fullwidth,fullheight),pygame.SRCALPHA)
+    passage.fill((255,255,255,0))
+    y = 0
+    for p in paras:
+        passage.blit(p,(0,y))
+        y += p.get_height()
+    return passage
+    
