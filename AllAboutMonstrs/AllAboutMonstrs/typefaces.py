@@ -92,4 +92,18 @@ def prepare_paragraph(text, width, size="normal", colour=(0,0,0)):
         text = prepare(line,size,colour)
         paragraph.blit(text,(0,y*lineheight))
     return paragraph
-        
+
+def prepare_passage(text, width, size="normal", colour=(0,0,0)):
+    sections = text.split("\n")
+    paras = [prepare_paragraph(t,width,size=size,colour=colour)
+             for t in sections]
+    fullwidth = max(p.get_width() for p in paras)
+    fullheight = sum(p.get_height() for p in paras)
+    passage = Surface((fullwidth,fullheight),pygame.SRCALPHA)
+    passage.fill((255,255,255,0))
+    y = 0
+    for p in paras:
+        passage.blit(p,(0,y))
+        y += p.get_height()
+    return passage
+    
