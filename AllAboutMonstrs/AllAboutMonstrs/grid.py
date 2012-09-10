@@ -16,8 +16,13 @@ WESTERN_LIMIT = 0
 FENCE_MARGIN_WEST = 5
 FENCE_MARGIN_NORTH = 4
 
-LOTS_NORTH = (SOUTHERN_LIMIT - NORTHERN_LIMIT) // LOT_DEPTH
-LOTS_WEST = (EASTERN_LIMIT - WESTERN_LIMIT) // LOT_WIDTH
+BOUNDS = Rect(WESTERN_LIMIT, NORTHERN_LIMIT,
+              EASTERN_LIMIT - WESTERN_LIMIT,
+              SOUTHERN_LIMIT - NORTHERN_LIMIT)
+
+LOTS_NORTH = BOUNDS.height // LOT_DEPTH
+LOTS_WEST = BOUNDS.width // LOT_WIDTH
+
 
 class TownPlanningOffice(object):
     """ Evaluate the proposed positions of facilities and
@@ -26,10 +31,7 @@ class TownPlanningOffice(object):
 
     def nearest_lot(self, x, y):
         """ The nearest entire lot on which a facility might be sited """
-        if (x < WESTERN_LIMIT
-            or x >= EASTERN_LIMIT
-            or y < NORTHERN_LIMIT
-            or y >= SOUTHERN_LIMIT):
+        if not BOUNDS.collidepoint(x,y):
             return None
         cx = (x - WESTERN_LIMIT) // LOT_WIDTH
         cy = (y - NORTHERN_LIMIT) // LOT_DEPTH

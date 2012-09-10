@@ -35,7 +35,7 @@ class Unit(object):
         """ Create the illusion of movement """
         self.temporal_accumulator += ms
         if self.temporal_accumulator < self.pace:
-            return
+            return False # nothing to be done
         self.temporal_accumulator = 0
         frame = self.animation_frame
         if self.walking:
@@ -51,6 +51,7 @@ class Unit(object):
             assert frame == 0
         self.animation_frame = frame
         self.image = self.obtain_frame()
+        return True # something was changed
 
 class Cannon(Unit):
     """ A simple artillery unit """
