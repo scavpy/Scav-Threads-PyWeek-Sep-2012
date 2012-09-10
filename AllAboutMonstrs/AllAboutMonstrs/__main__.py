@@ -17,6 +17,7 @@ def main(args):
     screen = pygame.display.set_mode(SCREENRES)
     pygame.display.set_caption("Blastosaurus Rex")
     current_situation = situation.Situation()
+    current_situation.args = args
     shepherd = modes.ShepherdOfModes()
     start_state = args.test_start_state if args.test_start_state else "Introductory"
     shepherd.begin(start_state, current_situation)
