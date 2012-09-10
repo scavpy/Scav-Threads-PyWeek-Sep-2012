@@ -21,12 +21,16 @@ class EncyclopaediaMode(ModeOfOperation):
     the fruits of the latest researches in Natural Philosophy """
     def operate(self, current_situation):
         self.page = 0
+        self.finished = False
         self.draw_current_page()
         flip()
-        while True:
-            for evt in pygame.event.get():
-                if evt.type == pygame.KEYDOWN:
-                    return
+        while not self.finished:
+            ms = self.clock.tick(60)
+            self.respond_to_the_will_of_the_operator()
+        return
+
+    def on_quit(self, e):
+        self.finished = True
 
     def draw_current_page(self):
         paint = self.screen.blit

@@ -16,13 +16,26 @@ class ModeOfOperation(object):
     def __init__(self):
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
+
     def operate(self, current_situation):
         return None
+
     def clear_screen(self, colour=(0,0,0), image=None):
         if image:
             self.screen.blit(image,(0,0))
         else:
             self.screen.fill(colour)
+
+    def respond_to_the_will_of_the_operator(self):
+        """ turn pygame events into calls to methods of
+        this mode of operation. For example, when the
+        operator depresses a key, on_keydown(e) will be
+        performed. """
+        for e in pygame.event.get():
+            whatkind = pygame.event.event_name(e.type)
+            action = getattr(self, "on_" + whatkind.lower(), None)
+            if action:
+                action(e)
 
 MODES_IN_USE = {"DoingNoThing":ModeOfOperation()}
 

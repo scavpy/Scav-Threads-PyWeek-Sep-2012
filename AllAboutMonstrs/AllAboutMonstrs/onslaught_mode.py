@@ -13,21 +13,24 @@ class OnslaughtMode(ModeOfOperation):
     def operate(self, current_situation):
         self.initialize()
 
-        while True:
+        while not self.finished:
             ms = self.clock.tick(60)
-
-            events = pygame.event.get()
-            for event in events:
-                if event.type == QUIT:
-                    return None
-                elif event.type == KEYDOWN:
-                    return "Preparation"
-
+            self.respond_to_the_will_of_the_operator()
             self.render()
+        return self.result
+
+    def on_keydown(self, e):
+        self.finished = True
+
+    def on_quit(self, e):
+        self.result = None
+        self.finished = True
 
     def initialize(self):
         self.titletext = typefaces.prepare_title("Onslaught of Enormities",colour=(255,64,64))
         self.scenery = chromographs.obtain("background.png")
+        self.finished = False
+        self.result = "Preparation"
 
     def render(self):
         self.clear_screen(image=self.scenery)
