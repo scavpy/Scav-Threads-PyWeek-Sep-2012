@@ -73,7 +73,7 @@ class TextFrame(object):
             surf = c.get_surface()
             if surf:
                 indent = (self.width-c.width)/2
-                if c == self.selected[1]:
+                if self.selected and c == self.selected[1]:
                     hh = (c.height-mark.get_height())/2
                     screen.blit(mark,(x+indent-mark.get_width(), dy+hh))
                     screen.blit(flip(mark,True,False),(x+indent+c.width, dy+hh))

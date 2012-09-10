@@ -18,6 +18,6 @@ def main(args):
     pygame.display.set_caption("Blastosaurus Rex")
     current_situation = situation.Situation()
     shepherd = modes.ShepherdOfModes()
-    start_state = args.test_start_state if args.test_start_state else "DoingNoThing"
+    start_state = args.test_start_state if args.test_start_state else "Introductory"
     shepherd.begin(start_state, current_situation)
     pygame.quit()
