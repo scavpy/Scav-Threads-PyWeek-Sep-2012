@@ -68,5 +68,23 @@ def prepare_table(rows, alignment="lr", size="normal", colour=(0,0,0), padding=0
         y += maxheight + padding
     return table
 
-
-
+def prepare_paragraph(text, width, size="normal", colour=(0,0,0)):
+    font = FONTS[size]
+    lines = []
+    lastline = None
+    lastsplit = 0
+    words = text.split()
+    for i in range(len(words)):
+        line = " ".join(words[lastsplit:i+1])
+        print(i,"Trying line: '%s'"%line)
+        w,h = font.size(line)
+        if w > width:
+            L = lastline if lastline else line
+            print("Line too big, appending last line: '%s'"%L)
+            lines.append(L)
+            lastsplit = i
+            lastline = None
+        else:
+            lastline = line
+    lines.append(lastline)
+    print(lines)
