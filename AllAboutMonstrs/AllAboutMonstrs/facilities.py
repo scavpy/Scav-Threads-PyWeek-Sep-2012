@@ -22,6 +22,7 @@ class Facility(object):
         self.condition = 0
         self.rect = Rect(0,0, *self.footprint)
         self.rect.center = location.center
+        self.image = self.obtain_frame()
 
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph

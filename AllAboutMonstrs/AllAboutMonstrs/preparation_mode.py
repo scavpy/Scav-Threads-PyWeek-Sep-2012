@@ -4,10 +4,12 @@ from pygame.locals import *
 import data
 import typefaces
 import chromographs
+import facilities
 import units
 import grid
+
+from gui import BuildMenu
 from modes import ModeOfOperation
-from facilities import HorizontalFence, VerticalFence
 
 
 LOT_COLOUR = (255,255,0,128)
@@ -49,18 +51,44 @@ class PreparationMode(ModeOfOperation):
         self.finished = True
 
     def on_mousebuttondown(self, e):
-        if e.button == 1:
+        if self.build_menu.is_open:
+            choice = self.build_menu.mouse_event(e)
+            if choice:
+                self.build_menu.close_menu()
+                if choice != "CANCEL":
+                    self.build_a_thing(choice)
+                self.indicate_lot = True
+        else:
             edge = self.current_edge
             lot = self.current_lot
-            if edge:
-                aspect = edge.width/edge.height
-                fac = VerticalFence(edge) if (aspect<1) else HorizontalFence(edge)
-            elif lot:
-                fac = units.Cannon(lot)
-            else:
-                fac = None
-            if fac:
-                self.situation.add_installation_if_possible(fac)
+            if e.button == 1:
+                recent = self.situation.most_recent_build
+                if recent:
+                    self.build_a_thing(recent)
+            elif e.button == 3:
+                if edge:
+                    self.build_menu.open_menu(e.pos,self.situation,edge=True)
+                    self.indicate_lot = False
+                elif lot:
+                    self.build_menu.open_menu(e.pos,self.situation)
+                    self.indicate_lot = False
+
+    def build_a_thing(self,thingname):
+        place = thing = None
+        if thingname == "Fence":
+            place = self.current_edge
+            if place:
+                aspect = place.width/place.height
+                thing = facilities.VerticalFence if (aspect<1) else facilities.HorizontalFence
+        else:
+            place = self.current_lot
+            if place:
+                thing = getattr(facilities,thingname,None)
+                if thing is None:
+                    thing = getattr(units,thingname,None)
+        if thing:
+            self.situation.add_installation_if_possible(thing(place))
+            self.situation.most_recent_build = thingname
 
     def initialize(self):
         self.titletext = typefaces.prepare_title("Prepare for the Onslaught",colour=(255,255,255))
@@ -71,6 +99,7 @@ class PreparationMode(ModeOfOperation):
         self.townplanner = grid.TownPlanningOffice()
         self.finished = False
         self.result = "Onslaught"
+        self.build_menu = BuildMenu()
 
     def render(self):
         self.clear_screen(image=self.scenery)
@@ -99,4 +128,7 @@ class PreparationMode(ModeOfOperation):
             if that.is_flat:
                 continue # already done
             render_a_thing(that)
+
+        if self.build_menu.is_open:
+            self.build_menu.render(self.screen)
         pygame.display.flip()

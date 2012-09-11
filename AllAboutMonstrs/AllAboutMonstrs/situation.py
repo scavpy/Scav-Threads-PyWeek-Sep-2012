@@ -11,6 +11,9 @@ class Situation(object):
         self.chapter = 0
         self.wave = 0
         self.seen_dinosaurs = []
+        self.facility_plans = ["Crops"]
+        self.unit_plans = ["Cannon"]
+        self.most_recent_build = None
 
     def add_installation_if_possible(self, thing):
         collisions = thing.rect.collidelistall(self.installations)
