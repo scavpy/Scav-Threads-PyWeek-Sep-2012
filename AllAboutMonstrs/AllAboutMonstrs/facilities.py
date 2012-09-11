@@ -62,19 +62,22 @@ class AbstractFence(Facility):
 
     def __init__(self, location):
         self.damage = 0
-        self.animaton_frame = 0
+        self.animation_frame = 0
         self.temporal_accumulator = 0
         self.condition = 0
         self.rect = Rect(0,0, *self.footprint)
         self.rect.center = location.center
+        self.image = self.obtain_frame()
 
-class HorizontalFence(Abstractfence):
+class HorizontalFence(AbstractFence):
     animated_chromograph_name = "facilities/hfence.png"
     footprint = (grid.LOT_WIDTH, 2 * grid.FENCE_MARGIN_NORTH)
-    obstruance = grid.obstruance("hfence","beast","unit","facility")
+    obstruance = grid.obstruance("hfence")
+    exclusion = grid.obstruance("hfence","beast","unit","facility")
 
-class VerticalFence(Abstractfence):
+class VerticalFence(AbstractFence):
     animated_chromograph_name = "facilities/vfence.png"
     footprint = (2 * grid.FENCE_MARGIN_WEST, grid.LOT_DEPTH)
-    obstruance = grid.obstruance("vfence","beast","unit","facility")
+    obstruance = grid.obstruance("vfence")
+    exclusion = grid.obstruance("vfence","beast","unit","facility")
 

@@ -7,6 +7,7 @@ import chromographs
 import units
 import grid
 from modes import ModeOfOperation
+from facilities import HorizontalFence, VerticalFence
 
 
 LOT_COLOUR = (255,255,0,128)
@@ -49,11 +50,17 @@ class PreparationMode(ModeOfOperation):
 
     def on_mousebuttondown(self, e):
         if e.button == 1:
+            edge = self.current_edge
             lot = self.current_lot
-            if not lot:
-                return
-            cannon = units.Cannon(lot)
-            self.situation.add_installation_if_possible(cannon)
+            if edge:
+                aspect = edge.width/edge.height
+                fac = VerticalFence(edge) if (aspect<1) else HorizontalFence(edge)
+            elif lot:
+                fac = units.Cannon(lot)
+            else:
+                fac = None
+            if fac:
+                self.situation.add_installation_if_possible(fac)
 
     def initialize(self):
         self.titletext = typefaces.prepare_title("Prepare for the Onslaught",colour=(255,255,255))

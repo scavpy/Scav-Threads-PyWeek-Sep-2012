@@ -23,7 +23,7 @@ BOUNDS = Rect(WESTERN_LIMIT, NORTHERN_LIMIT,
 LOTS_NORTH = BOUNDS.height // LOT_DEPTH
 LOTS_WEST = BOUNDS.width // LOT_WIDTH
 
-EDGE_TOLERANCE = 0.2
+EDGE_TOLERANCE = 0.3
 
 class TownPlanningOffice(object):
     """ Evaluate the proposed positions of facilities and

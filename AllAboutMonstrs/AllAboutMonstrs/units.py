@@ -11,7 +11,8 @@ class Unit(object):
     attacking_animations = 0
     orientation_frames = (0,0,0,0,0,0,0,0)
     pace = 100
-    obstruance = grid.obstruance("all")
+    obstruance = grid.obstruance("unit")
+    exclusion = grid.obstruance("all")
 
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph

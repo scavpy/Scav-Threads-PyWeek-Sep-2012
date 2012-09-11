@@ -14,7 +14,7 @@ class Situation(object):
         if collisions:
             obstruance = thing.obstruance
             for i in collisions:
-                if obstruance & self.installations[i].obstruance:
+                if obstruance & self.installations[i].exclusion:
                     return False
         self.installations.append(thing)
         self.installations.sort(key=lambda i: i.rect.bottom)
