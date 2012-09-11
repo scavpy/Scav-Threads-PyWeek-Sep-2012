@@ -42,7 +42,7 @@ class IntroductoryMode(ModeOfOperation):
             choice = self.menu.make_choice()
             if choice:
                 if choice == "new":
-                    self.next_mode = "Preparation"
+                    self.next_mode = "ChapterStart"
                 elif choice == "bestiary":
                     self.next_mode = "Encyclopaedia"
                 self.finished = True
