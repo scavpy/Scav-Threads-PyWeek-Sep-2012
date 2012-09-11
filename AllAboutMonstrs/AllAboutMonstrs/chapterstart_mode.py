@@ -3,24 +3,15 @@ import pygame
 import chromographs
 import gui
 import typefaces
+import chapters
 from modes import ModeOfOperation
 from style import PAGECOLOUR, PAGEMARGIN
 
 
-TESTDETAILS = {
-    "number":1,
-    "subtitle":"A Reptilian Assault",
-    "image":"boat.png",
-    "summary":" Shortly after arriving upon the island, we met with \
-the reptiles. Their incendiary properties are much worse than we \
-could have predicted.\n Worse still, it would appear that they have \
-developed an appetite for the tar on our ships. We have but five \
-vessels remaining and must protect them at all costs."
-    }
-
 class ChapterStartMode(ModeOfOperation):
     """ The mode by which one is informed of the current situation. """
     def operate(self, current_situation):
+        self.situation = current_situation
         self.initialize()
         self.redraw()
         self.finished = False
@@ -46,12 +37,13 @@ class ChapterStartMode(ModeOfOperation):
         self.finished = True
 
     def initialize(self):
+        chapter = chapters.CHAPTERS[self.situation.chapter]
         self.ribbon = chromographs.obtain("flourish/ribbon-blue.png")
-        self.portrait = chromographs.obtain("illustrations/%s"%TESTDETAILS["image"])
-        self.title = typefaces.prepare_title("Chapter %d:"%TESTDETAILS["number"])
+        self.portrait = chromographs.obtain("illustrations/%s"%chapter.illustration)
+        self.title = typefaces.prepare_title("Chapter %s:"% chapter.number)
         self.summary = gui.make_titledbox((400,100),
-                                          TESTDETAILS["subtitle"],
-                                          TESTDETAILS["summary"],
+                                          chapter.subtitle,
+                                          chapter.summary,
                                           500,gap=12)
         self.menu = gui.make_menu((700,600),
                                   [("We are prepared!","begin"),

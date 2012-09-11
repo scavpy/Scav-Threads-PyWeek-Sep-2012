@@ -8,6 +8,9 @@ class Situation(object):
     def __init__(self):
         self.wealth = 0  # in binary pence
         self.installations = []
+        self.chapter = 0
+        self.wave = 0
+        self.seen_dinosaurs = []
 
     def add_installation_if_possible(self, thing):
         collisions = thing.rect.collidelistall(self.installations)

@@ -8,6 +8,7 @@ import chromographs
 import typefaces
 import units
 import bestiary
+import chapters
 
 class OnslaughtMode(ModeOfOperation):
     """ Wherein reptilian foes descend upon you and you must fight them
@@ -35,11 +36,9 @@ class OnslaughtMode(ModeOfOperation):
     def initialize(self):
         self.titletext = typefaces.prepare_title("Onslaught of Enormities",colour=(255,64,64))
         self.scenery = chromographs.obtain("background.png")
-        trine = bestiary.Trinitroceratops
-        self.dinosaurs = [trine((0, 200, 50, 40)),
-                          trine((10, 400, 50, 40)),
-                          trine((-30, 600, 50, 40))]
-                                
+        chapter = chapters.CHAPTERS[self.situation.chapter]
+        wave = self.situation.wave
+        self.dinosaurs = chapter.spawn_wave(wave)
         self.finished = False
         self.result = "Preparation"
 
