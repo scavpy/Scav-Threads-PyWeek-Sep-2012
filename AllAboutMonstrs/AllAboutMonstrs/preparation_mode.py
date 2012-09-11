@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pygame
 from pygame.locals import *
 
@@ -21,8 +22,8 @@ class PreparationMode(ModeOfOperation):
     against impending assault by reptiles.
     """
     def operate(self, current_situation):
-        self.initialize()
         self.situation = current_situation
+        self.initialize()
 
         while not self.finished:
             ms = self.clock.tick(30)
@@ -54,10 +55,9 @@ class PreparationMode(ModeOfOperation):
         if self.build_menu.is_open:
             choice = self.build_menu.mouse_event(e)
             if choice:
-                self.build_menu.close_menu()
                 if choice != "CANCEL":
                     self.build_a_thing(choice)
-                self.indicate_lot = True
+                self.close_build_menu()
         else:
             edge = self.current_edge
             lot = self.current_lot
@@ -65,13 +65,18 @@ class PreparationMode(ModeOfOperation):
                 recent = self.situation.most_recent_build
                 if recent:
                     self.build_a_thing(recent)
+                else:
+                    self.open_build_menu(e.pos)
             elif e.button == 3:
-                if edge:
-                    self.build_menu.open_menu(e.pos,self.situation,edge=True)
-                    self.indicate_lot = False
-                elif lot:
-                    self.build_menu.open_menu(e.pos,self.situation)
-                    self.indicate_lot = False
+                self.open_build_menu(e.pos)
+
+    def open_build_menu(self,position):
+        self.build_menu.open_menu(position,self.situation,bool(self.current_edge))
+        self.indicate_lot = False
+
+    def close_build_menu(self):
+        self.build_menu.close_menu()
+        self.indicate_lot = True
 
     def build_a_thing(self,thingname):
         place = thing = None
@@ -89,6 +94,7 @@ class PreparationMode(ModeOfOperation):
         if thing:
             self.situation.add_installation_if_possible(thing(place))
             self.situation.most_recent_build = thingname
+            self.update_stats()
 
     def initialize(self):
         self.titletext = typefaces.prepare_title("Prepare for the Onslaught",colour=(255,255,255))
@@ -100,7 +106,19 @@ class PreparationMode(ModeOfOperation):
         self.finished = False
         self.result = "Onslaught"
         self.build_menu = BuildMenu()
+        self.statstable = None
+        self.update_stats()
 
+    def update_stats(self):
+        s = self.situation
+        pounds = s.wealth//256
+        shillings = (s.wealth%256)//16
+        pence = s.wealth%16
+        crops = sum([c.edibility for c in s.installations if hasattr(c,"edibility")])
+        table = typefaces.prepare_table([["Wealth: ","£%d/%d/%db"%(pounds,shillings,pence)],
+                                         ["Agriculture: ",crops]])
+        self.statstable = table
+    
     def render(self):
         self.clear_screen(image=self.scenery)
         self.screen.blit(self.titletext,(10,10))
@@ -131,4 +149,5 @@ class PreparationMode(ModeOfOperation):
 
         if self.build_menu.is_open:
             self.build_menu.render(self.screen)
+        self.screen.blit(self.statstable,(10,600))
         pygame.display.flip()

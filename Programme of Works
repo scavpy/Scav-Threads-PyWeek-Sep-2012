@@ -37,8 +37,9 @@ wrk-onslaught-2		Improve the intelligence of the Trinitroceratops			satisfactory
 wrk-onslaught-3		Resolve the effects of hostility between dinosaurs and installations    satisfactory
 wrk-prep-3		A menu by which one may select a construction project. 			satisfactory
 wrk-prep-4		Placement of crops and resource management.   				?
-wrk-chapters		A collection of chapters containing details of various situations. 	satisfactory
+wrk-fences              Refactor Fence classes into one.                                        ?
 
+wrk-chapters		A collection of chapters containing details of various situations. 	satisfactory
 wrk-accounting		Render an accounting of the colony's profit and loss                    ?
 wrk-continuation	Allow continuation of a previously saved session                        ?
 wrk-initiation		Exposition of the premise                                               ?

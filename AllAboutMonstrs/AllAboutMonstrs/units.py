@@ -25,6 +25,7 @@ class Unit(object):
     walking_animations = 0
     attacking_animations = 0
     orientation_frames = (0,0,0,0,0,0,0,0)
+    cost = 2560
     pace = 100
     obstruance = grid.obstruance("unit")
     exclusion = grid.obstruance("notland")
@@ -145,6 +146,7 @@ class Cannon(Unit):
     area_of_awareness = (200,160)
     area_of_attack = (80, 64)
     pace = 100
+    cost = 3840
 
     def __init__(self, location):
         super(Cannon, self).__init__(location)

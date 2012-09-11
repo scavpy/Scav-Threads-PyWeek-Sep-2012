@@ -10,6 +10,7 @@ import grid
 class Facility(object):
     notable_attributes = {"Durability","Flammability","Habitability"}
     standing_animations = 1
+    cost = 256
     conditions = 4 # good, serviceable, dilapidated, ruined
     pace = 1000
     obstruance = grid.obstruance("all")
@@ -101,3 +102,4 @@ class Crops(Facility):
     obstruance = grid.obstruance("land")
     exclusion = grid.obstruance("beast","unit","facility","land")
     footprint = (grid.LOT_WIDTH, grid.LOT_DEPTH)
+    cost = 16
