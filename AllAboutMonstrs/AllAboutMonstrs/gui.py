@@ -4,6 +4,7 @@ from pygame.transform import flip,scale
 import chromographs
 import typefaces
 
+from math import sin, cos, sqrt, radians
 
 def make_textbox(position,text,width,size="normal",colour=(0,0,0)):
     widget = SurfWidget(
@@ -32,6 +33,67 @@ def make_menu(position,options,width,prompt=None):
         contents.append(o)
     return TextFrame(position,contents,width)
 
+class BuildMenu(object):
+    gear = chromographs.obtain("iconic/gear.png")
+    gearrect = gear.get_rect()
+    optrad = 32
+
+    def __init__(self):
+        self.is_open = False
+        self.facs = []
+        self.units = []
+        self.options = []
+        self.position = (0,0)
+        self.centerrect = pygame.Rect(0,0,64,64)
+
+    def open_menu(self,position,current_situation,edge=False):
+        self.is_open = True
+        self.position = position
+        self.centerrect.center = self.position
+        if edge:
+            self.facs = ["Fence"]
+        else:
+            self.facs = current_situation.facility_plans
+        self.units = current_situation.unit_plans
+        self.options = self.halfwheel(self.facs,-1)
+        self.options.extend(self.halfwheel(self.units,1))
+        self.options.append(("CANCEL",None,self.centerrect))
+
+    def close_menu(self):
+        self.is_open = False
+
+    def halfwheel(self,items,hemisphere):
+        x,y = self.position
+        result = []
+        r = self.optrad*2
+        angle = hemisphere * radians(180.0/(len(items)+1))
+        for i,item in enumerate(items):
+            img = chromographs.obtain("iconic/%s.png"%item)
+            rect = img.get_rect()
+            rect.center = (x + cos(angle*(i+1))*r, y + sin(angle*(i+1))*r)
+            opt = (item,img,rect)
+            result.append(opt)
+        return result
+
+    def render(self,screen):
+        g = self.gear
+        gr = self.gearrect
+        for item,image,rect in self.options:
+            gr.center = rect.center
+            screen.blit(g,gr)
+            if image:
+                screen.blit(image,rect)
+
+    def mouse_event(self, e):
+        px,py = e.pos
+        for item,image,rect in self.options:
+            x,y = rect.center
+            dx,dy = (px-x,py-y)
+            dist2 = dx*dx+dy*dy
+            if dist2 <= self.optrad*self.optrad:
+                return item
+        return None
+                   
 
 class TextFrame(object):
     head_end = chromographs.obtain("flourish/top-end.png")
