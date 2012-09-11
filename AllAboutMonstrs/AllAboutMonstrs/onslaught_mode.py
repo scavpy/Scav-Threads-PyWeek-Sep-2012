@@ -81,7 +81,12 @@ class OnslaughtMode(ModeOfOperation):
         for d in self.dinosaurs[:]:
             act = d.animate(ms)
             if act:
-                d.think(all_the_things)
+                targets = d.think(all_the_things)
+                if targets:
+                    for t in targets:
+                        if t.damage >= t.durability:
+                            all_the_things.remove(t)
+                            self.situation.installations.remove(t)
             if d.finished:
                 self.dinosaurs.remove(d)
                 all_the_things.remove(d)
@@ -95,6 +100,11 @@ class OnslaughtMode(ModeOfOperation):
             if not isinstance(u, units.Unit):
                 continue
             if act and u.damage < u.durability:
-                u.think(all_the_things)
+                targets = u.think(all_the_things)
+                if targets:
+                    for d in targets:
+                        if d.damage >= d.durability:
+                            all_the_things.remove(d)
+                            self.dinosaurs.remove(d)
 
                 

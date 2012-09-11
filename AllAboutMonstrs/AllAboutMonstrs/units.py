@@ -1,6 +1,7 @@
 """
   The best defence is an effective means of offence.
 """
+from time import time
 from pygame.rect import Rect
 import random
 import chromographs
@@ -11,8 +12,16 @@ def octoclock_direction(ooclock, rect):
     return getattr(rect, ("midtop","topright","midright","bottomright",
                           "midbottom","bottomleft","midleft","topleft")[ooclock])
 
+def place_opposite(rect, ooclock, position):
+    """ place a rectangle so that it touches the given position
+    on its opposite side or corner to the given octoclock direction """
+    attr = ("midbottom","bottomleft","midleft","topleft",
+            "midtop","topright","midright","bottomright")[ooclock]
+    setattr(rect, attr, position)
+
+
 class Unit(object):
-    notable_attributes = {"Firepower", "Durability", "Velocity"}
+    notable_attributes = {"Firepower", "Durability", "Velocity","Rapidity"}
     walking_animations = 0
     attacking_animations = 0
     orientation_frames = (0,0,0,0,0,0,0,0)
@@ -36,6 +45,7 @@ class Unit(object):
         self.temporal_accumulator = 0
         self.directions = Rect(0,0,self.velocity, round(self.velocity * 0.8))
         self.directions.center = (0,0)
+        self.reload_time = 0
 
     def orient(self, orientation):
         self.orientation = orientation
@@ -59,7 +69,11 @@ class Unit(object):
         self.rect_of_awareness = Rect(0,0,*self.area_of_awareness)
         self.rect_of_awareness.center = centre_of_attention
         self.rect_of_attack = Rect(0,0,*self.area_of_attack)
-        self.rect_of_attack.center = centre_of_attention
+        self.attend_to_attack_area(centre_of_attention)
+
+    def attend_to_attack_area(self, centre):
+        """ Our modern military units have ranged attacks """
+        place_opposite(self.rect_of_attack, self.orientation, centre)
 
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph
@@ -76,10 +90,14 @@ class Unit(object):
         """ Assume a ferocius aspect """
         if self.attacking or not self.attacking_animations:
             return
+        if self.reload_time > time():
+            return
         self.temporal_accumulator = 0
         self.attacking = True
+        self.reload_time = time() + 5.0 / self.rapidity
         self.animation_frame = self.walking_animations + 1
         self.image = self.obtain_frame()
+        return True
 
     def animate(self, ms):
         """ Create the illusion of movement """
@@ -103,26 +121,48 @@ class Unit(object):
         self.image = self.obtain_frame()
         return True # something was changed
 
+    def harm(self, quanta_of_destruction):
+        """ Deal damage to the unit, possibly rendering it inactive """
+        self.damage += quanta_of_destruction
+        if self.damage > self.durability:
+            self.rect.width = 0
+            self.rect.height = 0
+
 class Cannon(Unit):
     """ A simple artillery unit """
     name = "Cannon"
     durability = 10
     firepower = 10
     velocity = 2
+    rapidity = 1
     depiction = "Cannon.png"
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 0
     attacking_animations = 2
     orientation_indices = (0,1,1,1,1,1,0,0,0)
     footprint = 20,16
-    area_of_awareness = (100,80)
-    area_of_attack = (90, 75)
+    area_of_awareness = (200,160)
+    area_of_attack = (80, 64)
+    pace = 100
 
     def __init__(self, location):
         super(Cannon, self).__init__(location)
+        reload_time = 0
 
     def think(self, things):
-        """ Determine the tactics of the unit """
-        # just fire randomly
-        if random.random < 0.01:
-            self.attack()
+        """ Determine the tactics of the unit.
+        If it acted upon any thing else, return a list of such
+        things. Otherwise return a non-true value.
+        """
+        # Fire when any beast is attackable
+        from bestiary import Animal
+        indices = self.rect_of_attack.collidelistall(things)
+        beasts = [things[i] for i in indices
+                  if isinstance(things[i], Animal)]
+        if beasts and not self.attacking:
+            target = beasts[0] # TODO pick closest?
+            if self.attack():
+                target.harm(self.firepower)
+                return [target]
+
+
