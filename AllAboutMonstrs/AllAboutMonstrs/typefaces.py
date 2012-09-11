@@ -43,7 +43,9 @@ def prepare_table(rows, alignment="lr", size="normal", colour=(0,0,0), padding=0
     f = FONTS[size]
     numcolumns = len(rows[0])
     numrows = len(rows)
-    shapes = [[f.size(str(column)) for column in row] for row in rows]
+    def u(n):
+        return n if isinstance(n, unicode) else unicode(n)
+    shapes = [[f.size(u(col)) for col in row] for row in rows]
     maxheight = max(max(shape[1] for shape in shaperow) for shaperow in shapes)
     widths = [max(shaperow[i][0] for shaperow in shapes) for i in range(numcolumns)]
     table = Surface((sum(widths) + padding * (numcolumns - 1),
@@ -55,7 +57,7 @@ def prepare_table(rows, alignment="lr", size="normal", colour=(0,0,0), padding=0
         x = 0
         for c, col in enumerate(row):
             w, h = shapes[r][c]
-            text = prepare(str(col), size=size, colour=colour)
+            text = prepare(u(col), size=size, colour=colour)
             align = alignment[c]
             if align == "r":
                 adjustx = widths[c] - w
