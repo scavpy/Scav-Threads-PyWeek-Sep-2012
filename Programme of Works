@@ -40,7 +40,7 @@ wrk-prep-4		Placement of crops and resource management.   				satisfactory
 wrk-fences              Refactor Fence classes into one.                                        satisfactory
 
 wrk-chapters		A collection of chapters containing details of various situations. 	satisfactory
-wrk-accounting		Render an accounting of the colony's profit and loss                    ?
+wrk-accounting		Render an accounting of the colony's profit and loss                    satisfactory
 wrk-continuation	Allow continuation of a previously saved session                        ?
 wrk-initiation		Exposition of the premise                                               ?
 art-facilities          Renderings of structures both agricultural and architectural            satisfactory

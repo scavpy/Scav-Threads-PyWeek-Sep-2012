@@ -10,6 +10,7 @@ class Situation(object):
     def __init__(self):
         self.wealth = 2560  # in binary pence
         self.installations = []
+        self.population = 5
         self.chapter = 0
         self.wave = 0
         self.seen_dinosaurs = []
