@@ -25,7 +25,7 @@ class IntroductoryMode(ModeOfOperation):
         self.menu = gui.make_menu((300,400),
                              [("Initiation","new"),
                               ("Continuation","load"),
-                              ("Bestiation","bestiary"),
+                              ("Bestial Education","bestiary"),
                               ("Termination","quit")],400)
         self.ribbon = chromographs.obtain("flourish/ribbon-gold.png")
 
