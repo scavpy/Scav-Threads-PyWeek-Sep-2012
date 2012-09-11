@@ -62,9 +62,13 @@ class PreparationMode(ModeOfOperation):
             edge = self.current_edge
             lot = self.current_lot
             if e.button == 1:
-                recent = self.situation.most_recent_build
-                if recent:
-                    self.build_a_thing(recent)
+                thing = None
+                if edge:
+                    thing = self.situation.last_fence_build
+                elif lot:
+                    thing = self.situation.last_lot_build
+                if thing:
+                    self.build_a_thing(thing)
                 else:
                     self.open_build_menu(e.pos)
             elif e.button == 3:
@@ -79,21 +83,18 @@ class PreparationMode(ModeOfOperation):
         self.indicate_lot = True
 
     def build_a_thing(self,thingname):
-        place = thing = None
-        if thingname == "Fence":
-            place = self.current_edge
-            if place:
-                aspect = place.width/place.height
-                thing = facilities.VerticalFence if (aspect<1) else facilities.HorizontalFence
-        else:
-            place = self.current_lot
-            if place:
-                thing = getattr(facilities,thingname,None)
-                if thing is None:
-                    thing = getattr(units,thingname,None)
+        thing = None
+        place = self.current_edge if self.current_edge else self.current_lot
+        if place:
+            thing = getattr(facilities,thingname,None)
+            if thing is None:
+                thing = getattr(units,thingname,None)
         if thing:
             self.situation.add_installation_if_possible(thing(place))
-            self.situation.most_recent_build = thingname
+            if self.current_edge:
+                self.situation.last_fence_build = thingname
+            else:
+                self.situation.last_lot_build = thingname
             self.update_stats()
 
     def initialize(self):

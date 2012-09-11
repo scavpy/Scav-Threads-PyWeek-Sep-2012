@@ -51,7 +51,7 @@ class BuildMenu(object):
         self.position = position
         self.centerrect.center = self.position
         if edge:
-            self.facs = ["Fence"]
+            self.facs = current_situation.fence_plans
         else:
             self.facs = current_situation.facility_plans
         self.units = current_situation.unit_plans

@@ -65,32 +65,29 @@ class Facility(object):
             self.condition = max((ruination * self.conditions) // damage, 1)
         self.image = self.obtain_frame()
 
-class AbstractFence(Facility):
+class Fence(Facility):
     durability = 5
     flammability = 5
     habitability = 0
     pace = 1000
+    price = 288
 
     def __init__(self, location):
         self.damage = 0
         self.animation_frame = 0
         self.temporal_accumulator = 0
         self.condition = 0
+        horizontal = (location.width/location.height) > 1
+        direction = "hfence" if horizontal else "vfence"
+        self.animated_chromograph_name = "facilities/%s.png"%direction
+        self.footprint = ((grid.LOT_WIDTH, 2 * grid.FENCE_MARGIN_NORTH)
+                     if horizontal else
+                     (2 * grid.FENCE_MARGIN_WEST, grid.LOT_DEPTH))
+        self.obstruance = grid.obstruance(direction)
+        self.exclusion = grid.obstruance(direction,"beast","unit","facility")
         self.rect = Rect(0,0, *self.footprint)
         self.rect.center = location.center
         self.image = self.obtain_frame()
-
-class HorizontalFence(AbstractFence):
-    animated_chromograph_name = "facilities/hfence.png"
-    footprint = (grid.LOT_WIDTH, 2 * grid.FENCE_MARGIN_NORTH)
-    obstruance = grid.obstruance("hfence")
-    exclusion = grid.obstruance("hfence","beast","unit","facility")
-
-class VerticalFence(AbstractFence):
-    animated_chromograph_name = "facilities/vfence.png"
-    footprint = (2 * grid.FENCE_MARGIN_WEST, grid.LOT_DEPTH)
-    obstruance = grid.obstruance("vfence")
-    exclusion = grid.obstruance("vfence","beast","unit","facility")
 
 class Crops(Facility):
     is_flat = True
