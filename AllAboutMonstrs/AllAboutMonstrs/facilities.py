@@ -10,7 +10,7 @@ import grid
 class Facility(object):
     notable_attributes = {"Durability","Flammability","Habitability"}
     standing_animations = 1
-    cost = 256
+    cost = 0x100
     conditions = 4 # good, serviceable, dilapidated, ruined
     pace = 1000
     obstruance = grid.obstruance("all")
@@ -62,7 +62,7 @@ class Facility(object):
         elif damage >= ruination:
             self.condition = self.conditions - 1
         else:
-            self.condition = max((ruination * self.conditions) // damage, 1)
+            self.condition = max((damage * self.conditions) // ruination, 1)
         self.image = self.obtain_frame()
 
 class Fence(Facility):
@@ -70,7 +70,7 @@ class Fence(Facility):
     flammability = 5
     habitability = 0
     pace = 1000
-    cost = 80
+    cost = 0x050
 
     def __init__(self, location):
         self.damage = 0
@@ -100,4 +100,15 @@ class Crops(Facility):
     obstruance = grid.obstruance("land")
     exclusion = grid.obstruance("beast","unit","facility","land")
     footprint = (grid.LOT_WIDTH, grid.LOT_DEPTH)
-    cost = 40
+    cost = 0x028
+
+class Housing(Facility):
+    name = "Housing"
+    durability = 20
+    animated_chromograph_name = "facilities/housing.png"
+    standing_animations = 4
+    obstruance = grid.obstruance("facility")
+    exclusion = grid.obstruance("notland")
+    footprint = (grid.LOT_WIDTH-10, grid.LOT_DEPTH-8)
+    cost = 0x300
+    pace = 200
