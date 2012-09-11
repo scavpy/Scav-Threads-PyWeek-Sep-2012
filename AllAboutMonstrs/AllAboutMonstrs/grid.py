@@ -23,6 +23,7 @@ BOUNDS = Rect(WESTERN_LIMIT, NORTHERN_LIMIT,
 LOTS_NORTH = BOUNDS.height // LOT_DEPTH
 LOTS_WEST = BOUNDS.width // LOT_WIDTH
 
+EDGE_TOLERANCE = 0.2
 
 class TownPlanningOffice(object):
     """ Evaluate the proposed positions of facilities and
@@ -46,21 +47,21 @@ class TownPlanningOffice(object):
             return None
         xprop = (x - lot.left) / float(LOT_WIDTH)
         yprop = (y - lot.top) / float(LOT_DEPTH)
-        north_edge = yprop < 0.25
-        south_edge = yprop > 0.75
-        west_edge = xprop < 0.25
-        east_edge = xprop > 0.75
+        north_edge = yprop < EDGE_TOLERANCE
+        south_edge = yprop > 1 - EDGE_TOLERANCE
+        west_edge = xprop < EDGE_TOLERANCE
+        east_edge = xprop > 1 - EDGE_TOLERANCE
         horizontal = (north_edge or south_edge) and not (east_edge or west_edge)
         vertical = (east_edge or west_edge) and not (north_edge or south_edge)
         if horizontal:
             rect = Rect(lot.left, lot.top - FENCE_MARGIN_NORTH, lot.width, 2*FENCE_MARGIN_NORTH)
             if south_edge:
-                rect.movei(0, LOT_DEPTH)
+                rect.move_ip(0, LOT_DEPTH)
             return rect
         elif vertical:
             rect = Rect(lot.left - FENCE_MARGIN_WEST, lot.top, 2*FENCE_MARGIN_WEST, lot.height)
             if east_edge:
-                rect.movei(LOT_WIDTH, 0)
+                rect.move_ip(LOT_WIDTH, 0)
             return rect
         else:
             return None

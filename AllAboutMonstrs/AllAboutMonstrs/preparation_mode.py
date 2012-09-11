@@ -8,6 +8,11 @@ import units
 import grid
 from modes import ModeOfOperation
 
+
+LOT_COLOUR = (255,255,0,128)
+EDGE_COLOUR = (100,255,100,128)
+EDGE_HANDLE_RADIUS = 5
+
 class PreparationMode(ModeOfOperation):
     """ The mode in which one invests in construction of defenses
     against impending assault by reptiles.
@@ -22,9 +27,15 @@ class PreparationMode(ModeOfOperation):
 
             if self.indicate_lot:
                 x,y = pygame.mouse.get_pos()
-                lot = self.townplanner.nearest_lot(x,y)
-                if lot:
-                    self.current_lot = lot
+                edge = self.townplanner.nearest_edge(x,y)
+                if edge:
+                    self.current_edge = edge
+                    self.current_lot = None
+                else:
+                    lot = self.townplanner.nearest_lot(x,y)
+                    if lot:
+                        self.current_lot = lot
+                        self.current_edge = None
 
             self.render()
         return self.result
@@ -48,6 +59,7 @@ class PreparationMode(ModeOfOperation):
         self.titletext = typefaces.prepare_title("Prepare for the Onslaught",colour=(255,255,255))
         self.scenery = chromographs.obtain("background.png")
         self.indicate_lot = True
+        self.current_edge = None
         self.current_lot = None
         self.townplanner = grid.TownPlanningOffice()
         self.finished = False
@@ -56,8 +68,14 @@ class PreparationMode(ModeOfOperation):
     def render(self):
         self.clear_screen(image=self.scenery)
         self.screen.blit(self.titletext,(10,10))
-        if self.indicate_lot and self.current_lot:
-            pygame.draw.rect(self.screen, (255,255,0,128), self.current_lot, 1)
+        if self.indicate_lot:
+            if self.current_edge:
+                pygame.draw.rect(self.screen, EDGE_COLOUR, self.current_edge, 1)
+            elif self.current_lot:
+                lot = self.current_lot
+                pygame.draw.rect(self.screen, LOT_COLOUR, lot, 1)
+                for p in [lot.midtop,lot.midbottom,lot.midleft,lot.midright]:
+                    pygame.draw.circle(self.screen, EDGE_COLOUR, p, EDGE_HANDLE_RADIUS, 1)
         for that in self.situation.installations:
             image = that.image
             position = image.get_rect()
