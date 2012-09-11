@@ -14,7 +14,7 @@ TESTDETAILS = {
     "summary":" Shortly after arriving upon the island, we met with \
 the reptiles. Their incendiary properties are much worse than we \
 could have predicted.\n Worse still, it would appear that they have \
-developed an appetite for the sails of our ships. We have but five \
+developed an appetite for the tar on our ships. We have but five \
 vessels remaining and must protect them at all costs."
     }
 

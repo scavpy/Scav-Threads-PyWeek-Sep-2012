@@ -6,63 +6,25 @@ import random
 import units
 import grid
 
-def octoclock_direction(ooclock, rect):
-    return getattr(rect, ("midtop","topright","midright","bottomright",
-                          "midbottom","bottomleft","midleft","topleft")[ooclock])
-
 class Animal(units.Unit):
     """A description of the Animal"""
     notable_attributes = ("Durability","Voracity","Monstrosity",
-                          "Velocity")
+                          "Velocity","Destructiveness")
     name = "Some kind of animal"
     durability = 1
     voracity = 1
     velocity = 1
     monstrosity = 1
+    destructiveness = 1
+    rapidity = 1 # for animals, rapidity should maybe equal velocity
     depiction = "Animal.png"
-    footprint = (10,8)
-    area_of_awareness = (50,40)
-    area_of_attack = (10, 8)
     obstruance = grid.obstruance("beast")
-    exclusion = grid.obstruance("all")
+    exclusion = grid.obstruance("notland")
 
-    def __init__(self, location):
-        self.damage = 0
-        self.rect = Rect(0,0,*self.footprint)
-        self.rect.center = location[:2]
-        self.animation_frame = 0
-        self.orient(2)
-        self.image = self.obtain_frame()
-        self.attacking = False
-        self.walking = False
-        self.finished = False
-        self.temporal_accumulator = 0
-        self.directions = Rect(0,0,self.velocity, round(self.velocity * 0.8))
-        self.directions.center = (0,0)
+    def attend_to_attack_area(self, centre):
+        """ Beasts have close-in attacks """
+        self.rect_of_attack.center = centre
 
-    def orient(self, orientation):
-        self.orientation = orientation
-        self.attend_to_surroundings()
-
-    def move(self, location):
-        self.rect = location
-        self.attend_to_surroundings()
-
-    def attend_to_surroundings(self):
-        """ arrange the areas of awareness and attack
-        depending on the orientation as a number on
-        the octoclock.
-           0
-         7   1
-        6     2
-         5   3
-           4
-        """
-        centre_of_attention = octoclock_direction(self.orientation, self.rect)
-        self.rect_of_awareness = Rect(0,0,*self.area_of_awareness)
-        self.rect_of_awareness.center = centre_of_attention
-        self.rect_of_attack = Rect(0,0,*self.area_of_attack)
-        self.rect_of_attack.center = centre_of_attention
 
 class Trinitroceratops(Animal):
     """What do these beasts want? To rut and feed and trample with
@@ -72,7 +34,9 @@ class Trinitroceratops(Animal):
     durability = 50
     voracity = 4
     velocity = 5
+    rapidity = 5
     monstrosity = 1
+    destructiveness = 8
     depiction = "Trinitroceratops.png"
     animated_chromograph_name = "units/trinitroceratops.png"
     walking_animations = 2
@@ -80,23 +44,26 @@ class Trinitroceratops(Animal):
     orientation_indices = (1,0,0,0,0,0,1,1,1)
     footprint = (45,20)
     area_of_awareness = (100,80)
-    area_of_attack = (20,16)
+    area_of_attack = (30,24)
 
     def __init__(self, location):
         super(Trinitroceratops, self).__init__(location)
+        self.orient(2)
         self.bored = False
         self.angry = False
         self.satiety = 0
         self.walking = True
 
     def think(self, things):
-        """ Determine the volition of the beast,
-        return a true value if it moved """
+        """ Determine the volition of the beast.
+        If it acted upon any thing else, return a list of such
+        things. Otherwise return a non-true value.
+        """
         indices = self.rect_of_awareness.collidelistall(things)
         knowledge = [things[i] for i in indices]
         food = [] # crops in knowledge
         if self.walking:
-            vector = octoclock_direction(self.orientation, self.directions)
+            vector = units.octoclock_direction(self.orientation, self.directions)
             next_position = self.rect.move(vector)
         else:
             next_position = self.rect
@@ -104,17 +71,26 @@ class Trinitroceratops(Animal):
         obstacles = [knowledge[i] for i in indices
                      if knowledge[i] is not self]
         if obstacles:
+            indices = self.rect_of_attack.collidelistall(obstacles)
+            if indices:
+                targets = [obstacles[i] for i in indices 
+                           if not isinstance(obstacles[i], Animal)]
+                if targets and not self.attacking:
+                    target = targets[0]
+                    self.attack()
+                    target.harm(self.destructiveness)
+                    return [target]
             directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
             self.orient(random.choice(directions))
-            return False
+            return
         bounds = grid.BOUNDS
         if bounds.contains(next_position):
             self.move(next_position)
-            return True
+            return
         if next_position.right >= bounds.right:
             self.bored = True
             self.orient(6) # go back
-            return False
+            return
         if next_position.left <= 0:
             self.move(next_position)
             if self.bored:
@@ -122,12 +98,12 @@ class Trinitroceratops(Animal):
                     self.finished = True
             else:
                 self.orient(random.randint(1,3))
-            return True
+            return
         if next_position.top < bounds.top:
             self.orient(5 if self.bored else 3)
-            return False
+            return
         if next_position.bottom >= bounds.bottom:
             self.orient(7 if self.bored else 1)
-            return False
+            return
         print "WTF!", id(self), "is stuck for no known reason"
 

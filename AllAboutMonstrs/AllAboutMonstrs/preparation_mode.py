@@ -83,9 +83,20 @@ class PreparationMode(ModeOfOperation):
                 pygame.draw.rect(self.screen, LOT_COLOUR, lot, 1)
                 for p in [lot.midtop,lot.midbottom,lot.midleft,lot.midright]:
                     pygame.draw.circle(self.screen, EDGE_COLOUR, p, EDGE_HANDLE_RADIUS, 1)
-        for that in self.situation.installations:
+        def render_a_thing(that):
             image = that.image
             position = image.get_rect()
             position.midbottom = that.rect.midbottom
             self.screen.blit(image, position)
+
+        # render flat land first
+        for that in self.situation.installations:
+            if that.is_flat:
+                render_a_thing(that)
+
+        # render things that lie upon the land
+        for that in self.situation.installations:
+            if that.is_flat:
+                continue # already done
+            render_a_thing(that)
         pygame.display.flip()
