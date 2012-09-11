@@ -30,9 +30,10 @@ wrk-menus		A means by which the operator may select the operation he desires	sat
 wrk-chapterstart	Show the beginning of a chapter                                         satisfactory
 wrk-onslaught-1		Exploratory visualisation of the onslaught of enormities		satisfactory
 wrk-introduction        Show the beginning of the game.	 	      				satisfactory
+wrk-obstruance		The nature of fences examined						satisfactory
 wrk-prep-2		Placement of fences                                                     ?
-wrk-onslaught-2		Improve the intelligence of the Trinitroceratops			satisfactory
 
+wrk-onslaught-2		Improve the intelligence of the Trinitroceratops			satisfactory
 wrk-onslaught-3		Resolve the effects of hostility between dinosaurs and installations    ?
 wrk-accounting		Render an accounting of the colony's profit and loss                    ?
 wrk-continuation	Allow continuation of a previously saved session                        ?
