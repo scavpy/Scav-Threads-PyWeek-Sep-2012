@@ -10,9 +10,12 @@ class Situation(object):
         self.installations = []
 
     def add_installation_if_possible(self, thing):
-        collision = thing.rect.collidelist(self.installations)
-        if collision != -1:
-            return False
+        collisions = thing.rect.collidelistall(self.installations)
+        if collisions:
+            obstruance = thing.obstruance
+            for i in collisions:
+                if obstruance & self.installations[i].obstruance:
+                    return False
         self.installations.append(thing)
         self.installations.sort(key=lambda i: i.rect.bottom)
         

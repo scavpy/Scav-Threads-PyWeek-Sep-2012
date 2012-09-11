@@ -23,6 +23,7 @@ class Animal(units.Unit):
     footprint = (10,8)
     area_of_awareness = (50,40)
     area_of_attack = (10, 8)
+    obstruance = grid.obstruance("all")
 
     def __init__(self, location):
         self.damage = 0
