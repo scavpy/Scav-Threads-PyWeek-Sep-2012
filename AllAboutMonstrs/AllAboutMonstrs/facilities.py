@@ -70,7 +70,7 @@ class Fence(Facility):
     flammability = 5
     habitability = 0
     pace = 1000
-    price = 288
+    cost = 80
 
     def __init__(self, location):
         self.damage = 0
@@ -99,4 +99,4 @@ class Crops(Facility):
     obstruance = grid.obstruance("land")
     exclusion = grid.obstruance("beast","unit","facility","land")
     footprint = (grid.LOT_WIDTH, grid.LOT_DEPTH)
-    cost = 16
+    cost = 40

@@ -75,27 +75,23 @@ class PreparationMode(ModeOfOperation):
                 self.open_build_menu(e.pos)
 
     def open_build_menu(self,position):
-        self.build_menu.open_menu(position,self.situation,bool(self.current_edge))
+        self.build_menu.open_menu(position,bool(self.current_edge))
         self.indicate_lot = False
 
     def close_build_menu(self):
         self.build_menu.close_menu()
         self.indicate_lot = True
 
-    def build_a_thing(self,thingname):
-        thing = None
-        place = self.current_edge if self.current_edge else self.current_lot
-        if place:
-            thing = getattr(facilities,thingname,None)
-            if thing is None:
-                thing = getattr(units,thingname,None)
-        if thing:
-            self.situation.add_installation_if_possible(thing(place))
-            if self.current_edge:
-                self.situation.last_fence_build = thingname
-            else:
-                self.situation.last_lot_build = thingname
-            self.update_stats()
+    def build_a_thing(self,thingclass):
+        if self.situation.can_afford_a(thingclass):
+            place = self.current_edge if self.current_edge else self.current_lot
+            if place:
+                self.situation.add_installation_if_possible(thingclass(place),charge=True)
+                if self.current_edge:
+                    self.situation.last_fence_build = thingclass
+                else:
+                    self.situation.last_lot_build = thingclass
+                self.update_stats()
 
     def initialize(self):
         self.titletext = typefaces.prepare_title("Prepare for the Onslaught",colour=(255,255,255))
@@ -106,8 +102,7 @@ class PreparationMode(ModeOfOperation):
         self.townplanner = grid.TownPlanningOffice()
         self.finished = False
         self.result = "Onslaught"
-        self.build_menu = BuildMenu()
-        self.statstable = None
+        self.build_menu = BuildMenu(self.situation)
         self.update_stats()
 
     def update_stats(self):
@@ -115,10 +110,7 @@ class PreparationMode(ModeOfOperation):
         pounds = s.wealth//256
         shillings = (s.wealth%256)//16
         pence = s.wealth%16
-        crops = sum([c.edibility for c in s.installations if hasattr(c,"edibility")])
-        table = typefaces.prepare_table([["Wealth: ","£%d/%d/%db"%(pounds,shillings,pence)],
-                                         ["Agriculture: ",crops]])
-        self.statstable = table
+        food = sum([c.edibility for c in s.installations if hasattr(c,"edibility")])
     
     def render(self):
         self.clear_screen(image=self.scenery)
@@ -150,5 +142,4 @@ class PreparationMode(ModeOfOperation):
 
         if self.build_menu.is_open:
             self.build_menu.render(self.screen)
-        self.screen.blit(self.statstable,(10,600))
         pygame.display.flip()

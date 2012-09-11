@@ -146,7 +146,7 @@ class Cannon(Unit):
     area_of_awareness = (200,160)
     area_of_attack = (80, 64)
     pace = 100
-    cost = 3840
+    cost = 512
 
     def __init__(self, location):
         super(Cannon, self).__init__(location)

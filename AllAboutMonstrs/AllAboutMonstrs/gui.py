@@ -3,6 +3,8 @@ from pygame.transform import flip,scale
 
 import chromographs
 import typefaces
+import facilities
+import units
 
 from math import sin, cos, sqrt, radians
 
@@ -38,47 +40,49 @@ class BuildMenu(object):
     gearrect = gear.get_rect()
     optrad = 32
 
-    def __init__(self):
+    def __init__(self, situation):
         self.is_open = False
         self.facs = []
         self.units = []
         self.options = []
         self.position = (0,0)
         self.centerrect = pygame.Rect(0,0,64,64)
+        self.situation = situation
 
-    def open_menu(self,position,current_situation,edge=False):
+    def open_menu(self,position,edge=False):
         self.is_open = True
         self.position = position
         self.centerrect.center = self.position
         if edge:
-            self.facs = current_situation.fence_plans
+            self.facs = self.situation.fence_plans
         else:
-            self.facs = current_situation.facility_plans
-        self.units = current_situation.unit_plans
-        self.options = self.halfwheel(self.facs,-1)
-        self.options.extend(self.halfwheel(self.units,1))
-        self.options.append(("CANCEL",None,self.centerrect))
+            self.facs = self.situation.facility_plans
+        self.units = self.situation.unit_plans
+        self.options = self.halfwheel(facilities,self.facs,-1)
+        self.options.extend(self.halfwheel(units,self.units,1))
+        self.options.append((None,None,self.centerrect))
 
     def close_menu(self):
         self.is_open = False
 
-    def halfwheel(self,items,hemisphere):
+    def halfwheel(self,module,items,hemisphere):
         x,y = self.position
         result = []
         r = self.optrad*2
         angle = hemisphere * radians(180.0/(len(items)+1))
         for i,item in enumerate(items):
+            itemclass = getattr(module,item,None)
             img = chromographs.obtain("iconic/%s.png"%item)
             rect = img.get_rect()
             rect.center = (x + cos(angle*(i+1))*r, y + sin(angle*(i+1))*r)
-            opt = (item,img,rect)
+            opt = (itemclass,img,rect)
             result.append(opt)
         return result
 
     def render(self,screen):
         g = self.gear
         gr = self.gearrect
-        for item,image,rect in self.options:
+        for itemclass,image,rect in self.options:
             gr.center = rect.center
             screen.blit(g,gr)
             if image:
@@ -86,12 +90,13 @@ class BuildMenu(object):
 
     def mouse_event(self, e):
         px,py = e.pos
-        for item,image,rect in self.options:
-            x,y = rect.center
-            dx,dy = (px-x,py-y)
-            dist2 = dx*dx+dy*dy
-            if dist2 <= self.optrad*self.optrad:
-                return item
+        for itemclass,image,rect in self.options:
+            if itemclass and self.situation.can_afford_a(itemclass):
+                x,y = rect.center
+                dx,dy = (px-x,py-y)
+                dist2 = dx*dx+dy*dy
+                if dist2 <= self.optrad*self.optrad:
+                    return itemclass
         return None
                    
 
