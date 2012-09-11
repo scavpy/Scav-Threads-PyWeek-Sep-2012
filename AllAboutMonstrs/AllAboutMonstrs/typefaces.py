@@ -11,7 +11,7 @@ import data
 
 STYLE_SIZES = {
     "title":48,
-    "subtitle":36,
+    "subtitle":32,
     "normal":24,
     "small":16,
     }

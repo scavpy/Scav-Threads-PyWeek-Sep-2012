@@ -10,6 +10,17 @@ def make_textbox(position,text,width,size="normal",colour=(0,0,0)):
         typefaces.prepare_passage(text,width,size=size,colour=colour))
     return TextFrame(position,[widget],width)
 
+def make_titledbox(position,title,text,width,titlesize="subtitle",
+                   textsize="normal",gap=12,indent=20,colour=(0,0,0)):
+    titlewidget = SurfWidget(
+        typefaces.prepare(title,size=titlesize,colour=colour))
+    textwidget = SurfWidget(
+        typefaces.prepare_passage(text,width-indent*2,size=textsize,colour=colour))
+    return TextFrame(position,
+                     [titlewidget,
+                      SpaceWidget(gap),
+                      textwidget],width)
+
 def make_menu(position,options,width,prompt=None):
     contents = []
     if prompt:

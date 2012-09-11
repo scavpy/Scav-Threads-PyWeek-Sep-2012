@@ -3,6 +3,7 @@
 """
 from pygame.rect import Rect
 import chromographs
+import grid
 
 class Unit(object):
     notable_attributes = {"Firepower", "Durability", "Manoevrability"}
@@ -10,6 +11,7 @@ class Unit(object):
     attacking_animations = 0
     orientation_frames = (0,0,0,0,0,0,0,0)
     pace = 100
+    obstruance = grid.obstruance("all")
 
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph
