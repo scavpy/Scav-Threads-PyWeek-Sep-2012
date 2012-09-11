@@ -8,13 +8,14 @@ from pygame.display import get_surface, flip
 from modes import ModeOfOperation
 import typefaces
 import chromographs
-from bestiary import Trinitroceratops
+import bestiary, units
 import gui
 
 from style import PAGEMARGIN, PAGECOLOUR
 
 PAGES = [
-    Trinitroceratops,
+    ("bestiary","Trinitroceratops"),
+    ("units","Cannon"),
     ]
 
 class EncyclopaediaMode(ModeOfOperation):
@@ -24,10 +25,8 @@ class EncyclopaediaMode(ModeOfOperation):
         self.page = 0
         self.finished = False
         self.next_mode = None
-        self.ribbon = chromographs.obtain("flourish/ribbon-red.png")
         self.backbutton = gui.make_menu((650,600),[("Regress","back")],200)
         self.draw_current_page()
-        flip()
         while not self.finished:
             ms = self.clock.tick(60)
             self.respond_to_the_will_of_the_operator()
@@ -37,6 +36,12 @@ class EncyclopaediaMode(ModeOfOperation):
         if e.key in (pygame.K_RETURN,pygame.K_ESCAPE):
             self.next_mode = "Introductory"
             self.finished = True
+        elif e.key == pygame.K_RIGHT:
+            self.page = (self.page + 1) % len(PAGES)
+            self.draw_current_page()
+        elif e.key == pygame.K_LEFT:
+            self.page = (self.page - 1) % len(PAGES)
+            self.draw_current_page()
 
     def on_quit(self, e):
         self.finished = True
@@ -44,7 +49,13 @@ class EncyclopaediaMode(ModeOfOperation):
     def draw_current_page(self):
         paint = self.screen.blit
         self.clear_screen(colour=PAGECOLOUR)
-        page = PAGES[self.page]
+        module, name = PAGES[self.page]
+        if module == "bestiary":
+            self.ribbon = chromographs.obtain("flourish/ribbon-red.png")
+            page = getattr(bestiary, name)
+        elif module =="units":
+            self.ribbon = chromographs.obtain("flourish/ribbon-blue.png")
+            page = getattr(units, name)
         title = typefaces.prepare_title(page.name.title())
         paint(title,(PAGEMARGIN, PAGEMARGIN))
         topy = y = title.get_rect().height + PAGEMARGIN
@@ -62,6 +73,6 @@ class EncyclopaediaMode(ModeOfOperation):
         self.backbutton.render(self.screen)
         information = typefaces.prepare_paragraph(page.__doc__, 600)
         paint(information, (PAGEMARGIN, topy + 400 + 2 * PAGEMARGIN))
-
+        flip()
 
 

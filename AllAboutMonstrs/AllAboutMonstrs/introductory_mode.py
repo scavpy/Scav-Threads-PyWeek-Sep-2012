@@ -25,9 +25,9 @@ class IntroductoryMode(ModeOfOperation):
         self.menu = gui.make_menu((300,400),
                              [("Initiation","new"),
                               ("Continuation","load"),
-                              ("Bestial Education","bestiary"),
+                              ("Education","encyclopaedia"),
                               ("Termination","quit")],400)
-        self.ribbon = chromographs.obtain("flourish/ribbon-gold.png")
+        self.ribbon = chromographs.obtain("flourish/ribbon-white.png")
 
     def redraw(self):
         self.clear_screen(colour=PAGECOLOUR)
@@ -43,7 +43,7 @@ class IntroductoryMode(ModeOfOperation):
             if choice:
                 if choice == "new":
                     self.next_mode = "ChapterStart"
-                elif choice == "bestiary":
+                elif choice == "encyclopaedia":
                     self.next_mode = "Encyclopaedia"
                 self.finished = True
         self.redraw()
