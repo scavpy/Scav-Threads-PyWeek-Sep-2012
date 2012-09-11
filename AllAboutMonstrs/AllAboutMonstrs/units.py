@@ -4,6 +4,7 @@
 from time import time
 from pygame.rect import Rect
 import random
+import phonographs
 import chromographs
 import grid
 
@@ -138,6 +139,7 @@ class Cannon(Unit):
     velocity = 2
     rapidity = 1
     depiction = "Cannon.png"
+    placement_phonograph = "cannon-place.ogg"
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 0
     attacking_animations = 2
@@ -166,6 +168,7 @@ class Cannon(Unit):
             target = beasts[0] # TODO pick closest?
             if self.attack():
                 target.harm(self.firepower)
+                phonographs.play("cannon.ogg")
                 return [target]
 
 

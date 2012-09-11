@@ -95,6 +95,7 @@ class Crops(Facility):
     edibility = 3
     flammability = 2
     habitability = 0
+    placement_phonograph = "dig.ogg"
     animated_chromograph_name = "facilities/crops.png"
     obstruance = grid.obstruance("land")
     exclusion = grid.obstruance("beast","unit","facility","land")

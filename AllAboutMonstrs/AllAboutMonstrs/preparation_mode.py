@@ -4,6 +4,7 @@ from pygame.locals import *
 
 import data
 import typefaces
+import phonographs
 import chromographs
 import facilities
 import units
@@ -87,6 +88,8 @@ class PreparationMode(ModeOfOperation):
             place = self.current_edge if self.current_edge else self.current_lot
             if place:
                 self.situation.add_installation_if_possible(thingclass(place),charge=True)
+                if hasattr(thingclass,"placement_phonograph"):
+                    phonographs.play(thingclass.placement_phonograph)
                 if self.current_edge:
                     self.situation.last_fence_build = thingclass
                 else:
