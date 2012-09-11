@@ -67,8 +67,9 @@ class TownPlanningOffice(object):
 
 def obstruance(*things):
     """ calculate the obstruance of a facility, unit or beast """
-    bits = [{"all":31, "nothing":0, "fence":3, "hfence":1, "vfence":2,
-             "unit":4, "beast":8, "facility":16}.get(thing, 0)
+    bits = [{"all":63, "nothing":0, "fence":3, "hfence":1, "vfence":2,
+             "unit":4, "beast":8, "facility":16, "land":32,
+             "notland":31}.get(thing, 0)
             for thing in things]
     obst = 0
     for b in bits:

@@ -58,9 +58,20 @@ class PreparationMode(ModeOfOperation):
         self.screen.blit(self.titletext,(10,10))
         if self.indicate_lot and self.current_lot:
             pygame.draw.rect(self.screen, (255,255,0,128), self.current_lot, 1)
-        for that in self.situation.installations:
+        def render_a_thing(that):
             image = that.image
             position = image.get_rect()
             position.midbottom = that.rect.midbottom
             self.screen.blit(image, position)
+
+        # render flat land first
+        for that in self.situation.installations:
+            if that.is_flat:
+                render_a_thing(that)
+
+        # render things that lie upon the land
+        for that in self.situation.installations:
+            if that.is_flat:
+                continue # already done
+            render_a_thing(that)
         pygame.display.flip()

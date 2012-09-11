@@ -6,10 +6,6 @@ import random
 import units
 import grid
 
-def octoclock_direction(ooclock, rect):
-    return getattr(rect, ("midtop","topright","midright","bottomright",
-                          "midbottom","bottomleft","midleft","topleft")[ooclock])
-
 class Animal(units.Unit):
     """A description of the Animal"""
     notable_attributes = ("Durability","Voracity","Monstrosity",
@@ -20,48 +16,7 @@ class Animal(units.Unit):
     velocity = 1
     monstrosity = 1
     depiction = "Animal.png"
-    footprint = (10,8)
-    area_of_awareness = (50,40)
-    area_of_attack = (10, 8)
-    obstruance = grid.obstruance("all")
 
-    def __init__(self, location):
-        self.damage = 0
-        self.rect = Rect(0,0,*self.footprint)
-        self.rect.center = location[:2]
-        self.animation_frame = 0
-        self.orient(2)
-        self.image = self.obtain_frame()
-        self.attacking = False
-        self.walking = False
-        self.finished = False
-        self.temporal_accumulator = 0
-        self.directions = Rect(0,0,self.velocity, round(self.velocity * 0.8))
-        self.directions.center = (0,0)
-
-    def orient(self, orientation):
-        self.orientation = orientation
-        self.attend_to_surroundings()
-
-    def move(self, location):
-        self.rect = location
-        self.attend_to_surroundings()
-
-    def attend_to_surroundings(self):
-        """ arrange the areas of awareness and attack
-        depending on the orientation as a number on
-        the octoclock.
-           0
-         7   1
-        6     2
-         5   3
-           4
-        """
-        centre_of_attention = octoclock_direction(self.orientation, self.rect)
-        self.rect_of_awareness = Rect(0,0,*self.area_of_awareness)
-        self.rect_of_awareness.center = centre_of_attention
-        self.rect_of_attack = Rect(0,0,*self.area_of_attack)
-        self.rect_of_attack.center = centre_of_attention
 
 class Trinitroceratops(Animal):
     """What do these beasts want? To rut and feed and trample with
@@ -83,6 +38,7 @@ class Trinitroceratops(Animal):
 
     def __init__(self, location):
         super(Trinitroceratops, self).__init__(location)
+        self.orient(2)
         self.bored = False
         self.angry = False
         self.satiety = 0
@@ -95,7 +51,7 @@ class Trinitroceratops(Animal):
         knowledge = [things[i] for i in indices]
         food = [] # crops in knowledge
         if self.walking:
-            vector = octoclock_direction(self.orientation, self.directions)
+            vector = units.octoclock_direction(self.orientation, self.directions)
             next_position = self.rect.move(vector)
         else:
             next_position = self.rect

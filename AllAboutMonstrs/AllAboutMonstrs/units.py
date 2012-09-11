@@ -2,16 +2,64 @@
   The best defence is an effective means of offence.
 """
 from pygame.rect import Rect
+import random
 import chromographs
 import grid
 
+
+def octoclock_direction(ooclock, rect):
+    return getattr(rect, ("midtop","topright","midright","bottomright",
+                          "midbottom","bottomleft","midleft","topleft")[ooclock])
+
 class Unit(object):
-    notable_attributes = {"Firepower", "Durability", "Manoevrability"}
+    notable_attributes = {"Firepower", "Durability", "Velocity"}
     walking_animations = 0
     attacking_animations = 0
     orientation_frames = (0,0,0,0,0,0,0,0)
     pace = 100
-    obstruance = grid.obstruance("all")
+    footprint = (10,8)
+    area_of_awareness = (50,40)
+    area_of_attack = (10, 8)
+    obstruance = grid.obstruance("notland")
+    is_flat = False
+
+    def __init__(self, location):
+        self.damage = 0
+        self.rect = Rect(0,0,*self.footprint)
+        self.rect.center = Rect(location).center
+        self.animation_frame = 0
+        self.orient(6)
+        self.image = self.obtain_frame()
+        self.attacking = False
+        self.walking = False
+        self.finished = False
+        self.temporal_accumulator = 0
+        self.directions = Rect(0,0,self.velocity, round(self.velocity * 0.8))
+        self.directions.center = (0,0)
+
+    def orient(self, orientation):
+        self.orientation = orientation
+        self.attend_to_surroundings()
+
+    def move(self, location):
+        self.rect = location
+        self.attend_to_surroundings()
+
+    def attend_to_surroundings(self):
+        """ arrange the areas of awareness and attack
+        depending on the orientation as a number on
+        the octoclock.
+           0
+         7   1
+        6     2
+         5   3
+           4
+        """
+        centre_of_attention = octoclock_direction(self.orientation, self.rect)
+        self.rect_of_awareness = Rect(0,0,*self.area_of_awareness)
+        self.rect_of_awareness.center = centre_of_attention
+        self.rect_of_attack = Rect(0,0,*self.area_of_attack)
+        self.rect_of_attack.center = centre_of_attention
 
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph
@@ -60,20 +108,21 @@ class Cannon(Unit):
     name = "Cannon"
     durability = 10
     firepower = 10
-    manoevrability = 1
+    velocity = 2
     depiction = "Cannon.png"
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 0
     attacking_animations = 2
     orientation_indices = (0,1,1,1,1,1,0,0,0)
+    footprint = 20,16
+    area_of_awareness = (100,80)
+    area_of_attack = (90, 75)
 
     def __init__(self, location):
-        self.damage = 0
-        self.rect = Rect(0,0,20,16)
-        self.rect.center = location.center
-        self.orientation = 6 # o'o'clock
-        self.animation_frame = 0
-        self.image = self.obtain_frame()
-        self.attacking = False
-        self.walking = False
-        self.temporal_accumulator = 0
+        super(Cannon, self).__init__(location)
+
+    def think(self, things):
+        """ Determine the tactics of the unit """
+        # just fire randomly
+        if random.random < 0.01:
+            self.attack()

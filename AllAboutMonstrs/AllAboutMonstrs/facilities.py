@@ -11,8 +11,17 @@ class Facility(object):
     notable_attributes = {"Durability","Flammability","Habitability"}
     standing_animations = 1
     conditions = 4 # good, serviceable, dilapidated, ruined
-    pace = 100
+    pace = 1000
     obstruance = grid.obstruance("all")
+    is_flat = False # flat things drawn first
+
+    def __init__(self, location):
+        self.damage = 0
+        self.animation_frame = 0
+        self.temporal_accumulator = 0
+        self.condition = 0
+        self.rect = Rect(0,0, *self.footprint)
+        self.rect.center = location.center
 
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph
@@ -58,15 +67,6 @@ class AbstractFence(Facility):
     durability = 5
     flammability = 5
     habitability = 0
-    pace = 1000
-
-    def __init__(self, location):
-        self.damage = 0
-        self.animaton_frame = 0
-        self.temporal_accumulator = 0
-        self.condition = 0
-        self.rect = Rect(0,0, *self.footprint)
-        self.rect.center = location.center
 
 class HorizontalFence(Abstractfence):
     animated_chromograph_name = "facilities/hfence.png"
@@ -78,3 +78,12 @@ class VerticalFence(Abstractfence):
     footprint = (2 * grid.FENCE_MARGIN_WEST, grid.LOT_DEPTH)
     obstruance = grid.obstruance("vfence","beast","unit","facility")
 
+class Crops(Facility):
+    is_flat = True
+    notable_attributes = {"Edibility","Flammability","Habitability"}
+    edibility = 3
+    flammability = 2
+    habitability = 0
+    animated_chromograph_name = "facilities/crops.png"
+    obstruance = grid.obstruance("land", "facility")
+    footprint = (grid.LOT_WIDTH, grid.LOT_DEPTH)

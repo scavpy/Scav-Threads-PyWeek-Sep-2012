@@ -36,9 +36,9 @@ class OnslaughtMode(ModeOfOperation):
         self.titletext = typefaces.prepare_title("Onslaught of Enormities",colour=(255,64,64))
         self.scenery = chromographs.obtain("background.png")
         trine = bestiary.Trinitroceratops
-        self.dinosaurs = [trine((0, 200)),
-                          trine((10, 400)),
-                          trine((-30, 600))]
+        self.dinosaurs = [trine((0, 200, 50, 40)),
+                          trine((10, 400, 50, 40)),
+                          trine((-30, 600, 50, 40))]
                                 
         self.finished = False
         self.result = "Preparation"
@@ -46,13 +46,23 @@ class OnslaughtMode(ModeOfOperation):
     def render(self):
         self.clear_screen(image=self.scenery)
         self.screen.blit(self.titletext,(10,10))
+
+        def render_a_thing(that):
+            image = that.image
+            position = image.get_rect()
+            position.midbottom = that.rect.midbottom
+            self.screen.blit(image, position)
+        # render flat land first
+        for land in (land for land in self.situation.installations
+                     if land.is_flat):
+            render_a_thing(land)
+        # render things that lie upon the land
         to_be_drawn = self.situation.installations + self.dinosaurs
         to_be_drawn.sort(key = lambda d: d.rect.bottom)
         debug_rectangles = self.situation.args.debug_rectangles
         for that in to_be_drawn:
-            image = that.image
-            position = image.get_rect()
-            position.midbottom = that.rect.midbottom
+            if that.is_flat:
+                continue #already done
             if debug_rectangles:
                 pygame.draw.rect(self.screen, (0,255,255), that.rect,1)
                 try:
@@ -63,7 +73,7 @@ class OnslaughtMode(ModeOfOperation):
                     pygame.draw.rect(self.screen, (255,200,200), that.rect_of_attack, 1)
                 except AttributeError:
                     pass
-            self.screen.blit(image, position)
+            render_a_thing(that)
         pygame.display.flip()
 
     def move_dinosaurs(self, ms):
@@ -79,10 +89,12 @@ class OnslaughtMode(ModeOfOperation):
             self.finished = True
 
     def move_units(self, ms):
-        # make cannon fire randomly
+        all_the_things = self.situation.installations + self.dinosaurs
         for u in self.situation.installations:
-            u.animate(ms)
-            if isinstance(u, units.Cannon):
-                if random.random() < 0.01:
-                    u.attack()
+            act = u.animate(ms)
+            if not isinstance(u, units.Unit):
+                continue
+            if act and u.damage < u.durability:
+                u.think(all_the_things)
+
                 
