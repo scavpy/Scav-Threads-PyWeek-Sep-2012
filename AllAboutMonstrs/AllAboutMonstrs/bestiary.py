@@ -4,6 +4,7 @@ The Bestiary of Animals New to The Arts and Sciences
 from pygame.rect import Rect
 import random
 import units
+import facilities
 import grid
 
 class Animal(units.Unit):
@@ -20,6 +21,7 @@ class Animal(units.Unit):
     depiction = "Animal.png"
     obstruance = grid.obstruance("beast")
     exclusion = grid.obstruance("notland")
+    aliment = None
 
     def attend_to_attack_area(self, centre):
         """ Beasts have close-in attacks """
@@ -56,33 +58,61 @@ class Trinitroceratops(Animal):
 
     def think(self, things):
         """ Determine the volition of the beast.
-        If it acted upon any thing else, return a list of such
+        If it act upon any thing else, return a list of such
         things. Otherwise return a non-true value.
         """
-        indices = self.rect_of_awareness.collidelistall(things)
-        knowledge = [things[i] for i in indices]
-        food = [] # crops in knowledge
-        if self.walking:
-            vector = units.octoclock_direction(self.orientation, self.directions)
-            next_position = self.rect.move(vector)
-        else:
-            next_position = self.rect
-        indices = next_position.collidelistall(knowledge)
-        obstacles = [knowledge[i] for i in indices
-                     if knowledge[i] is not self]
+        knowledge = self.things_perceived(things)
+        next_position = self.step_position()
+        obstacles = self.find_obstacles(next_position, knowledge)
         if obstacles:
             indices = self.rect_of_attack.collidelistall(obstacles)
             if indices:
+                categories = grid.obstruance("unit","facility","fence")
                 targets = [obstacles[i] for i in indices 
-                           if not isinstance(obstacles[i], Animal)]
+                           if obstacles[i].obstruance & categories]
                 if targets and not self.attacking:
                     target = targets[0]
                     self.attack()
+                    print "attacking", target.name
                     target.harm(self.destructiveness)
                     return [target]
             directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
             self.orient(random.choice(directions))
             return
+        elif not self.bored:
+            targets = self.find_nearest(f for f in knowledge
+                                        if f.aliment == "Vegetable"
+                                        and not f.destroyed())
+            if targets:
+                target = targets[0]
+                print "approaching", target.name, "(", target.durability - target.damage, ")"
+                self.orient(self.orientation_towards(target.rect.center))
+                if not self.attacking:
+                    if self.rect_of_attack.colliderect(target.rect):
+                        print "eating", target.name, "(", target.durability - target.damage, ")"
+                        self.attack()
+                        target.harm(1)
+                        self.satiety += 1
+                        if self.satiety >= self.voracity:
+                            self.bored = True
+                        return [target]
+                    else:
+                        print target.name, target.rect, "not in range of", self.rect_of_attack
+                else:
+                    print "already attacking"
+        self.navigate(next_position)
+
+    def step_position(self):
+        """ where will it be on the next step? """
+        if self.walking:
+            vector = units.octoclock_direction(self.orientation, self.directions)
+            next_position = self.rect.move(vector)
+        else:
+            next_position = self.rect
+        return next_position
+
+
+    def navigate(self, next_position):
         bounds = grid.BOUNDS
         if bounds.contains(next_position):
             self.move(next_position)
@@ -105,5 +135,5 @@ class Trinitroceratops(Animal):
         if next_position.bottom >= bounds.bottom:
             self.orient(7 if self.bored else 1)
             return
-        print "WTF!", id(self), "is stuck for no known reason"
+
 

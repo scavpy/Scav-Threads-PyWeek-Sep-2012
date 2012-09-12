@@ -81,11 +81,6 @@ class OnslaughtMode(ModeOfOperation):
             act = d.animate(ms)
             if act:
                 targets = d.think(all_the_things)
-                if targets:
-                    for t in targets:
-                        if t.damage >= t.durability:
-                            all_the_things.remove(t)
-                            self.situation.installations.remove(t)
             if d.finished:
                 self.dinosaurs.remove(d)
                 all_the_things.remove(d)

@@ -7,7 +7,7 @@ import random
 import phonographs
 import chromographs
 import grid
-
+from math import sqrt, atan2, pi
 
 def octoclock_direction(ooclock, rect):
     return getattr(rect, ("midtop","topright","midright","bottomright",
@@ -34,6 +34,7 @@ class Unit(object):
     area_of_awareness = (50,40)
     area_of_attack = (10, 8)
     is_flat = False
+    aliment = None
 
     def __init__(self, location):
         self.damage = 0
@@ -109,15 +110,18 @@ class Unit(object):
             return False # nothing to be done
         self.temporal_accumulator = 0
         frame = self.animation_frame
-        if self.walking:
+        if self.attacking:
+            frame += 1
+            if frame > self.walking_animations + self.attacking_animations:
+                print self.name, "finished attack"
+                frame = 0
+                self.attacking = False
+            else:
+                print self.name, "attack frame", frame
+        elif self.walking:
             frame += 1
             if frame > self.walking_animations:
                 frame = 1
-        elif self.attacking:
-            frame += 1
-            if frame > self.walking_animations + self.attacking_animations:
-                frame = 0
-                self.attacking = False
         else:
             assert frame == 0
         self.animation_frame = frame
@@ -131,6 +135,50 @@ class Unit(object):
             self.rect.width = 0
             self.rect.height = 0
 
+    def destroyed(self):
+        return self.damage >= self.durability
+
+    def things_perceived(self, things):
+        """ things that are perceived """
+        indices = self.rect_of_awareness.collidelistall(things)
+        return [things[i] for i in indices]
+
+    def things_in_range(self, things):
+        indices = self.rect_of_attack.collidelistall(things)
+
+    def find_obstacles(self, location, knowledge):
+        """ find things that obstruct a rectangle such that this
+        unit may not occupy the same space if it were there """
+        indices = location.collidelistall(knowledge)
+        return [knowledge[i] for i in indices
+                if knowledge[i] is not self
+                and (knowledge[i].obstruance & self.exclusion)]
+
+    def find_nearest(self, things):
+        """ nearest thing sorted by distance from centre """
+        def dist(thing):
+            rx, ry = thing.rect.center
+            mx, my = self.rect.center
+            return sqrt((rx - mx)**2 + (ry - my)**2)
+        return sorted(things, key=dist)
+
+    def orientation_towards(self, position):
+        """ octaclock direction from self centre to position """
+        cx, cy = self.rect.center
+        px, py = position[:2]
+        dx = px - cx
+        dy = py - cy
+        steep = (dx == 0) or abs(dy / dx) > 3
+        shallow = (dy == 0) or abs(dx / dy) > 3
+        if steep:
+            return 0 if dy < 0 else 4
+        if shallow:
+            return 2 if dx > 0 else 6
+        if dy < 0:
+            return 1 if dx > 0 else 7
+        return 3 if dx > 0 else 5
+        
+        
 class Cannon(Unit):
     """ A simple artillery unit """
     name = "Cannon"
