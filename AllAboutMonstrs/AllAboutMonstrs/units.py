@@ -27,7 +27,7 @@ class Unit(object):
     attacking_animations = 0
     orientation_frames = (0,0,0,0,0,0,0,0)
     cost = 2560
-    pace = 100
+    pace = 50
     obstruance = grid.obstruance("unit")
     exclusion = grid.obstruance("notland")
     footprint = (10,8)
@@ -50,6 +50,7 @@ class Unit(object):
         self.directions = Rect(0,0,self.velocity, round(self.velocity * 0.8))
         self.directions.center = (0,0)
         self.reload_time = 0
+        self.flash = False
 
     def orient(self, orientation):
         self.orientation = orientation
@@ -113,11 +114,8 @@ class Unit(object):
         if self.attacking:
             frame += 1
             if frame > self.walking_animations + self.attacking_animations:
-                print self.name, "finished attack"
                 frame = 0
                 self.attacking = False
-            else:
-                print self.name, "attack frame", frame
         elif self.walking:
             frame += 1
             if frame > self.walking_animations:
@@ -131,9 +129,9 @@ class Unit(object):
     def harm(self, quanta_of_destruction):
         """ Deal damage to the unit, possibly rendering it inactive """
         self.damage += quanta_of_destruction
-        if self.damage > self.durability:
-            self.rect.width = 0
-            self.rect.height = 0
+        self.flash = True
+        if self.damage >= self.durability:
+            self.obstruance = 0
 
     def destroyed(self):
         return self.damage >= self.durability
@@ -182,7 +180,7 @@ class Unit(object):
 class Cannon(Unit):
     """ A simple artillery unit """
     name = "Cannon"
-    durability = 10
+    durability = 15
     firepower = 10
     velocity = 2
     rapidity = 1

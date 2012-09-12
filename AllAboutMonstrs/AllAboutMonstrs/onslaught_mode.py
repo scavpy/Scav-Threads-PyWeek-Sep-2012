@@ -9,6 +9,7 @@ import typefaces
 import units
 import bestiary
 import chapters
+import visual_effects
 
 class OnslaughtMode(ModeOfOperation):
     """ Wherein reptilian foes descend upon you and you must fight them
@@ -50,6 +51,9 @@ class OnslaughtMode(ModeOfOperation):
             image = that.image
             position = image.get_rect()
             position.midbottom = that.rect.midbottom
+            if that.flash:
+                that.flash = False
+                image = visual_effects.reddened(image)
             self.screen.blit(image, position)
         # render flat land first
         for land in (land for land in self.situation.installations
@@ -61,7 +65,7 @@ class OnslaughtMode(ModeOfOperation):
         debug_rectangles = self.situation.args.debug_rectangles
         for that in to_be_drawn:
             if that.is_flat:
-                continue #already done
+                continue # already done
             if debug_rectangles:
                 pygame.draw.rect(self.screen, (0,255,255), that.rect,1)
                 try:
@@ -76,7 +80,8 @@ class OnslaughtMode(ModeOfOperation):
         pygame.display.flip()
 
     def move_dinosaurs(self, ms):
-        all_the_things = self.situation.installations + self.dinosaurs
+        situation = self.situation
+        all_the_things = situation.installations + self.dinosaurs
         for d in self.dinosaurs[:]:
             act = d.animate(ms)
             if act:
@@ -86,6 +91,11 @@ class OnslaughtMode(ModeOfOperation):
                 all_the_things.remove(d)
         if not self.dinosaurs:
             self.finished = True
+            num_waves = len(chapters.CHAPTERS[situation.chapter].waves)
+            situation.wave += 1
+            if situation.wave >= num_waves:
+                self.result = "Accounting"
+                self.wave = 0
 
     def move_units(self, ms):
         all_the_things = self.situation.installations + self.dinosaurs
@@ -97,8 +107,9 @@ class OnslaughtMode(ModeOfOperation):
                 targets = u.think(all_the_things)
                 if targets:
                     for d in targets:
-                        if d.damage >= d.durability:
+                        if d.destroyed():
                             all_the_things.remove(d)
                             self.dinosaurs.remove(d)
+                            self.situation.trophies.append(d.name)
 
                 

@@ -2,7 +2,7 @@
 """
  An accounting must be made of the expenses and revenue of the colony
 """
-from collections import Counter
+
 import pygame
 from pygame.display import get_surface, flip
 
@@ -13,23 +13,13 @@ import gui
 import chapters
 import facilities
 
+from accounting_mode import lsb
+
 from style import PAGEMARGIN, PAGECOLOUR
 
-def lsb(bence):
-    debit = bence < 0
-    if debit:
-        bence = -bence
-    pounds = bence >> 8
-    shillings = bence >> 4 & 0xf
-    bence = bence & 0xf
-    if not shillings: shillings = "-"
-    if not bence: bence = "-"
-    fmt = "(£{0} / {1} / {2} b)" if debit else "£{0} / {1} / {2} b"
-    return unicode(fmt.format(pounds, shillings, bence), "utf-8")
-
-class AccountingMode(ModeOfOperation):
-    """ Whereby the current situation is assessed, and
-    stock is taken of the colony's wealth and population """
+class VictoryMode(ModeOfOperation):
+    """ Whereby the finale situation is assessed, and
+    victory is celebrated """
     def operate(self, current_situation):
         self.situation = current_situation
         self.initialize()
@@ -38,9 +28,8 @@ class AccountingMode(ModeOfOperation):
         while not self.finished:
             self.clock.tick(30)
             self.respond_to_the_will_of_the_operator()
-        # go to the next chapter
-        self.situation.chapter += 1
-        return self.next_mode
+        # go to the intro screen
+        return "Introductory"
 
     def on_quit(self, e):
         self.next_mode = None
@@ -51,14 +40,9 @@ class AccountingMode(ModeOfOperation):
             self.finished = True
 
     def initialize(self):
-        if (self.situation.chapter + 1) >= len(chapters.CHAPTERS):
-            # you have won
-            self.next_mode = "Victory"
-        else:
-            # you will proceed to next chapter
-            self.next_mode = "ChapterStart"
-            # TODO - autosave
-        self.ribbon = chromographs.obtain("flourish/ribbon-gold.png")
+        self.ribbons = [chromographs.obtain("flourish/ribbon-{0}.png"
+                                            .format(c))
+                        for c in ("red","white","blue")]
 
     def assess(self):
         """
@@ -76,50 +60,31 @@ class AccountingMode(ModeOfOperation):
         """
         situation = self.situation
         notables = []
-        food = 0
         for item in situation.installations:
             if isinstance(item, facilities.Crops):
-                food += max(item.durability - item.damage, 0)
+                food += item.edibility
 
         def note(label, amount):
             notables.append([label+": ", amount])
             
-        note("Food produced", food)
-        note("Starting balance", lsb(situation.wealth))
-
-        income = 0
-        # Trophies
-        cnt = Counter()
-        for t in situation.trophies:
-            cnt[t] += 1
-        for k, v in cnt.items():
-            note(k + " slain", v)
-            income += 0x26 * v # 2 shillings and sixbence bounty per corpse
-        situation.trophies = []
-        
-        # Wealth gained
-        income += 0x500 * food # 5 pounds per sack of cabbages
-        situation.wealth += income
-        note("Income", lsb(income))
-        note("Closing balance:", lsb(situation.wealth))
-
-        situation.progress += 100
-        note("Progress", situation.progress)
+        note("Final balance", lsb(situation.wealth))
+        note("Final progress", situation.progress)
 
         # display the report
         paint = self.screen.blit
         self.clear_screen(colour=PAGECOLOUR)
-        title = typefaces.prepare_title("Accounting Department")
+        title = typefaces.prepare_title("Victory is Yours")
         paint(title,(PAGEMARGIN, PAGEMARGIN))
         topy = y = title.get_rect().height + PAGEMARGIN
         x = self.screen.get_size()[0] // 2
-        heading = typefaces.prepare_subtitle("Ledger Entries")
+        heading = typefaces.prepare_subtitle("Final Ledger Entries")
         paint(heading, (x,y))
         y += heading.get_rect().height + PAGEMARGIN
         table = typefaces.prepare_table(notables)
         paint(table, (x,y))        
-        chromograph = chromographs.obtain("Accountant.png")
+        chromograph = chromographs.obtain("Victory.png")
         paint(chromograph, (PAGEMARGIN, topy))
-        paint(self.ribbon,(850,-2))
+        for i, r in enumerate(self.ribbons):
+            paint(r,(820 + 30 * i,-2))
         flip()
         

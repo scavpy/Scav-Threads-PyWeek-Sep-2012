@@ -33,17 +33,17 @@ class Trinitroceratops(Animal):
     abandon. Mere fences are little use against their horns.
     However they are slow to anger and easily pacified with food."""
     name = "Trinitroceratops horridus"
-    durability = 50
+    durability = 30
     voracity = 4
     velocity = 5
     rapidity = 5
     monstrosity = 1
-    destructiveness = 8
+    destructiveness = 5
     depiction = "Trinitroceratops.png"
     animated_chromograph_name = "units/trinitroceratops.png"
     walking_animations = 2
     attacking_animations = 1
-    orientation_indices = (1,0,0,0,0,0,1,1,1)
+    orientation_indices = (1,0,0,0,0,1,1,1)
     footprint = (45,20)
     area_of_awareness = (100,80)
     area_of_attack = (30,24)
@@ -73,7 +73,6 @@ class Trinitroceratops(Animal):
                 if targets and not self.attacking:
                     target = targets[0]
                     self.attack()
-                    print "attacking", target.name
                     target.harm(self.destructiveness)
                     return [target]
             directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
@@ -85,21 +84,15 @@ class Trinitroceratops(Animal):
                                         and not f.destroyed())
             if targets:
                 target = targets[0]
-                print "approaching", target.name, "(", target.durability - target.damage, ")"
                 self.orient(self.orientation_towards(target.rect.center))
                 if not self.attacking:
                     if self.rect_of_attack.colliderect(target.rect):
-                        print "eating", target.name, "(", target.durability - target.damage, ")"
                         self.attack()
                         target.harm(1)
                         self.satiety += 1
                         if self.satiety >= self.voracity:
                             self.bored = True
                         return [target]
-                    else:
-                        print target.name, target.rect, "not in range of", self.rect_of_attack
-                else:
-                    print "already attacking"
         self.navigate(next_position)
 
     def step_position(self):

@@ -8,17 +8,19 @@ from facilities import Fence
 
 class Situation(object):
     def __init__(self):
-        self.wealth = 2560  # in binary pence
+        self.wealth = 0x2000  # in binary pence
         self.installations = []
         self.population = 5
         self.chapter = 0
         self.wave = 0
+        self.progress = 0
         self.seen_dinosaurs = []
         self.facility_plans = ["Crops"]
         self.fence_plans = ["Fence"]
         self.unit_plans = ["Cannon"]
         self.last_fence_build = Fence
         self.last_lot_build = None
+        self.trophies = []
 
     def add_installation_if_possible(self, thing, charge=False):
         collisions = thing.rect.collidelistall(self.installations)

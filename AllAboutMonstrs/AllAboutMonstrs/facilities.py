@@ -25,6 +25,7 @@ class Facility(object):
         self.rect = Rect(0,0, *self.footprint)
         self.rect.center = location.center
         self.image = self.obtain_frame()
+        self.flash = False
 
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph
@@ -56,6 +57,7 @@ class Facility(object):
         """ damage the structure, worsening its condition
         accordingly """
         self.damage += quanta_of_destruction
+        self.flash = True
         damage = self.damage
         ruination = self.durability
         if damage == 0:
@@ -93,6 +95,7 @@ class Fence(Facility):
         self.rect = Rect(0,0, *self.footprint)
         self.rect.center = location.center
         self.image = self.obtain_frame()
+        self.flash = False
 
     def harm(self, quanta_of_destruction):
         super(Fence, self).harm(quanta_of_destruction)
