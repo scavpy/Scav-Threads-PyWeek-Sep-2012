@@ -16,7 +16,7 @@ DESCRIPTION = open('README.txt').read()
 
 METADATA = {
     'name':APP_NAME,
-    'version':          '0.0.3',
+    'version':          '0.0.4',
     'license':          """GPL""",
     'description':      """Blastosaurus Rex - Defend your colony against exploding dinosaurs""",
     'author':           """Scav,Threads""",
@@ -112,7 +112,7 @@ _DATA_DIR = os.path.join('AllAboutMonstrs', 'data')
 data = []
 add_files(data,os.walk(_DATA_DIR))
 
-
+assert data, "WTF no data!"
 
 
 #data_dirs = [os.path.join(f2.replace(_DATA_DIR, 'data'), '*') for f2 in data]
