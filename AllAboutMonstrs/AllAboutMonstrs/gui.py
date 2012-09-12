@@ -5,6 +5,7 @@ import chromographs
 import typefaces
 import facilities
 import units
+from accounting_mode import lsb
 
 from math import sin, cos, sqrt, radians
 
@@ -98,7 +99,23 @@ class BuildMenu(object):
                 if dist2 <= self.optrad*self.optrad:
                     return itemclass
         return None
-                   
+
+class StatusBar(object):
+    height = 120
+
+    def __init__(self):
+        self.stats_table = None
+
+    def update(self, money, food):
+        self.stats_table = typefaces.prepare_table(
+            [["Wealth",":  ",lsb(money)],
+             ["Food",":  ",str(food)]],
+            colour = (255,255,255), alignment="llr")
+
+    def render(self,screen):
+        y = screen.get_height() - self.height
+        pygame.draw.rect(screen,(0,0,0),(0,y,screen.get_width(),self.height))
+        screen.blit(self.stats_table,(20,y+20))        
 
 class TextFrame(object):
     head_end = chromographs.obtain("flourish/top-end.png")

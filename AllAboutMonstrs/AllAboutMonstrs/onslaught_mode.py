@@ -4,6 +4,7 @@ import random
 
 import data
 from modes import ModeOfOperation
+import gui
 import chromographs
 import typefaces
 import units
@@ -24,6 +25,7 @@ class OnslaughtMode(ModeOfOperation):
             self.respond_to_the_will_of_the_operator()
             self.move_dinosaurs(ms)
             self.move_units(ms)
+            self.situation.update_status_bar(self.statusbar)
             self.render()
         return self.result
 
@@ -42,10 +44,13 @@ class OnslaughtMode(ModeOfOperation):
         self.dinosaurs = chapter.spawn_wave(wave)
         self.finished = False
         self.result = "Preparation"
+        self.statusbar = gui.StatusBar()
+        self.situation.update_status_bar(self.statusbar)
 
     def render(self):
         self.clear_screen(image=self.scenery)
         self.screen.blit(self.titletext,(10,10))
+        self.statusbar.render(self.screen)
 
         def render_a_thing(that):
             image = that.image
