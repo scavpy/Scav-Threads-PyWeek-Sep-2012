@@ -10,7 +10,7 @@ import facilities
 import units
 import grid
 
-from gui import BuildMenu
+from gui import BuildMenu, StatusBar
 from modes import ModeOfOperation
 
 
@@ -56,9 +56,8 @@ class PreparationMode(ModeOfOperation):
         if self.build_menu.is_open:
             choice = self.build_menu.mouse_event(e)
             if choice:
-                if choice != "CANCEL":
-                    self.build_a_thing(choice)
-                self.close_build_menu()
+                self.build_a_thing(choice)
+            self.close_build_menu()
         else:
             edge = self.current_edge
             lot = self.current_lot
@@ -94,7 +93,7 @@ class PreparationMode(ModeOfOperation):
                     self.situation.last_fence_build = thingclass
                 else:
                     self.situation.last_lot_build = thingclass
-                self.update_stats()
+                self.situation.update_status_bar(self.statusbar)
 
     def initialize(self):
         self.titletext = typefaces.prepare_title("Prepare for the Onslaught",colour=(255,255,255))
@@ -105,19 +104,13 @@ class PreparationMode(ModeOfOperation):
         self.townplanner = grid.TownPlanningOffice()
         self.finished = False
         self.result = "Onslaught"
-        self.build_menu = BuildMenu(self.situation)
-        self.update_stats()
         situation = self.situation
+        self.build_menu = BuildMenu(situation)
+        self.statusbar = StatusBar()
+        situation.update_status_bar(self.statusbar)
         for inst in situation.installations[:]:
             if inst.destroyed():
                 situation.installations.remove(inst)
-
-    def update_stats(self):
-        s = self.situation
-        pounds = s.wealth//256
-        shillings = (s.wealth%256)//16
-        pence = s.wealth%16
-        food = sum([c.edibility for c in s.installations if hasattr(c,"edibility")])
     
     def render(self):
         self.clear_screen(image=self.scenery)
@@ -147,6 +140,7 @@ class PreparationMode(ModeOfOperation):
                 continue # already done
             render_a_thing(that)
 
+        self.statusbar.render(self.screen)
         if self.build_menu.is_open:
             self.build_menu.render(self.screen)
         pygame.display.flip()

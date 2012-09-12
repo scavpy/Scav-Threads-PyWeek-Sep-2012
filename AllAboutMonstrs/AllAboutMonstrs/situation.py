@@ -36,3 +36,8 @@ class Situation(object):
         
     def can_afford_a(self, thing):
         return thing.cost <= self.wealth
+
+    def update_status_bar(self, statusbar):
+        food = sum([max(c.durability - c.damage, 0)
+                    for c in self.installations if hasattr(c,"edibility")])
+        statusbar.update(self.wealth, food)
