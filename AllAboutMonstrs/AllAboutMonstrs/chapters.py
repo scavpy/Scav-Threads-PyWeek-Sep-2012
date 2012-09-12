@@ -28,29 +28,36 @@ class Chapter(object):
                 beasts.append(getattr(bestiary, genus)(location))
         return beasts
 
+def wave_of(genus, column, *rows):
+    return [(genus, column, row) for row in rows]
+
 CHAPTERS = [
-    Chapter("One","A Reptilian Assault","boat.png",
-            " Shortly after arriving upon the island, we met with \
+    Chapter(
+        "One","A Reptilian Assault","boat.png",
+        " Shortly after arriving upon the island, we met with \
 the reptiles. Their incendiary properties are much worse than we \
 could have predicted.\n Worse still, it would appear that they have \
 developed an appetite for the tar on our ships. We have but five \
 vessels remaining and must protect them at all costs.",
-            waves = [
-                [("Trinitroceratops", -20, 200),
-                 ("Trinitroceratops", -30, 220),
-                 ("Trinitroceratops", -20, 500),
-                 ("Trinitroceratops", -30, 550)],
-                [("Trinitroceratops", -20, 200),
-                 ("Trinitroceratops", -30, 220),
-                 ("Trinitroceratops", -20, 500),
-                 ("Trinitroceratops", -30, 550)],
-                [("Trinitroceratops", -20, 220),
-                 ("Trinitroceratops", -30, 230),
-                 ("Trinitroceratops", -80, 500),
-                 ("Trinitroceratops", -70, 200),
-                 ("Trinitroceratops", -20, 500),
-                 ("Trinitroceratops", -30, 550)],
-                ],
-            inventions = [("units", "Cannon")]),
-    ]
+        waves=[
+            wave_of("Trinitroceratops", -50, 200, 240, 500, 550),
+            wave_of("Trinitroceratops", -50, 200, 240, 500, 550),
+            wave_of("Trinitroceratops", -50, 200, 240, 500, 550) + wave_of("Trinitroceratops", -80, 360, 450)
+            ],
+        inventions=[("units", "Cannon"), ("facilities","Fence")]
+        ),
+    Chapter(
+        "Two","Desperate Times","boat.png",
+        " The intensity of the assaults by the saurian "
+        " monstrosities never diminishes.\n Our scientists"
+        " are ever working on new developments to help"
+        " fight them off.",
+        waves=[
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550),
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550),
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550) + wave_of("Trinitroceratops", -150, 200, 300, 400, 500)
+            ],
+        inventions=[("units","AnalyticalCannon"), ("facilities","Wall")]
+        ),
+]
     

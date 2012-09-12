@@ -7,7 +7,7 @@ import random
 import phonographs
 import chromographs
 import grid
-
+from math import sqrt, atan2, pi
 
 def octoclock_direction(ooclock, rect):
     return getattr(rect, ("midtop","topright","midright","bottomright",
@@ -34,6 +34,7 @@ class Unit(object):
     area_of_awareness = (50,40)
     area_of_attack = (10, 8)
     is_flat = False
+    aliment = None
 
     def __init__(self, location):
         self.damage = 0
@@ -49,6 +50,7 @@ class Unit(object):
         self.directions = Rect(0,0,self.velocity, round(self.velocity * 0.8))
         self.directions.center = (0,0)
         self.reload_time = 0
+        self.flash = False
 
     def orient(self, orientation):
         self.orientation = orientation
@@ -109,15 +111,15 @@ class Unit(object):
             return False # nothing to be done
         self.temporal_accumulator = 0
         frame = self.animation_frame
-        if self.walking:
-            frame += 1
-            if frame > self.walking_animations:
-                frame = 1
-        elif self.attacking:
+        if self.attacking:
             frame += 1
             if frame > self.walking_animations + self.attacking_animations:
                 frame = 0
                 self.attacking = False
+        elif self.walking:
+            frame += 1
+            if frame > self.walking_animations:
+                frame = 1
         else:
             assert frame == 0
         self.animation_frame = frame
@@ -127,14 +129,58 @@ class Unit(object):
     def harm(self, quanta_of_destruction):
         """ Deal damage to the unit, possibly rendering it inactive """
         self.damage += quanta_of_destruction
-        if self.damage > self.durability:
-            self.rect.width = 0
-            self.rect.height = 0
+        self.flash = True
+        if self.damage >= self.durability:
+            self.obstruance = 0
 
+    def destroyed(self):
+        return self.damage >= self.durability
+
+    def things_perceived(self, things):
+        """ things that are perceived """
+        indices = self.rect_of_awareness.collidelistall(things)
+        return [things[i] for i in indices]
+
+    def things_in_range(self, things):
+        indices = self.rect_of_attack.collidelistall(things)
+
+    def find_obstacles(self, location, knowledge):
+        """ find things that obstruct a rectangle such that this
+        unit may not occupy the same space if it were there """
+        indices = location.collidelistall(knowledge)
+        return [knowledge[i] for i in indices
+                if knowledge[i] is not self
+                and (knowledge[i].obstruance & self.exclusion)]
+
+    def find_nearest(self, things):
+        """ nearest thing sorted by distance from centre """
+        def dist(thing):
+            rx, ry = thing.rect.center
+            mx, my = self.rect.center
+            return sqrt((rx - mx)**2 + (ry - my)**2)
+        return sorted(things, key=dist)
+
+    def orientation_towards(self, position):
+        """ octaclock direction from self centre to position """
+        cx, cy = self.rect.center
+        px, py = position[:2]
+        dx = px - cx
+        dy = py - cy
+        steep = (dx == 0) or abs(dy / dx) > 3
+        shallow = (dy == 0) or abs(dx / dy) > 3
+        if steep:
+            return 0 if dy < 0 else 4
+        if shallow:
+            return 2 if dx > 0 else 6
+        if dy < 0:
+            return 1 if dx > 0 else 7
+        return 3 if dx > 0 else 5
+        
+        
 class Cannon(Unit):
     """ A simple artillery unit """
     name = "Cannon"
-    durability = 10
+    durability = 15
     firepower = 10
     velocity = 2
     rapidity = 1
@@ -143,7 +189,7 @@ class Cannon(Unit):
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 0
     attacking_animations = 2
-    orientation_indices = (0,1,1,1,1,1,0,0,0)
+    orientation_indices = (2,1,1,1,3,0,0,0)
     footprint = 20,16
     area_of_awareness = (200,160)
     area_of_attack = (80, 64)
@@ -161,14 +207,15 @@ class Cannon(Unit):
         """
         # Fire when any beast is attackable
         from bestiary import Animal
-        indices = self.rect_of_attack.collidelistall(things)
-        beasts = [things[i] for i in indices
-                  if isinstance(things[i], Animal)]
+        indices = self.rect_of_awareness.collidelistall(things)
+        beasts = self.find_nearest([things[i] for i in indices
+                                    if isinstance(things[i], Animal)])
         if beasts and not self.attacking:
-            target = beasts[0] # TODO pick closest?
-            if self.attack():
-                target.harm(self.firepower)
-                phonographs.play("cannon.ogg")
-                return [target]
-
+            target = beasts[0]
+            self.orient(self.orientation_towards(target.rect.center))
+            if self.rect_of_attack.colliderect(target.rect):
+                if self.attack():
+                    target.harm(self.firepower)
+                    phonographs.play("cannon.ogg")
+                    return [target]
 

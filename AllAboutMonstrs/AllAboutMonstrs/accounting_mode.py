@@ -2,7 +2,7 @@
 """
  An accounting must be made of the expenses and revenue of the colony
 """
-
+from collections import Counter
 import pygame
 from pygame.display import get_surface, flip
 
@@ -38,6 +38,8 @@ class AccountingMode(ModeOfOperation):
         while not self.finished:
             self.clock.tick(30)
             self.respond_to_the_will_of_the_operator()
+        # go to the next chapter
+        self.situation.chapter += 1
         return self.next_mode
 
     def on_quit(self, e):
@@ -77,17 +79,39 @@ class AccountingMode(ModeOfOperation):
         food = 0
         for item in situation.installations:
             if isinstance(item, facilities.Crops):
-                food += item.edibility
-        notables.append(["Food produced:", food])
+                food += max(item.durability - item.damage, 0)
 
-        notables.append(["Wealth:", lsb(situation.wealth)])
+        def note(label, amount):
+            notables.append([label+": ", amount])
+            
+        note("Food produced", food)
+        note("Starting balance", lsb(situation.wealth))
+
+        income = 0
+        # Trophies
+        cnt = Counter()
+        for t in situation.trophies:
+            cnt[t] += 1
+        for k, v in cnt.items():
+            note(k + " slain", v)
+            income += 0x26 * v # 2 shillings and sixbence bounty per corpse
+        situation.trophies = []
         
+        # Wealth gained
+        income += 0x500 * food # 5 pounds per sack of cabbages
+        situation.wealth += income
+        note("Income", lsb(income))
+        note("Closing balance:", lsb(situation.wealth))
+
+        situation.progress += 100
+        note("Progress", situation.progress)
+
         # display the report
         paint = self.screen.blit
         self.clear_screen(colour=PAGECOLOUR)
         title = typefaces.prepare_title("Accounting Department")
         paint(title,(PAGEMARGIN, PAGEMARGIN))
-        topy = y = title.get_rect().height + PAGEMARGIN
+        topy = y = title.get_rect().height + 3 * PAGEMARGIN
         x = self.screen.get_size()[0] // 2
         heading = typefaces.prepare_subtitle("Ledger Entries")
         paint(heading, (x,y))

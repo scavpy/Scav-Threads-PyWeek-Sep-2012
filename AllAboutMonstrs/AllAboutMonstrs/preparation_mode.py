@@ -107,6 +107,10 @@ class PreparationMode(ModeOfOperation):
         self.result = "Onslaught"
         self.build_menu = BuildMenu(self.situation)
         self.update_stats()
+        situation = self.situation
+        for inst in situation.installations[:]:
+            if inst.destroyed():
+                situation.installations.remove(inst)
 
     def update_stats(self):
         s = self.situation
