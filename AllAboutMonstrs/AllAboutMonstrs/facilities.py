@@ -15,6 +15,7 @@ class Facility(object):
     pace = 1000
     obstruance = grid.obstruance("all")
     is_flat = False # flat things drawn first
+    aliment = None
 
     def __init__(self, location):
         self.damage = 0
@@ -62,12 +63,16 @@ class Facility(object):
         elif damage >= ruination:
             self.condition = self.conditions - 1
         else:
-            self.condition = max((ruination * self.conditions) // damage, 1)
+            self.condition = max((damage * self.conditions) // ruination, 1)
         self.image = self.obtain_frame()
 
+    def destroyed(self):
+        return self.damage >= self.durability
+
 class Fence(Facility):
-    durability = 5
-    flammability = 5
+    name = "Wooden Fence"
+    durability = 10
+    flammability = 2
     habitability = 0
     pace = 1000
     cost = 80
@@ -89,14 +94,24 @@ class Fence(Facility):
         self.rect.center = location.center
         self.image = self.obtain_frame()
 
+    def harm(self, quanta_of_destruction):
+        super(Fence, self).harm(quanta_of_destruction)
+        if self.damage >= self.durability:
+            self.obstruance = 0 # effectively no longer present
+
 class Crops(Facility):
+    name = "Cabbages"
     is_flat = True
     notable_attributes = {"Edibility","Flammability","Habitability"}
     edibility = 3
-    flammability = 2
+    durability = 3
+    flammability = 1
     habitability = 0
     animated_chromograph_name = "facilities/crops.png"
     obstruance = grid.obstruance("land")
     exclusion = grid.obstruance("beast","unit","facility","land")
     footprint = (grid.LOT_WIDTH, grid.LOT_DEPTH)
     cost = 40
+    aliment = "Vegetable"
+
+    
