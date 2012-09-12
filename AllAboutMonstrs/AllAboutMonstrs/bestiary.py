@@ -33,8 +33,8 @@ class Trinitroceratops(Animal):
     abandon. Mere fences are little use against their horns.
     However they are slow to anger and easily pacified with food."""
     name = "Trinitroceratops horridus"
-    durability = 30
-    voracity = 4
+    durability = 50
+    voracity = 18
     velocity = 5
     rapidity = 5
     monstrosity = 1
@@ -69,7 +69,8 @@ class Trinitroceratops(Animal):
             if indices:
                 categories = grid.obstruance("unit","facility","fence")
                 targets = [obstacles[i] for i in indices 
-                           if obstacles[i].obstruance & categories]
+                           if obstacles[i].obstruance & categories
+                           and not obstacles[i].destroyed()]
                 if targets and not self.attacking:
                     target = targets[0]
                     self.attack()

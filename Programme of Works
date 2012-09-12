@@ -54,4 +54,6 @@ wrk-deployment          Deploying infantry from housing.                        
 wrk-sound               Add sound and sounds.                                                   satisfactory
 art-music               Write some music for the intro and battle.                              ?
 wrk-waves		Misfortunes to have the propensity to come in threes			satisfactory
+fix-houserage		Stop dinosaurs from attacking already ruined houses			satisfactory
+
 

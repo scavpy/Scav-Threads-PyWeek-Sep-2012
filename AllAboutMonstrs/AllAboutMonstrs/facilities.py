@@ -106,8 +106,8 @@ class Crops(Facility):
     name = "Cabbages"
     is_flat = True
     notable_attributes = {"Edibility","Flammability","Habitability"}
-    edibility = 3
-    durability = 3
+    edibility = 9
+    durability = 9
     flammability = 1
     habitability = 0
     placement_phonograph = "dig.ogg"
@@ -120,7 +120,7 @@ class Crops(Facility):
 
 class Housing(Facility):
     name = "Housing"
-    durability = 20
+    durability = 40
     animated_chromograph_name = "facilities/housing.png"
     standing_animations = 4
     obstruance = grid.obstruance("facility")
