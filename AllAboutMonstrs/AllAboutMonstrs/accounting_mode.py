@@ -111,7 +111,7 @@ class AccountingMode(ModeOfOperation):
         self.clear_screen(colour=PAGECOLOUR)
         title = typefaces.prepare_title("Accounting Department")
         paint(title,(PAGEMARGIN, PAGEMARGIN))
-        topy = y = title.get_rect().height + PAGEMARGIN
+        topy = y = title.get_rect().height + 3 * PAGEMARGIN
         x = self.screen.get_size()[0] // 2
         heading = typefaces.prepare_subtitle("Ledger Entries")
         paint(heading, (x,y))

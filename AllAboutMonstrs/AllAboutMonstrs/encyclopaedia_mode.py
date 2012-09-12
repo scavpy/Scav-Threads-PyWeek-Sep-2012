@@ -58,7 +58,7 @@ class EncyclopaediaMode(ModeOfOperation):
             page = getattr(units, name)
         title = typefaces.prepare_title(page.name.title())
         paint(title,(PAGEMARGIN, PAGEMARGIN))
-        topy = y = title.get_rect().height + PAGEMARGIN
+        topy = y = title.get_rect().height + 2 * PAGEMARGIN
         x = self.screen.get_size()[0] // 2
         heading = typefaces.prepare_subtitle("Notable Attributes")
         paint(heading, (x,y))

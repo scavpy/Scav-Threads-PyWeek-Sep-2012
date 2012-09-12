@@ -189,7 +189,7 @@ class Cannon(Unit):
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 0
     attacking_animations = 2
-    orientation_indices = (0,1,1,1,1,1,0,0,0)
+    orientation_indices = (2,1,1,1,3,0,0,0)
     footprint = 20,16
     area_of_awareness = (200,160)
     area_of_attack = (80, 64)
@@ -207,14 +207,15 @@ class Cannon(Unit):
         """
         # Fire when any beast is attackable
         from bestiary import Animal
-        indices = self.rect_of_attack.collidelistall(things)
-        beasts = [things[i] for i in indices
-                  if isinstance(things[i], Animal)]
+        indices = self.rect_of_awareness.collidelistall(things)
+        beasts = self.find_nearest([things[i] for i in indices
+                                    if isinstance(things[i], Animal)])
         if beasts and not self.attacking:
-            target = beasts[0] # TODO pick closest?
-            if self.attack():
-                target.harm(self.firepower)
-                phonographs.play("cannon.ogg")
-                return [target]
-
+            target = beasts[0]
+            self.orient(self.orientation_towards(target.rect.center))
+            if self.rect_of_attack.colliderect(target.rect):
+                if self.attack():
+                    target.harm(self.firepower)
+                    phonographs.play("cannon.ogg")
+                    return [target]
 

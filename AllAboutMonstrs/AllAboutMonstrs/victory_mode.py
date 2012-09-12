@@ -85,6 +85,6 @@ class VictoryMode(ModeOfOperation):
         chromograph = chromographs.obtain("Victory.png")
         paint(chromograph, (PAGEMARGIN, topy))
         for i, r in enumerate(self.ribbons):
-            paint(r,(820 + 30 * i,-2))
+            paint(r,(850 + 30 * i,-2))
         flip()
         
