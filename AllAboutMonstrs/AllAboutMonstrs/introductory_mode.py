@@ -27,6 +27,7 @@ class IntroductoryMode(ModeOfOperation):
         self.main_menu = gui.make_menu((300,400),
                              [("Initiation","new"),
                               ("Continuation","load"),
+                              ("Information","information"),
                               ("Education","encyclopaedia"),
                               ("Termination","quit")],400)
         self.load_menu = self.prepare_load_menu()
@@ -56,11 +57,13 @@ class IntroductoryMode(ModeOfOperation):
         self.menu.key_event(e)
         if e.key == pygame.K_RETURN:
             choice = self.menu.make_choice()
-            if choice in ["new","encyclopaedia","quit"]:
+            if choice in ["new","information","encyclopaedia","quit"]:
                 if choice == "new":
                     self.situation.land_ho()
                     self.situation.save_game()
                     self.next_mode = "ChapterStart"
+                elif choice == "information":
+                    self.next_mode = "Information"
                 elif choice == "encyclopaedia":
                     self.next_mode = "Encyclopaedia"
                 self.finished = True
