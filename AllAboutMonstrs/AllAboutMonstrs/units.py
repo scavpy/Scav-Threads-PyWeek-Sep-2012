@@ -7,7 +7,6 @@ import random
 import phonographs
 import chromographs
 import grid
-from math import sqrt, atan2, pi
 
 def octoclock_direction(ooclock, rect):
     return getattr(rect, ("midtop","topright","midright","bottomright",
@@ -46,7 +45,7 @@ class Unit(object):
         self.attacking = False
         self.walking = False
         self.finished = False
-        self.temporal_accumulator = 0
+        self.temporal_accumulator = random.randint(0,20)
         self.directions = Rect(0,0,self.velocity, round(self.velocity * 0.8))
         self.directions.center = (0,0)
         self.reload_time = 0
@@ -157,7 +156,7 @@ class Unit(object):
         def dist(thing):
             rx, ry = thing.rect.center
             mx, my = self.rect.center
-            return sqrt((rx - mx)**2 + (ry - my)**2)
+            return (rx - mx)**2 + (ry - my)**2
         return sorted(things, key=dist)
 
     def orientation_towards(self, position):
@@ -195,10 +194,6 @@ class Cannon(Unit):
     area_of_attack = (80, 64)
     pace = 100
     cost = 0x200
-
-    def __init__(self, location):
-        super(Cannon, self).__init__(location)
-        reload_time = 0
 
     def think(self, things):
         """ Determine the tactics of the unit.

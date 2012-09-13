@@ -60,9 +60,6 @@ class VictoryMode(ModeOfOperation):
         """
         situation = self.situation
         notables = []
-        for item in situation.installations:
-            if isinstance(item, facilities.Crops):
-                food += item.edibility
 
         def note(label, amount):
             notables.append([label+": ", amount])

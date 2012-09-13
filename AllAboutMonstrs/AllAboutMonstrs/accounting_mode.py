@@ -40,6 +40,7 @@ class AccountingMode(ModeOfOperation):
             self.respond_to_the_will_of_the_operator()
         # go to the next chapter
         self.situation.chapter += 1
+        self.situation.wave = 0
         self.situation.save_game()
         return self.next_mode
 
@@ -99,7 +100,7 @@ class AccountingMode(ModeOfOperation):
         situation.trophies = []
         
         # Wealth gained
-        income += 0x500 * food # 5 pounds per sack of cabbages
+        income += 0x100 * food # 1 pound per sack of cabbages
         situation.wealth += income
         note("Income", lsb(income))
         note("Closing balance:", lsb(situation.wealth))

@@ -13,7 +13,7 @@ import pickle
 class Situation(object):
     def __init__(self):
         self.savename = "Save"
-        self.wealth = 0x2000  # in binary pence
+        self.wealth = 0x1400  # in binary pence
         self.installations = []
         self.population = 5
         self.chapter = 0
