@@ -62,14 +62,15 @@ class PreparationMode(ModeOfOperation):
             edge = self.current_edge
             lot = self.current_lot
             if e.button == 1:
-                thing = None
-                if edge:
-                    thing = self.situation.last_fence_build
-                elif lot:
-                    thing = self.situation.last_lot_build
+                thing = self.situation.last_build
+                built = False
                 if thing:
-                    self.build_a_thing(thing)
-                else:
+                    fence = bool(thing.obstruance & grid.obstruance("fence"))
+                    if (edge and fence) or (lot and not fence):
+                        self.build_a_thing(thing)
+                        built = True
+                        print(thing)
+                if not built:
                     self.open_build_menu(e.pos)
             elif e.button == 3:
                 self.open_build_menu(e.pos)
@@ -89,10 +90,7 @@ class PreparationMode(ModeOfOperation):
                 self.situation.add_installation_if_possible(thingclass(place),charge=True)
                 if hasattr(thingclass,"placement_phonograph"):
                     phonographs.play(thingclass.placement_phonograph)
-                if self.current_edge:
-                    self.situation.last_fence_build = thingclass
-                else:
-                    self.situation.last_lot_build = thingclass
+                self.situation.last_build = thingclass
                 self.situation.update_status_bar(self.statusbar)
 
     def initialize(self):

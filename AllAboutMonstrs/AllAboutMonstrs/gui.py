@@ -109,12 +109,16 @@ class StatusBar(object):
         self.stats_table = None
         self.remaining_ships = 0
         self.max_ships = 0
+        self.last_build = None
+        self.icon_rect = None
 
-    def update(self, money, food, ships, remaining):
+    def update(self, money, food, last_build, ships, remaining):
         self.stats_table = typefaces.prepare_table(
             [["Wealth",":  ",lsb(money)],
              ["Food",":  ",str(food)]],
             colour = (255,255,255), alignment="llr")
+        self.last_build = chromographs.obtain("iconic/%s.png"%last_build.__name__)
+        self.icon_rect = self.last_build.get_rect()
         self.remaining_ships = remaining
         self.max_ships = ships
 
@@ -122,6 +126,8 @@ class StatusBar(object):
         y = screen.get_height() - self.height
         pygame.draw.rect(screen,(0,0,0),(0,y,screen.get_width(),self.height))
         screen.blit(self.stats_table,(20,y+20))
+        self.icon_rect.center = (50,y+100)
+        screen.blit(self.last_build,self.icon_rect)
         for i in range(self.max_ships):
             if i < self.remaining_ships:
                 screen.blit(self.live_ship,(350+i*100,y+10))

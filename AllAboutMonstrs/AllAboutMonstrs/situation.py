@@ -33,8 +33,7 @@ class Situation(object):
         self.facility_plans = ["Crops","Housing"]
         self.fence_plans = ["Fence"]
         self.unit_plans = ["Cannon"]
-        self.last_fence_build = Fence
-        self.last_lot_build = None
+        self.last_build = Fence
         self.trophies = []
 
     def add_installation_if_possible(self, thing, charge=False):
@@ -66,7 +65,7 @@ class Situation(object):
         food = sum([max(c.durability - c.damage, 0)
                     for c in self.installations if hasattr(c,"edibility")])
         remaining = self.ships_remaining()
-        statusbar.update(self.wealth, food, self.maxships, self.ships_remaining())
+        statusbar.update(self.wealth, food, self.last_build, self.maxships, self.ships_remaining())
 
     def save_game(self):
         path = os.path.join(self.get_save_dir(),
