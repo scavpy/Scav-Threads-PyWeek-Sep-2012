@@ -58,6 +58,7 @@ class IntroductoryMode(ModeOfOperation):
             choice = self.menu.make_choice()
             if choice in ["new","encyclopaedia","quit"]:
                 if choice == "new":
+                    self.situation.land_ho()
                     self.situation.save_game()
                     self.next_mode = "ChapterStart"
                 elif choice == "encyclopaedia":
