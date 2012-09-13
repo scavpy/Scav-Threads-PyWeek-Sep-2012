@@ -36,6 +36,7 @@ class Unit(object):
     aliment = None
     vital = False
     destination = None
+    human = False
 
     def __init__(self, location):
         self.damage = 0
@@ -246,8 +247,9 @@ class Soldier(Unit):
     area_of_awareness = (200,160)
     area_of_attack = (70,56)
     pace = 50
-    cost = 0x001
+    cost = 0x000
     aliment = "Meat"
+    human = True
 
     def think(self, things):
         indices = self.rect_of_awareness.collidelistall(things)

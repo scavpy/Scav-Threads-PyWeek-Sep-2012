@@ -46,6 +46,11 @@ class Situation(object):
                     return False
         if charge:
             self.wealth -= thing.cost
+            if thing.human:
+                if self.population > 0:
+                    self.population -= 1
+                else:
+                    return False
         self.installations.append(thing)
         self.installations.sort(key=lambda i: i.rect.bottom)
 

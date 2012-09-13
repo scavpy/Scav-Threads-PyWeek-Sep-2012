@@ -17,6 +17,7 @@ class Facility(object):
     is_flat = False # flat things drawn first
     aliment = None
     vital = False
+    human = False
 
     def __init__(self, location):
         self.damage = 0
@@ -126,6 +127,7 @@ class Crops(Facility):
 class Housing(Facility):
     name = "Housing"
     durability = 40
+    habitability = 3
     animated_chromograph_name = "facilities/housing.png"
     standing_animations = 4
     obstruance = grid.obstruance("facility")
@@ -137,6 +139,7 @@ class Housing(Facility):
 class Ship(Facility):
     vital = True
     durability = 1000
+    habitability = 1
     animated_chromograph_name = "facilities/ship.png"
     standing_animations = 1
     conditions = 4
