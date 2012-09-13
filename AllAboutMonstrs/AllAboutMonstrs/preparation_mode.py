@@ -69,7 +69,6 @@ class PreparationMode(ModeOfOperation):
                     if (edge and fence) or (lot and not fence):
                         self.build_a_thing(thing)
                         built = True
-                        print(thing)
                 if not built:
                     self.open_build_menu(e.pos)
             elif e.button == 3:

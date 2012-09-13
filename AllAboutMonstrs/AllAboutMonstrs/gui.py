@@ -56,9 +56,10 @@ class BuildMenu(object):
         self.centerrect.center = self.position
         if edge:
             self.facs = self.situation.fence_plans
+            self.units = []
         else:
             self.facs = self.situation.facility_plans
-        self.units = self.situation.unit_plans
+            self.units = self.situation.unit_plans
         self.options = self.halfwheel(facilities,self.facs,-1)
         self.options.extend(self.halfwheel(units,self.units,1))
         self.options.append((None,None,self.centerrect))
