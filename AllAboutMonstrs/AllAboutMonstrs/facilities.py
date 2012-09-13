@@ -107,6 +107,7 @@ class Wall(Fence):
     durability = 40
     flammability = 0
     cost = 0x100
+    placement_phonograph = "brick.ogg"
 
 class Crops(Facility):
     name = "Cabbages"
@@ -135,6 +136,7 @@ class Housing(Facility):
     footprint = (grid.LOT_WIDTH-10, grid.LOT_DEPTH-8)
     cost = 0x300
     pace = 200
+    placement_phonograph = "brick.ogg"
 
 class Ship(Facility):
     vital = True
