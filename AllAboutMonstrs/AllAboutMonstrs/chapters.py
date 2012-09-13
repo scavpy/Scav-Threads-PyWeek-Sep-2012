@@ -40,9 +40,9 @@ could have predicted.\n Worse still, it would appear that they have \
 developed an appetite for the tar on our ships. We have but five \
 vessels remaining and must protect them at all costs.",
         waves=[
-            wave_of("Trinitroceratops", -50, 200, 240, 500, 550),
-            wave_of("Trinitroceratops", -50, 200, 240, 500, 550),
-            wave_of("Trinitroceratops", -50, 200, 240, 500, 550) + wave_of("Trinitroceratops", -80, 360, 450)
+            wave_of("Ferociraptor", -50, 200, 240, 500, 550),
+            wave_of("Ferociraptor", -50, 200, 240, 500, 550),
+            wave_of("Ferociraptor", -50, 200, 240, 500, 550) + wave_of("Trinitroceratops", -80, 360, 450)
             ],
         inventions=[("units", "Cannon"), ("facilities","Fence")]
         ),
@@ -53,9 +53,9 @@ vessels remaining and must protect them at all costs.",
         " are ever working on new developments to help"
         " fight them off.",
         waves=[
-            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550),
-            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550),
-            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550) + wave_of("Trinitroceratops", -150, 200, 300, 400, 500)
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550) + wave_of("Ferociraptor", -150, 200, 300, 400, 500),
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550) + wave_of("Ferociraptor", -150, 200, 300, 400, 500),
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550) + wave_of("Tankylosaurus", -150, 200, 300, 400, 500)
             ],
         inventions=[("units","AnalyticalCannon"), ("facilities","Wall")]
         ),

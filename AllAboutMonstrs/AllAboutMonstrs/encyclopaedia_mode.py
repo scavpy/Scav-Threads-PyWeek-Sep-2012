@@ -8,14 +8,16 @@ from pygame.display import get_surface, flip
 from modes import ModeOfOperation
 import typefaces
 import chromographs
-import bestiary, units
+import bestiary, units, facilities
 import gui
 
 from style import PAGEMARGIN, PAGECOLOUR
 
 PAGES = [
+    ("bestiary","Ferociraptor"),
     ("bestiary","Trinitroceratops"),
     ("units","Cannon"),
+    ("bestiary","Tankylosaurus"),
     ]
 
 class EncyclopaediaMode(ModeOfOperation):
@@ -33,7 +35,7 @@ class EncyclopaediaMode(ModeOfOperation):
         return self.next_mode
 
     def on_keydown(self, e):
-        if e.key in (pygame.K_RETURN,pygame.K_ESCAPE):
+        if e.key in (pygame.K_RETURN, pygame.K_ESCAPE):
             self.next_mode = "Introductory"
             self.finished = True
         elif e.key == pygame.K_RIGHT:

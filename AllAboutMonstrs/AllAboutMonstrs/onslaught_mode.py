@@ -100,7 +100,6 @@ class OnslaughtMode(ModeOfOperation):
             situation.wave += 1
             if situation.wave >= num_waves:
                 self.result = "Accounting"
-                self.wave = 0
 
     def move_units(self, ms):
         all_the_things = self.situation.installations + self.dinosaurs

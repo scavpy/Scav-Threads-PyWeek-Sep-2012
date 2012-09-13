@@ -8,7 +8,7 @@ from facilities import Fence
 
 class Situation(object):
     def __init__(self):
-        self.wealth = 0x2000  # in binary pence
+        self.wealth = 0x1400  # in binary pence
         self.installations = []
         self.population = 5
         self.chapter = 0

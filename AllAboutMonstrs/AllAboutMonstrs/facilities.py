@@ -64,6 +64,7 @@ class Facility(object):
             self.condition = 0
         elif damage >= ruination:
             self.condition = self.conditions - 1
+            self.obstruance = 0 # effectively no longer present
         else:
             self.condition = max((damage * self.conditions) // ruination, 1)
         self.image = self.obtain_frame()
@@ -97,10 +98,6 @@ class Fence(Facility):
         self.image = self.obtain_frame()
         self.flash = False
 
-    def harm(self, quanta_of_destruction):
-        super(Fence, self).harm(quanta_of_destruction)
-        if self.damage >= self.durability:
-            self.obstruance = 0 # effectively no longer present
 
 class Crops(Facility):
     name = "Cabbages"
