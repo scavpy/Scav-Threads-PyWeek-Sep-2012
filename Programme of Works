@@ -47,7 +47,7 @@ art-facilities          Renderings of structures both agricultural and architect
 
 wrk-statusbar           A descriptive panel at the base of the viewing device for statistics.   satisfactory
 fix-munching            Dinosaurs MUST be able to eat crops.                                    satisfactory
-wrk-ships               Ships on the shores that dinosaurs seek to devour.                      ?
+wrk-ships               Ships on the shores that dinosaurs seek to devour.                      satisfactory
 wrk-housing             Placement, accounting and damage of housing.                            adequate
 wrk-deployment          Deploying infantry from housing.                                        ?
 

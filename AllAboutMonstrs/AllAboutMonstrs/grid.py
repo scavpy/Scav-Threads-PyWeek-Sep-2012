@@ -11,7 +11,7 @@ LOT_WIDTH = 50
 LOT_DEPTH = 40
 NORTHERN_LIMIT = 168
 SOUTHERN_LIMIT = SCREEN_HEIGHT - 120
-EASTERN_LIMIT = SCREEN_WIDTH - 124
+EASTERN_LIMIT = SCREEN_WIDTH - 74
 WESTERN_LIMIT = 0
 FENCE_MARGIN_WEST = 5
 FENCE_MARGIN_NORTH = 4
@@ -22,6 +22,8 @@ BOUNDS = Rect(WESTERN_LIMIT, NORTHERN_LIMIT,
 
 LOTS_NORTH = BOUNDS.height // LOT_DEPTH
 LOTS_WEST = BOUNDS.width // LOT_WIDTH
+
+WATER_RECT = Rect(905,382,40,152)
 
 EDGE_TOLERANCE = 0.2
 
@@ -36,9 +38,11 @@ class TownPlanningOffice(object):
             return None
         cx = (x - WESTERN_LIMIT) // LOT_WIDTH
         cy = (y - NORTHERN_LIMIT) // LOT_DEPTH
-        return Rect(cx * LOT_WIDTH + WESTERN_LIMIT,
+        lot = Rect(cx * LOT_WIDTH + WESTERN_LIMIT,
                     cy * LOT_DEPTH + NORTHERN_LIMIT,
                     LOT_WIDTH, LOT_DEPTH)
+        if not WATER_RECT.colliderect(lot):
+            return lot
 
     def nearest_edge(self, x, y):
         """ The nearest lot boundary on which a fence might be erected """
@@ -57,12 +61,14 @@ class TownPlanningOffice(object):
             rect = Rect(lot.left, lot.top - FENCE_MARGIN_NORTH, lot.width, 2*FENCE_MARGIN_NORTH)
             if south_edge:
                 rect.move_ip(0, LOT_DEPTH)
-            return rect
+            if not WATER_RECT.colliderect(rect):
+                return rect
         elif vertical:
             rect = Rect(lot.left - FENCE_MARGIN_WEST, lot.top, 2*FENCE_MARGIN_WEST, lot.height)
             if east_edge:
                 rect.move_ip(LOT_WIDTH, 0)
-            return rect
+            if not WATER_RECT.colliderect(rect):
+                return rect
         else:
             return None
 

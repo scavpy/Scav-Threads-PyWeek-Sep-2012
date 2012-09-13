@@ -27,6 +27,7 @@ class OnslaughtMode(ModeOfOperation):
             self.move_units(ms)
             self.situation.update_status_bar(self.statusbar)
             self.render()
+            self.dead_test()
         return self.result
 
     def on_keydown(self, e):
@@ -83,6 +84,13 @@ class OnslaughtMode(ModeOfOperation):
                     pass
             render_a_thing(that)
         pygame.display.flip()
+
+    
+    def dead_test(self):
+        if self.situation.ships_remaining() == 0:
+            self.situation.reload_game()
+            self.result = "ChapterStart"
+            self.finished = True
 
     def move_dinosaurs(self, ms):
         situation = self.situation

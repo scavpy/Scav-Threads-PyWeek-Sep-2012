@@ -102,20 +102,31 @@ class BuildMenu(object):
 
 class StatusBar(object):
     height = 120
+    live_ship = chromographs.obtain("iconic/living-ship.png")
+    dead_ship = chromographs.obtain("iconic/dead-ship.png")
 
     def __init__(self):
         self.stats_table = None
+        self.remaining_ships = 0
+        self.max_ships = 0
 
-    def update(self, money, food):
+    def update(self, money, food, ships, remaining):
         self.stats_table = typefaces.prepare_table(
             [["Wealth",":  ",lsb(money)],
              ["Food",":  ",str(food)]],
             colour = (255,255,255), alignment="llr")
+        self.remaining_ships = remaining
+        self.max_ships = ships
 
     def render(self,screen):
         y = screen.get_height() - self.height
         pygame.draw.rect(screen,(0,0,0),(0,y,screen.get_width(),self.height))
-        screen.blit(self.stats_table,(20,y+20))        
+        screen.blit(self.stats_table,(20,y+20))
+        for i in range(self.max_ships):
+            if i < self.remaining_ships:
+                screen.blit(self.live_ship,(350+i*100,y+10))
+            else:
+                screen.blit(self.dead_ship,(350+i*100,y+10))
 
 class TextFrame(object):
     head_end = chromographs.obtain("flourish/top-end.png")
