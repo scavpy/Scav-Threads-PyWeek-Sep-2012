@@ -34,6 +34,7 @@ class Unit(object):
     area_of_attack = (10, 8)
     is_flat = False
     aliment = None
+    vital = False
 
     def __init__(self, location):
         self.damage = 0
