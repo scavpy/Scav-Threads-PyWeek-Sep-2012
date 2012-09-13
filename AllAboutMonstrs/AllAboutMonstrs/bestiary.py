@@ -203,6 +203,55 @@ class Trinitroceratops(Animal):
                 return food
         self.navigate(next_position)
 
+class Explodocus(Animal):
+    """Science is dumbfounded and reason fails in explaining this monster.
+    It is advisable to either slay the beast quickly and far from your
+    facilities, or else leave it be entirely. """
+    name = "Explodocus catastrophii"
+    durability = 200
+    voracity = 30
+    velocity = 3
+    rapidity = 3
+    monstrosity = 4
+    infernality = 10
+    depiction = "Explodocus.png"
+    animated_chromograph_name = "units/explodocus.png"
+    exploding_chromograph_name = "units/superexplode.png"
+    explosion_frames = 5
+    walking_animations = 3
+    attacking_animations = 0
+    orientation_indices = (1,0,0,0,0,1,1,1)
+    footprint = (70,56)
+    area_of_awareness = (200, 160)
+    area_of_attack = (75,61)
+
+    def __init__(self, location):
+        super(Trinitroceratops, self).__init__(location)
+
+    def think(self, things):
+        """ Determine the volition of the beast.
+        If it act upon any thing else, return a list of such
+        things. Otherwise return a non-true value.
+        """
+        if self.exploding:
+            return self.damage_surrounding_area(things)        
+        knowledge = self.things_perceived(things)
+        next_position = self.step_position()
+        obstacles = self.find_obstacles(next_position, knowledge)
+        if obstacles:
+            return self.deal_with_obstacles(obstacles)
+        if not self.bored:
+            food = self.seek_food(knowledge, "Vegetable")
+            if food:
+                return food
+        self.navigate(next_position)
+
+    def attend_to_attack_area(self, ignored):
+        """ Explodocus tramples all round at close range """
+        self.rect_of_attack.center = self.rect.center
+
+        
+
 class Tankylosaurus(Animal):
     """A thoroughly bad-tempered beast and very sturdy but at least its
     appetite is modest"""
