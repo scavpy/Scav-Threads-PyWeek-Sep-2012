@@ -6,8 +6,13 @@ and acquisitions thereof.
 
 from facilities import Fence
 
+import os
+import sys
+import pickle
+
 class Situation(object):
     def __init__(self):
+        self.savename = "Save"
         self.wealth = 0x2000  # in binary pence
         self.installations = []
         self.population = 5
@@ -41,3 +46,24 @@ class Situation(object):
         food = sum([max(c.durability - c.damage, 0)
                     for c in self.installations if hasattr(c,"edibility")])
         statusbar.update(self.wealth, food)
+
+    def save_game(self):
+        path = os.path.join(self.get_save_dir(),
+                            "%s-%d"%(self.savename,self.chapter))
+        savefile = open(path,"w")
+        data = self.__dict__
+        pickle.dump(data,savefile,protocol=2)
+        savefile.close()
+
+    def load_game(self, savefile):
+        path = os.path.join(self.get_save_dir(),savefile)
+        savefile = open(path,"r")
+        data = pickle.load(savefile)
+        self.__dict__.update(data)
+        savefile.close()
+
+    def get_save_dir(self):
+        savedir = os.path.expanduser("~/.blastosaurusrex")
+        if not os.path.exists(savedir):
+            os.makedirs(savedir)
+        return savedir

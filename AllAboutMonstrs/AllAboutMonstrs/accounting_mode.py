@@ -40,6 +40,7 @@ class AccountingMode(ModeOfOperation):
             self.respond_to_the_will_of_the_operator()
         # go to the next chapter
         self.situation.chapter += 1
+        self.situation.save_game()
         return self.next_mode
 
     def on_quit(self, e):
