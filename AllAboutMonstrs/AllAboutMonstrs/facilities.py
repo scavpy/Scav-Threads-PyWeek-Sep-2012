@@ -93,7 +93,7 @@ class Fence(Facility):
         self.footprint = ((grid.LOT_WIDTH, 2 * grid.FENCE_MARGIN_NORTH)
                      if horizontal else
                      (2 * grid.FENCE_MARGIN_WEST, grid.LOT_DEPTH))
-        self.obstruance = grid.obstruance(direction)
+        self.obstruance = grid.obstruance(direction+"fence")
         self.exclusion = grid.obstruance(direction+"fence","beast","unit","facility")
         self.rect = Rect(0,0, *self.footprint)
         self.rect.center = location.center
