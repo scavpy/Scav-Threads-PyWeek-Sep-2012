@@ -34,6 +34,7 @@ class Unit(object):
     area_of_attack = (10, 8)
     is_flat = False
     aliment = None
+    vital = False
 
     def __init__(self, location):
         self.damage = 0
@@ -214,3 +215,34 @@ class Cannon(Unit):
                     phonographs.play("cannon.ogg")
                     return [target]
 
+class Soldier(Unit):
+    """ An infantry unit. """
+    name = "Soldier"
+    durability = 10
+    firepower = 1
+    velocity = 5
+    rapidity = 3
+    animated_chromograph_name = "units/soldier.png"
+    walking_animations = 1
+    attacking_animations = 2
+    orientation_indices = (1,1,1,1,0,0,0,0)
+    footprint = (10,10)
+    area_of_awareness = (200,160)
+    area_of_attack = (70,56)
+    pace = 100
+    cost = 0x001
+    aliment = "Meat"
+
+    def think(self, things):
+        indices = self.rect_of_awareness.collidelistall(things)
+        beasts = self.find_nearest([things[i] for i in indices
+                                    if things[i].obstruance &
+                                    grid.obstruance("beast")])
+        if beasts and not self.attacking:
+            target = beasts[0]
+            self.orient(self.orientation_towards(target.rect.center))
+            if self.rect_of_attack.colliderect(target.rect):
+                if self.attack():
+                    target.harm(self.firepower)
+                    phonographs.play("rifle.ogg")
+                    return [target]

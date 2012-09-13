@@ -11,7 +11,7 @@ LOT_WIDTH = 50
 LOT_DEPTH = 40
 NORTHERN_LIMIT = 168
 SOUTHERN_LIMIT = SCREEN_HEIGHT - 120
-EASTERN_LIMIT = SCREEN_WIDTH - 124
+EASTERN_LIMIT = SCREEN_WIDTH - 74
 WESTERN_LIMIT = 0
 FENCE_MARGIN_WEST = 5
 FENCE_MARGIN_NORTH = 4
@@ -23,7 +23,9 @@ BOUNDS = Rect(WESTERN_LIMIT, NORTHERN_LIMIT,
 LOTS_NORTH = BOUNDS.height // LOT_DEPTH
 LOTS_WEST = BOUNDS.width // LOT_WIDTH
 
-EDGE_TOLERANCE = 0.2
+WATER_RECT = Rect(905,382,40,152)
+
+EDGE_TOLERANCE = 8
 
 class TownPlanningOffice(object):
     """ Evaluate the proposed positions of facilities and
@@ -36,35 +38,40 @@ class TownPlanningOffice(object):
             return None
         cx = (x - WESTERN_LIMIT) // LOT_WIDTH
         cy = (y - NORTHERN_LIMIT) // LOT_DEPTH
-        return Rect(cx * LOT_WIDTH + WESTERN_LIMIT,
+        lot = Rect(cx * LOT_WIDTH + WESTERN_LIMIT,
                     cy * LOT_DEPTH + NORTHERN_LIMIT,
                     LOT_WIDTH, LOT_DEPTH)
+        if not WATER_RECT.colliderect(lot):
+            return lot
 
     def nearest_edge(self, x, y):
         """ The nearest lot boundary on which a fence might be erected """
         lot = self.nearest_lot(x, y)
         if not lot:
             return None
-        xprop = (x - lot.left) / float(LOT_WIDTH)
-        yprop = (y - lot.top) / float(LOT_DEPTH)
-        north_edge = yprop < EDGE_TOLERANCE
-        south_edge = yprop > 1 - EDGE_TOLERANCE
-        west_edge = xprop < EDGE_TOLERANCE
-        east_edge = xprop > 1 - EDGE_TOLERANCE
-        horizontal = (north_edge or south_edge) and not (east_edge or west_edge)
-        vertical = (east_edge or west_edge) and not (north_edge or south_edge)
+        proximities = [(y - lot.top,"north"),
+                       (lot.bottom-y,"south"),
+                       (lot.right-x,"east"),
+                       (x-lot.left,"west")]
+        proximities.sort()
+        closest = proximities[0]
+        dist,side = closest
+        if dist > EDGE_TOLERANCE:
+            return None
+        horizontal = (side=="north" or side=="south")
+        vertical = (side=="east" or side=="west")
         if horizontal:
             rect = Rect(lot.left, lot.top - FENCE_MARGIN_NORTH, lot.width, 2*FENCE_MARGIN_NORTH)
-            if south_edge:
+            if side == "south":
                 rect.move_ip(0, LOT_DEPTH)
-            return rect
+            if not WATER_RECT.colliderect(rect):
+                return rect
         elif vertical:
             rect = Rect(lot.left - FENCE_MARGIN_WEST, lot.top, 2*FENCE_MARGIN_WEST, lot.height)
-            if east_edge:
+            if side == "east":
                 rect.move_ip(LOT_WIDTH, 0)
-            return rect
-        else:
-            return None
+            if not WATER_RECT.colliderect(rect):
+                return rect
 
 def obstruance(*things):
     """ calculate the obstruance of a facility, unit or beast """

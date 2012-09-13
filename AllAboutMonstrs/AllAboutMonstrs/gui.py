@@ -56,9 +56,10 @@ class BuildMenu(object):
         self.centerrect.center = self.position
         if edge:
             self.facs = self.situation.fence_plans
+            self.units = []
         else:
             self.facs = self.situation.facility_plans
-        self.units = self.situation.unit_plans
+            self.units = self.situation.unit_plans
         self.options = self.halfwheel(facilities,self.facs,-1)
         self.options.extend(self.halfwheel(units,self.units,1))
         self.options.append((None,None,self.centerrect))
@@ -102,20 +103,37 @@ class BuildMenu(object):
 
 class StatusBar(object):
     height = 120
+    live_ship = chromographs.obtain("iconic/living-ship.png")
+    dead_ship = chromographs.obtain("iconic/dead-ship.png")
 
     def __init__(self):
         self.stats_table = None
+        self.remaining_ships = 0
+        self.max_ships = 0
+        self.last_build = None
+        self.icon_rect = None
 
-    def update(self, money, food):
+    def update(self, money, food, last_build, ships, remaining):
         self.stats_table = typefaces.prepare_table(
             [["Wealth",":  ",lsb(money)],
              ["Food",":  ",str(food)]],
             colour = (255,255,255), alignment="llr")
+        self.last_build = chromographs.obtain("iconic/%s.png"%last_build.__name__)
+        self.icon_rect = self.last_build.get_rect()
+        self.remaining_ships = remaining
+        self.max_ships = ships
 
     def render(self,screen):
         y = screen.get_height() - self.height
         pygame.draw.rect(screen,(0,0,0),(0,y,screen.get_width(),self.height))
-        screen.blit(self.stats_table,(20,y+20))        
+        screen.blit(self.stats_table,(20,y+20))
+        self.icon_rect.center = (50,y+100)
+        screen.blit(self.last_build,self.icon_rect)
+        for i in range(self.max_ships):
+            if i < self.remaining_ships:
+                screen.blit(self.live_ship,(350+i*100,y+10))
+            else:
+                screen.blit(self.dead_ship,(350+i*100,y+10))
 
 class TextFrame(object):
     head_end = chromographs.obtain("flourish/top-end.png")

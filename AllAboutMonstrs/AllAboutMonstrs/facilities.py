@@ -16,6 +16,7 @@ class Facility(object):
     obstruance = grid.obstruance("all")
     is_flat = False # flat things drawn first
     aliment = None
+    vital = False
 
     def __init__(self, location):
         self.damage = 0
@@ -132,3 +133,13 @@ class Housing(Facility):
     footprint = (grid.LOT_WIDTH-10, grid.LOT_DEPTH-8)
     cost = 0x300
     pace = 200
+
+class Ship(Facility):
+    vital = True
+    durability = 1000
+    animated_chromograph_name = "facilities/ship.png"
+    standing_animations = 1
+    conditions = 4
+    obstruance = grid.obstruance("facility")
+    exclusion = grid.obstruance("notland")
+    footprint = (128,40)
