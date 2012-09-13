@@ -41,7 +41,7 @@ wrk-fences              Refactor Fence classes into one.                        
 
 wrk-chapters		A collection of chapters containing details of various situations. 	satisfactory
 wrk-accounting		Render an accounting of the colony's profit and loss                    satisfactory
-wrk-continuation	Allow continuation of a previously saved session                        ?
+wrk-continuation	Allow continuation of a previously saved session                        satisfactory
 wrk-initiation		Exposition of the premise                                               ?
 art-facilities          Renderings of structures both agricultural and architectural            satisfactory
 
@@ -60,4 +60,5 @@ wrk-facilities-2	Brick walls and Analytical cannons    	     				?
 wrk-bestiary-2		Ferociraptors and Tankylosauri						?
 wrk-explosions		That the so-called "exploding" dinosaurs earn their reputation		?
 snd-roar		That the beasts announce their approach with fearsome bellowing		?
+wrk-appelation          That the player be allowed to provide their name for identification.    ?
 
