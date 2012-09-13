@@ -21,7 +21,7 @@ class Situation(object):
         self.progress = 0
         self.seen_dinosaurs = []
         self.facility_plans = ["Crops","Housing"]
-        self.fence_plans = ["Fence"]
+        self.fence_plans = ["Fence","Wall"]
         self.unit_plans = ["Cannon"]
         self.last_fence_build = Fence
         self.last_lot_build = None

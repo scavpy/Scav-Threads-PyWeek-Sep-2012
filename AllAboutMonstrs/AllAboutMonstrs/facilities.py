@@ -74,6 +74,7 @@ class Facility(object):
 
 class Fence(Facility):
     name = "Wooden Fence"
+    chromograph_suffix = "fence"
     durability = 10
     flammability = 2
     habitability = 0
@@ -86,18 +87,24 @@ class Fence(Facility):
         self.temporal_accumulator = 0
         self.condition = 0
         horizontal = (location.width/location.height) > 1
-        direction = "hfence" if horizontal else "vfence"
-        self.animated_chromograph_name = "facilities/%s.png"%direction
+        direction = "h" if horizontal else "v"
+        self.animated_chromograph_name = "facilities/%s.png"%(direction+self.chromograph_suffix)
         self.footprint = ((grid.LOT_WIDTH, 2 * grid.FENCE_MARGIN_NORTH)
                      if horizontal else
                      (2 * grid.FENCE_MARGIN_WEST, grid.LOT_DEPTH))
         self.obstruance = grid.obstruance(direction)
-        self.exclusion = grid.obstruance(direction,"beast","unit","facility")
+        self.exclusion = grid.obstruance(direction+"fence","beast","unit","facility")
         self.rect = Rect(0,0, *self.footprint)
         self.rect.center = location.center
         self.image = self.obtain_frame()
         self.flash = False
 
+class Wall(Fence):
+    name = "Brick Wall"
+    chromograph_suffix = "wall"
+    durability = 40
+    flammability = 0
+    cost = 0x100
 
 class Crops(Facility):
     name = "Cabbages"
