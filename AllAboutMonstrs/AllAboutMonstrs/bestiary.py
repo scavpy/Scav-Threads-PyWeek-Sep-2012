@@ -319,3 +319,50 @@ class Ferociraptor(Animal):
             if food:
                 return food
         self.navigate(next_position)
+
+
+class Blastosaurus(Animal):
+    """ King of the exploding dinosaurs. The most monstrous and
+    voratious eater of men, and a dangerously explosive creature
+    best dispatched well away from any important structures."""
+    name = "Blastosaurus rex"
+    durability = 30
+    voracity = 18
+    velocity = 5
+    infernality = 3
+    monstrosity = 8
+    destructiveness = 4
+    depiction = "Blastosaurus.png"
+    animated_chromograph_name = "units/blastosaurus.png"
+    walking_animations = 2
+    attacking_animations = 1
+    orientation_indices = (1,0,0,0,0,1,1,1)
+    footprint = (45,33)
+    area_of_awareness = (150,120)
+    area_of_attack = (20,16)
+
+
+    def __init__(self, location):
+        super(Blastosaurus, self).__init__(location)
+
+
+    def think(self, things):
+        """ Determine the volition of the beast.
+        If it act upon any thing else, return a list of such
+        things. Otherwise return a non-true value.
+        """
+        if self.exploding:
+            return self.damage_surrounding_area(things)        
+        knowledge = self.things_perceived(things)
+        next_position = self.step_position()
+        obstacles = self.find_obstacles(next_position, knowledge)
+        if obstacles:
+            if random.random() < 0.8:
+                return self.deal_with_obstacles(obstacles)
+            else:
+                self.orient(random.randint(0,7))
+        if not self.bored:
+            food = self.seek_food(knowledge, "Meat")
+            if food:
+                return food
+        self.navigate(next_position)
