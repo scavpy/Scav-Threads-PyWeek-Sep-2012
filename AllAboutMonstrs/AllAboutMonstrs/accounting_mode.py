@@ -78,16 +78,30 @@ class AccountingMode(ModeOfOperation):
         """
         situation = self.situation
         notables = []
+
+        def note(label, amount):
+            notables.append([label+": ", amount])
+
+        # CACLULATE FOOD
         food = 0
         for item in situation.installations:
             if isinstance(item, facilities.Crops):
                 food += max(item.durability - item.damage, 0)
 
-        def note(label, amount):
-            notables.append([label+": ", amount])
-            
+        housing_space = sum([f.habitability
+                             for f in self.situation.get_facilities()])
+
+        note("Remaining balance", lsb(situation.wealth))
+        note("Housing space", housing_space)
+        note("Population", "TBD")
         note("Food produced", food)
-        note("Starting balance", lsb(situation.wealth))
+        note("Population Growth", "TBD")
+        note("Wildlife Samples","TBD")
+        note("Income","TBD")
+        note("RESULTS","")
+        note("  Closing Balance","TBD")
+        note("  Current Population","TBD")
+        note("  Progress","TBD")
 
         income = 0
         # Trophies
@@ -95,18 +109,18 @@ class AccountingMode(ModeOfOperation):
         for t in situation.trophies:
             cnt[t] += 1
         for k, v in cnt.items():
-            note(k + " slain", v)
+            #note(k + " slain", v)
             income += 0x26 * v # 2 shillings and sixbence bounty per corpse
         situation.trophies = []
         
         # Wealth gained
         income += 0x100 * food # 1 pound per sack of cabbages
         situation.wealth += income
-        note("Income", lsb(income))
-        note("Closing balance:", lsb(situation.wealth))
+        #note("Income", lsb(income))
+        #note("Closing balance:", lsb(situation.wealth))
 
         situation.progress += 100
-        note("Progress", situation.progress)
+        #note("Progress", situation.progress)
 
         # display the report
         paint = self.screen.blit
