@@ -35,12 +35,14 @@ class Unit(object):
     is_flat = False
     aliment = None
     vital = False
+    destination = None
+    human = False
 
     def __init__(self, location):
         self.damage = 0
         self.rect = Rect(0,0,*self.footprint)
         self.rect.center = Rect(location).center
-        self.animation_frame = 0
+        self.animation_frame = 1
         self.orient(6)
         self.image = self.obtain_frame()
         self.attacking = False
@@ -52,9 +54,24 @@ class Unit(object):
         self.reload_time = 0
         self.flash = False
 
+    
+    def step_position(self):
+        """ where will it be on the next step? """
+        if self.walking:
+            vector = octoclock_direction(self.orientation, self.directions)
+            next_position = self.rect.move(vector)
+        else:
+            next_position = self.rect
+        return next_position
+
     def orient(self, orientation):
         self.orientation = orientation
         self.attend_to_surroundings()
+
+    def navigate(self, next_position):
+        bounds = grid.BOUNDS
+        if bounds.contains(next_position):
+            self.move(next_position)
 
     def move(self, location):
         self.rect = location
@@ -114,14 +131,13 @@ class Unit(object):
         if self.attacking:
             frame += 1
             if frame > self.walking_animations + self.attacking_animations:
-                frame = 0
+                frame = 1
                 self.attacking = False
         elif self.walking:
             frame += 1
             if frame > self.walking_animations:
                 frame = 1
-        else:
-            assert frame == 0
+
         self.animation_frame = frame
         self.image = self.obtain_frame()
         return True # something was changed
@@ -132,6 +148,7 @@ class Unit(object):
         self.flash = True
         if self.damage >= self.durability:
             self.obstruance = 0
+            self.animation_frame = 0
 
     def destroyed(self):
         return self.damage >= self.durability
@@ -187,7 +204,7 @@ class Cannon(Unit):
     depiction = "Cannon.png"
     placement_phonograph = "cannon-place.ogg"
     animated_chromograph_name = "units/cannon.png"
-    walking_animations = 0
+    walking_animations = 1
     attacking_animations = 2
     orientation_indices = (2,1,1,1,3,0,0,0)
     footprint = 20,16
@@ -220,24 +237,32 @@ class Soldier(Unit):
     name = "Soldier"
     durability = 10
     firepower = 1
-    velocity = 5
+    velocity = 7
     rapidity = 3
     animated_chromograph_name = "units/soldier.png"
-    walking_animations = 1
+    walking_animations = 2
     attacking_animations = 2
     orientation_indices = (1,1,1,1,0,0,0,0)
     footprint = (10,10)
     area_of_awareness = (200,160)
     area_of_attack = (70,56)
-    pace = 100
-    cost = 0x001
+    pace = 50
+    cost = 0x000
     aliment = "Meat"
+    human = True
 
     def think(self, things):
         indices = self.rect_of_awareness.collidelistall(things)
         beasts = self.find_nearest([things[i] for i in indices
                                     if things[i].obstruance &
                                     grid.obstruance("beast")])
+        if self.destination:
+            self.walking = True
+            self.orient(self.orientation_towards(self.destination))
+            self.navigate(self.step_position())
+            if self.rect.collidepoint(self.destination):
+                self.destination = None
+                self.walking = False
         if beasts and not self.attacking:
             target = beasts[0]
             self.orient(self.orientation_towards(target.rect.center))

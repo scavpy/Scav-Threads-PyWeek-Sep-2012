@@ -37,9 +37,9 @@ def make_menu(position,options,width,prompt=None):
     return TextFrame(position,contents,width)
 
 class BuildMenu(object):
-    gear = chromographs.obtain("iconic/gear.png")
+    gear = chromographs.obtain("iconic/wee-gear.png")
     gearrect = gear.get_rect()
-    optrad = 32
+    optrad = gearrect.width//2
 
     def __init__(self, situation):
         self.is_open = False
