@@ -49,7 +49,7 @@ wrk-statusbar           A descriptive panel at the base of the viewing device fo
 fix-munching            Dinosaurs MUST be able to eat crops.                                    satisfactory
 wrk-ships               Ships on the shores that dinosaurs seek to devour.                      satisfactory
 wrk-housing             Placement, accounting and damage of housing.                            adequate
-wrk-deployment          Deploy and command infantry from housing.                               ?
+wrk-deployment          Deploy and command infantry from housing.                               adequate
 
 wrk-sound               Add sound and sounds.                                                   satisfactory
 snd-music-1             Prepare musical accompaniment						?
@@ -61,10 +61,9 @@ wrk-bestiary-2		Ferociraptors and Tankylosauri						satisfactory
 wrk-explosions		That the so-called "exploding" dinosaurs earn their reputation		satisfactory
 snd-roar		That the beasts announce their approach with fearsome bellowing		?
 wrk-appelation          That the player be allowed to provide their name for identification.    ?
-
 wrk-blastosaurus	The eponymous villain	      	      	    	     			?
+
 wrk-explodocus		The most dangerous game							?
 art-docks		Show the works of civilisation on the waterfront			?
 wrk-artillery		Invention of the analytical cannon    					?
-
 wrk-news		Show new dinosaurs and technology at the start of the chapter		?

@@ -41,15 +41,6 @@ class Animal(units.Unit):
         """ Beasts have close-in attacks """
         self.rect_of_attack.center = centre
 
-    def step_position(self):
-        """ where will it be on the next step? """
-        if self.walking:
-            vector = units.octoclock_direction(self.orientation, self.directions)
-            next_position = self.rect.move(vector)
-        else:
-            next_position = self.rect
-        return next_position
-
     def going_the_wrong_way(self):
         right_ways = (5, 6, 7) if self.bored else (1, 2, 3)
         return self.orientation not in right_ways
@@ -281,7 +272,7 @@ class Ferociraptor(Animal):
     name = "Ferociraptor incandescens"
     durability = 11
     voracity = 2
-    velocity = 6
+    velocity = 8
     infernality = 2
     monstrosity = 5
     destructiveness = 2

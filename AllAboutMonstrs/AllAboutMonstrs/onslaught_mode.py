@@ -37,9 +37,27 @@ class OnslaughtMode(ModeOfOperation):
         self.result = None
         self.finished = True
 
+    def on_mousebuttondown(self,e):
+        if self.selected_unit:
+            self.selected_unit.destination = e.pos
+            self.selected_unit = None
+        else:
+            choices = []
+            units = self.situation.get_units()
+            for u in units:
+                rect = u.image.get_rect()
+                rect.midbottom = u.rect.midbottom
+                if rect.collidepoint(e.pos):
+                    choices.append(u)
+            if choices:
+                choices.sort(key=lambda x: x.rect.bottom,
+                             reverse=True)
+                self.selected_unit = choices[0]
+
     def initialize(self):
         self.titletext = typefaces.prepare_title("Onslaught of Enormities",colour=(255,64,64))
         self.scenery = chromographs.obtain("background.png")
+        self.cursor = chromographs.obtain("iconic/unit-cursor.png")
         chapter = chapters.CHAPTERS[self.situation.chapter]
         wave = self.situation.wave
         self.dinosaurs = chapter.spawn_wave(wave)
@@ -47,6 +65,7 @@ class OnslaughtMode(ModeOfOperation):
         self.result = "Preparation"
         self.statusbar = gui.StatusBar()
         self.situation.update_status_bar(self.statusbar)
+        self.selected_unit = None
 
     def render(self):
         self.clear_screen(image=self.scenery)
@@ -69,6 +88,11 @@ class OnslaughtMode(ModeOfOperation):
         to_be_drawn = self.situation.installations + self.dinosaurs
         to_be_drawn.sort(key = lambda d: d.rect.bottom)
         debug_rectangles = self.situation.args.debug_rectangles
+        # render a wee circle beneath the selected unit
+        if self.selected_unit:
+            r = self.cursor.get_rect()
+            r.center = self.selected_unit.rect.midbottom
+            self.screen.blit(self.cursor,r)
         for that in to_be_drawn:
             if that.is_flat:
                 continue # already done

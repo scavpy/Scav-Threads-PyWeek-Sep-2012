@@ -9,6 +9,7 @@ from facilities import Fence, Ship
 import os
 import sys
 import pickle
+import grid
 
 from math import ceil
 
@@ -32,7 +33,7 @@ class Situation(object):
         self.seen_dinosaurs = []
         self.facility_plans = ["Crops","Housing"]
         self.fence_plans = ["Fence","Wall"]
-        self.unit_plans = ["Cannon"]
+        self.unit_plans = ["Cannon","Soldier"]
         self.last_build = Fence
         self.trophies = []
 
@@ -60,6 +61,18 @@ class Situation(object):
         ships = sum([1 for c in self.installations
                   if c.vital and not c.destroyed()])
         return ships
+
+    def get_beasts(self):
+        return [b for b in self.installations
+                if b.obstruance & grid.obstruance("beast")]
+
+    def get_facilities(self):
+        return [f for f in self.installations
+                if f.obstruance & grid.obstruance("facility","fence")]
+
+    def get_units(self):
+        return [u for u in self.installations
+                if u.obstruance & grid.obstruance("unit")]
 
     def update_status_bar(self, statusbar):
         food = sum([max(c.durability - c.damage, 0)
