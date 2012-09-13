@@ -26,7 +26,7 @@ class Unit(object):
     attacking_animations = 0
     orientation_frames = (0,0,0,0,0,0,0,0)
     cost = 0xa00
-    pace = 100
+    pace = 50
     obstruance = grid.obstruance("unit")
     exclusion = grid.obstruance("notland")
     footprint = (10,8)

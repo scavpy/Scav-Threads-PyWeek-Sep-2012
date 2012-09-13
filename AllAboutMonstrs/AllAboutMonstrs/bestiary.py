@@ -10,6 +10,7 @@ import grid
 class Animal(units.Unit):
     """A description of the Animal"""
     notable_attributes = ("Durability","Voracity","Monstrosity",
+                          "Infernality",
                           "Velocity","Destructiveness")
     name = "Some kind of animal"
     durability = 1
@@ -17,12 +18,25 @@ class Animal(units.Unit):
     velocity = 1
     monstrosity = 1
     destructiveness = 1
+    infernality = 1
     rapidity = 1 # for animals, rapidity should maybe equal velocity
     depiction = "Animal.png"
     obstruance = grid.obstruance("beast")
     exclusion = grid.obstruance("notland")
+    exploding_chromograph_name = "units/explosion.png"
+    explosion_frames = 5
     aliment = None
 
+    def __init__(self, location):
+        super(Animal, self).__init__(location)
+        self.orient(2)
+        self.bored = False
+        self.angry = False
+        self.satiety = 0
+        self.walking = True
+        self.exploding = False
+        self.blast_radius = self.footprint[0] * self.infernality
+        
     def attend_to_attack_area(self, centre):
         """ Beasts have close-in attacks """
         self.rect_of_attack.center = centre
@@ -35,7 +49,6 @@ class Animal(units.Unit):
         else:
             next_position = self.rect
         return next_position
-
 
     def going_the_wrong_way(self):
         right_ways = (5, 6, 7) if self.bored else (1, 2, 3)
@@ -105,6 +118,58 @@ class Animal(units.Unit):
                         self.bored = True
                     return [target]
 
+    def explode(self):
+        """ The purpose of this operation requires little explanation.
+        Unlike the phenomemon itself, which makes no sense at all.
+        """
+        self.exploding = True
+        self.obstruance = 0
+        self.animated_chromograph_name = self.exploding_chromograph_name
+        self.attacking_frames = self.explosion_frames
+        self.walking_frames = 0
+        self.animation_frame = 1
+        self.attacking = True
+        self.rect_of_awareness.center = self.rect.center
+        self.orientation_indices = (0,) * 8
+        self.image = self.obtain_frame()
+
+    def damage_surrounding_area(self, things):
+        if not self.attacking:
+            #explosion is over
+            self.finished = True
+            return
+        indices = self.rect_of_awareness.collidelistall(things)
+        quadrate_radius = self.blast_radius ** 2
+        targets = []
+        
+        def quadrate_distance(other):
+            ox, oy = other.rect.center
+            sx, sy = self.rect.center
+            dx2 = (ox - sx)**2
+            dy2 = (oy - sy)**2
+            return dx2 + dy2
+        
+        for i in indices:
+            thing = things[i]
+            if thing.destroyed():
+                continue
+            d = quadrate_distance(thing)
+            if d > quadrate_radius:
+                continue
+            thing.harm(self.infernality)
+            targets.append(thing)
+        return targets
+
+    def harm(self, quanta_of_destruction):
+        """ Dinosaurs will sometimes explode for no readily apparent reason """
+        super(Animal, self).harm(quanta_of_destruction)
+        ratio = float(self.damage) / self.durability
+        if ratio >= 1.0:
+            return
+        chance = ratio * self.infernality * 0.1
+        if random.random() < chance:
+            self.explode()
+
 class Trinitroceratops(Animal):
     """What do these beasts want? To rut and feed and trample with
     abandon. Mere fences are little use against their horns.
@@ -116,6 +181,7 @@ class Trinitroceratops(Animal):
     rapidity = 5
     monstrosity = 1
     destructiveness = 5
+    infernality = 8
     depiction = "Trinitroceratops.png"
     animated_chromograph_name = "units/trinitroceratops.png"
     walking_animations = 2
@@ -127,17 +193,14 @@ class Trinitroceratops(Animal):
 
     def __init__(self, location):
         super(Trinitroceratops, self).__init__(location)
-        self.orient(2)
-        self.bored = False
-        self.angry = False
-        self.satiety = 0
-        self.walking = True
 
     def think(self, things):
         """ Determine the volition of the beast.
         If it act upon any thing else, return a list of such
         things. Otherwise return a non-true value.
         """
+        if self.exploding:
+            return self.damage_surrounding_area(things)        
         knowledge = self.things_perceived(things)
         next_position = self.step_position()
         obstacles = self.find_obstacles(next_position, knowledge)
@@ -171,11 +234,7 @@ class Tankylosaurus(Animal):
 
     def __init__(self, location):
         super(Tankylosaurus, self).__init__(location)
-        self.orient(2)
-        self.bored = False
         self.angry = True
-        self.satiety = 0
-        self.walking = True
 
     def attend_to_attack_area(self, ignored):
         """ Tankylosaurus can attack all round at close range """
@@ -186,6 +245,8 @@ class Tankylosaurus(Animal):
         If it act upon any thing else, return a list of such
         things. Otherwise return a non-true value.
         """
+        if self.exploding:
+            return self.damage_surrounding_area(things)
         knowledge = self.things_perceived(things)
         next_position = self.step_position()
         obstacles = self.find_obstacles(next_position, knowledge)
@@ -221,7 +282,7 @@ class Ferociraptor(Animal):
     durability = 11
     voracity = 2
     velocity = 6
-    pace = 40  # extra vigourous
+    infernality = 2
     monstrosity = 5
     destructiveness = 2
     depiction = "Ferociraptor.png"
@@ -236,17 +297,15 @@ class Ferociraptor(Animal):
 
     def __init__(self, location):
         super(Ferociraptor, self).__init__(location)
-        self.orient(2)
-        self.bored = False
-        self.angry = False
-        self.satiety = 0
-        self.walking = True
+
 
     def think(self, things):
         """ Determine the volition of the beast.
         If it act upon any thing else, return a list of such
         things. Otherwise return a non-true value.
         """
+        if self.exploding:
+            return self.damage_surrounding_area(things)        
         knowledge = self.things_perceived(things)
         next_position = self.step_position()
         obstacles = self.find_obstacles(next_position, knowledge)
