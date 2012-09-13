@@ -36,7 +36,6 @@ class Situation(object):
         self.last_fence_build = Fence
         self.last_lot_build = None
         self.trophies = []
-        self.defeated = False
 
     def add_installation_if_possible(self, thing, charge=False):
         collisions = thing.rect.collidelistall(self.installations)
@@ -62,7 +61,6 @@ class Situation(object):
         ships = sum([1 for c in self.installations
                   if c.vital and not c.destroyed()])
         return ships
-        
 
     def update_status_bar(self, statusbar):
         food = sum([max(c.durability - c.damage, 0)
