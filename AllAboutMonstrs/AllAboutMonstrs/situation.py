@@ -83,7 +83,7 @@ class Situation(object):
         food = sum([max(c.durability - c.damage, 0)
                     for c in self.installations if hasattr(c,"edibility")])
         remaining = self.ships_remaining()
-        statusbar.update(self.wealth, food, self.last_build, self.maxships, self.ships_remaining())
+        statusbar.update(self.wealth, food, self.population, self.last_build, self.maxships, self.ships_remaining())
 
     def save_game(self):
         path = os.path.join(self.get_save_dir(),

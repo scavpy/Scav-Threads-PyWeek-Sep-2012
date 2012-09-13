@@ -112,8 +112,8 @@ class Crops(Facility):
     name = "Cabbages"
     is_flat = True
     notable_attributes = {"Edibility","Flammability","Habitability"}
-    edibility = 9
-    durability = 9
+    edibility = 12
+    durability = 12
     flammability = 1
     habitability = 0
     placement_phonograph = "dig.ogg"

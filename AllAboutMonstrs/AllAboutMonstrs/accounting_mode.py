@@ -15,6 +15,8 @@ import facilities
 
 from style import PAGEMARGIN, PAGECOLOUR
 
+MEAL_SIZE = 12
+
 def lsb(bence):
     debit = bence < 0
     if debit:
@@ -78,35 +80,68 @@ class AccountingMode(ModeOfOperation):
         """
         situation = self.situation
         notables = []
-        food = 0
-        for item in situation.installations:
-            if isinstance(item, facilities.Crops):
-                food += max(item.durability - item.damage, 0)
 
         def note(label, amount):
             notables.append([label+": ", amount])
-            
-        note("Food produced", food)
-        note("Starting balance", lsb(situation.wealth))
+        # Remaining balance
+        remaining_balance = lsb(situation.wealth)
 
-        income = 0
+        # Housing space
+        housing_space = sum([f.habitability
+                             for f in self.situation.get_facilities()])
+
+        # Population
+        units = self.situation.get_units()
+        for u in units:
+            if u.human:
+                self.situation.population += 1
+                self.situation.installations.remove(u)
+        population = self.situation.population
+        
+        # Food produced
+        food_produced = 0
+        for item in situation.installations:
+            if isinstance(item, facilities.Crops):
+                food_produced += max(item.durability - item.damage, 0)
+
+        # Population growth
+        food = food_produced
+        max_growth_from_crops = food//MEAL_SIZE
+        max_growth_from_space = max((housing_space - population),0)
+        population_growth = min(max_growth_from_space,
+                                max_growth_from_crops)
+        food -= population_growth*MEAL_SIZE
+        # Income from crops
+        food_income = food*0x100
+        
+
+        note("Remaining balance", remaining_balance)
+        note("Housing space", housing_space)
+        note("Population", self.situation.population)
+        note("Food produced", food_produced)
+        note("Population Growth", population_growth)
+
+        trophy_income = 0
         # Trophies
         cnt = Counter()
         for t in situation.trophies:
             cnt[t] += 1
         for k, v in cnt.items():
             note(k + " slain", v)
-            income += 0x26 * v # 2 shillings and sixbence bounty per corpse
+            trophy_income += 0x26 * v # 2 shillings and sixbence bounty per corpse
         situation.trophies = []
-        
-        # Wealth gained
-        income += 0x100 * food # 1 pound per sack of cabbages
-        situation.wealth += income
-        note("Income", lsb(income))
-        note("Closing balance:", lsb(situation.wealth))
+        income = trophy_income + food_income
 
+        note("Income",lsb(income))
+        
+        # Apply results
+        situation.wealth += income
+        situation.population += population_growth
         situation.progress += 100
-        note("Progress", situation.progress)
+        note("RESULTS","")
+        note("  Closing Balance",lsb(situation.wealth))
+        note("  Current Population",situation.population)
+        note("  Progress",100)
 
         # display the report
         paint = self.screen.blit

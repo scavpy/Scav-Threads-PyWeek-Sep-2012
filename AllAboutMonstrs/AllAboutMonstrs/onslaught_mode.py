@@ -70,7 +70,7 @@ class OnslaughtMode(ModeOfOperation):
     def render(self):
         self.clear_screen(image=self.scenery)
         self.screen.blit(self.titletext,(10,10))
-        self.statusbar.render(self.screen)
+        self.statusbar.render(self.screen,onslaught=True)
 
         def render_a_thing(that):
             image = that.image
