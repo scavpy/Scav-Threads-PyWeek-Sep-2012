@@ -18,7 +18,8 @@ PAGES = [
     ("bestiary","Trinitroceratops"),
     ("units","Cannon"),
     ("bestiary","Tankylosaurus"),
-    ("bestiary","Blastosaurus")
+    ("bestiary","Blastosaurus"),
+    )"bestiary","Explodocus"),
     ]
 
 class EncyclopaediaMode(ModeOfOperation):
