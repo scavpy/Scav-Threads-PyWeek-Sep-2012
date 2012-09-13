@@ -226,7 +226,7 @@ class Explodocus(Animal):
     area_of_attack = (75,61)
 
     def __init__(self, location):
-        super(Trinitroceratops, self).__init__(location)
+        super(Explodocus, self).__init__(location)
 
     def think(self, things):
         """ Determine the volition of the beast.
