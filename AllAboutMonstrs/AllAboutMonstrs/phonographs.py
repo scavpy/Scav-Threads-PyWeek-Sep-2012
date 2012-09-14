@@ -1,5 +1,5 @@
 import pygame
-from pygame.mixer import Sound
+from pygame.mixer import Sound, music
 
 import os
 import data
@@ -7,6 +7,7 @@ import data
 VOLUME_LEVEL = 0.5
 PHONOGRAPHS = {}
 SOUND_ON = True
+MUSIC_PLAYING = None
 
 def play(phonograph_name):
     if SOUND_ON:
@@ -37,3 +38,20 @@ def disable_sound():
 def enable_sound():
     global SOUND_ON
     SOUND_ON = True
+
+def orchestrate(phonograph_name, once=False):
+    global MUSIC_PLAYING
+    if MUSIC_PLAYING == phonograph_name:
+        return
+    path = data.filepath(
+        os.path.join("numerical_phonographs", phonograph_name))
+    if MUSIC_PLAYING:
+        music.fadeout(1000)
+    music.load(path)
+    music.play(0 if once else -1)
+    MUSIC_PLAYING = phonograph_name
+        
+def diminuendo(milliseconds):
+    music.fadeout(milliseconds)
+    global MUSIC_PLAYING
+    MUSIC_PLAYING = None

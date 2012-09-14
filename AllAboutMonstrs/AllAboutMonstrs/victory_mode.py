@@ -9,6 +9,7 @@ from pygame.display import get_surface, flip
 from modes import ModeOfOperation
 import typefaces
 import chromographs
+import phonographs
 import gui
 import chapters
 import facilities
@@ -43,6 +44,7 @@ class VictoryMode(ModeOfOperation):
         self.ribbons = [chromographs.obtain("flourish/ribbon-{0}.png"
                                             .format(c))
                         for c in ("red","white","blue")]
+        phonographs.orchestrate("victory.ogg", once=True)
 
     def assess(self):
         """
