@@ -5,6 +5,7 @@ import chromographs
 import typefaces
 import facilities
 import units
+import re
 from accounting_mode import lsb
 
 from math import sin, cos, sqrt, radians, pi
@@ -35,6 +36,43 @@ def make_menu(position,options,width,prompt=None):
         o = ChoiceWidget(label,command)
         contents.append(o)
     return TextFrame(position,contents,width)
+
+class PunchCard(object):
+    bg = chromographs.obtain("iconic/punchcard.png")
+    width = bg.get_width()
+    height = bg.get_height()
+
+    def __init__(self, position):
+        self.position = position
+        self.text = ""
+        self.update()
+
+    def update(self):
+        self.textsurf = typefaces.prepare(self.text+"|")
+
+    def key_event(self, e):
+        if e.type == pygame.KEYDOWN:
+            if e.key == pygame.K_RETURN:
+                return self.text
+            elif e.key == pygame.K_BACKSPACE:
+                self.text = self.text[:-1]
+            else:
+                char = e.unicode
+                if re.match("[A-Za-z ]",char):
+                    self.text += char.upper()
+            self.update()
+
+    def make_choice(self):
+        return self.text
+
+    def mouse_event(self, e):
+        return
+
+    def render(self,screen):
+        x,y = self.position
+        screen.blit(self.bg,(x,y))
+        dw = (self.width - self.textsurf.get_width()) / 2
+        screen.blit(self.textsurf,(x+dw,y+self.height/2))
 
 class BuildMenu(object):
     gear = chromographs.obtain("iconic/wee-gear.png")
