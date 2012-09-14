@@ -93,6 +93,7 @@ class Facility(object):
 class Fence(Facility):
     name = "Wooden Fence"
     chromograph_suffix = "fence"
+    placement_phonograph("crack.ogg")
     durability = 10
     flammability = 2
     habitability = 0
