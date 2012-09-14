@@ -76,7 +76,7 @@ class Situation(object):
 
     def get_facilities(self):
         return [f for f in self.installations
-                if f.obstruance & grid.obstruance("facility","fence")]
+                if f.obstruance & grid.obstruance("land","facility","fence")]
 
     def get_units(self):
         return [u for u in self.installations

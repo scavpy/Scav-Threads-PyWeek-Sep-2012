@@ -89,12 +89,15 @@ class BuildMenu(object):
         self.repairable = None
         self.centerrect = pygame.Rect(0,0,64,64)
         self.situation = situation
+        self.pricetag = None
 
     def open_menu(self,position,repairable=None,edge=False):
         self.repairable = repairable
         self.is_open = True
-        self.position = position
-        x,y = self.position
+        x,y = position
+        x = min(max(120,x),900)
+        y = min(max(120,y),500)
+        self.position = (x,y)
         self.centerrect.center = self.position
         if edge:
             self.facs = self.situation.fence_plans
@@ -141,19 +144,45 @@ class BuildMenu(object):
             screen.blit(g,gr)
             if image:
                 screen.blit(image,rect)
+        x,y = self.position
+        if self.pricetag:
+            if x<500:
+                px = x+50
+            else:
+                px = x-50-self.pricetag.get_width()
+            screen.blit(self.pricetag,(px,y+self.optrad*3))
 
     def mouse_event(self, e):
         px,py = e.pos
         for itemclass,image,rect in self.options:
-            if itemclass == "REPAIR":
-                return itemclass
-            elif itemclass and self.situation.can_afford_a(itemclass):
-                x,y = rect.center
-                dx,dy = (px-x,py-y)
-                dist2 = dx*dx+dy*dy
-                if dist2 <= self.optrad*self.optrad:
-                    return itemclass
+            x,y = rect.center
+            dx,dy = (px-x,py-y)
+            dist2 = dx*dx+dy*dy
+            if dist2 <= self.optrad*self.optrad:
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if itemclass and (itemclass == "REPAIR" or
+                                      self.situation.can_afford_a(itemclass)):
+                        return itemclass
+                elif e.type == pygame.MOUSEMOTION:
+                    self.update_pricetag(itemclass)
         return None
+
+    def update_pricetag(self, item):
+        text = None
+        r = self.repairable
+        if item:
+            if item == "REPAIR" and r:
+                cost = int((float(r.damage)/r.durability)*r.cost)
+                price = lsb(cost) if cost>0 else "free"
+                text = "Repair %s for %s"%(r.name,lsb(cost))
+            elif item.human:
+                price = ("for %s"%lsb(item.cost)) if item.cost>0 else ""
+                text = "Deploy %s %s"%(item.name,price)
+            else:
+                price = lsb(item.cost) if item.cost>0 else "free"
+                text = "Build %s for %s"%(item.name,price)
+        self.pricetag = typefaces.prepare(text, size="small",
+                                          colour=(255,255,255))
 
 class StatusBar(object):
     height = 120

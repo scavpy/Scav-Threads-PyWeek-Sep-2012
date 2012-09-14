@@ -46,9 +46,7 @@ class PreparationMode(ModeOfOperation):
         return self.result
 
     def on_keydown(self, e):
-        key = e.key
-        if key in (pygame.K_SPACE, pygame.K_RETURN):
-            self.finished = True
+        self.finished = True
 
     def on_quit(self, e):
         self.result = None
@@ -78,6 +76,10 @@ class PreparationMode(ModeOfOperation):
                     self.open_build_menu(e.pos)
             elif e.button == 3:
                 self.open_build_menu(e.pos)
+
+    def on_mousemotion(self, e):
+        if self.build_menu.is_open:
+            self.build_menu.mouse_event(e)
 
     def open_build_menu(self,position):
         fac = self.get_hovered_facility(position)
