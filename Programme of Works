@@ -42,7 +42,7 @@ wrk-fences              Refactor Fence classes into one.                        
 wrk-chapters		A collection of chapters containing details of various situations. 	satisfactory
 wrk-accounting		Render an accounting of the colony's profit and loss                    satisfactory
 wrk-continuation	Allow continuation of a previously saved session                        satisfactory
-wrk-initiation		Exposition of the premise                                               ?
+wrk-initiation		Exposition of the premise                                               satisfactory
 art-facilities          Renderings of structures both agricultural and architectural            satisfactory
 
 wrk-statusbar           A descriptive panel at the base of the viewing device for statistics.   satisfactory

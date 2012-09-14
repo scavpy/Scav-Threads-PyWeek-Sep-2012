@@ -154,6 +154,7 @@ class TextFrame(object):
             c.set_master(self)
             if not self.selected and c.selectable:
                 self.selected = (i,c)
+        self.visible = True
 
     def content_size(self):
         width = max(c.width for c in self.contents)
@@ -178,6 +179,8 @@ class TextFrame(object):
         self.footheight = fe.get_height()
 
     def render(self,screen):
+        if not self.visible:
+            return
         x,y = self.position
         cwidth,cheight = self.content_size()
         self.render_header(screen)
@@ -194,6 +197,20 @@ class TextFrame(object):
                 screen.blit(surf,(x+indent, dy))
             dy += c.height
         self.render_footer(screen)
+
+    def mouse_event(self,event):
+        if event.button != 1:
+            return None
+        mx, my = event.pos
+        x, y = self.position
+        y += self.headheight
+        for c in self.contents:
+            if c.selectable:
+                rect = pygame.Rect(x, y, self.width, c.height)
+                if rect.collidepoint(mx, my):
+                    return c.command
+            y += c.height
+        return None
 
     def render_header(self,screen):
         ew = self.head_end.get_width()
@@ -235,9 +252,6 @@ class TextFrame(object):
                         self.selected = (i,self.contents[i])
                         break
                     i += 1
-
-    def mouse_event(self,event):
-        pass
 
     def make_choice(self):
         return self.selected[1].choose()
@@ -294,3 +308,53 @@ class ChoiceWidget(Widget):
 
     def choose(self):
         return self.command
+
+class SelfAdvancingScroll(Widget):
+    """ A scroll that advances at its own
+    pace so as to reveal successive lines of text """
+
+    def __init__(self, text, location, dots_per_second=20):
+        self.scroll = typefaces.prepare_passage(text, location.width)
+        self.location = location
+        self.dots_per_second = dots_per_second
+        self.end_position = location.height
+        self.end_position = self.scroll.get_height() - location.height
+        self.position = -location.height
+        self.rate = 1
+
+    def stopped(self):
+        return self.rate == 0
+
+    def render(self, screen):
+        """ show the part that is visible """
+        width, height = self.location[2:]
+        peephole = pygame.Surface((width, height), pygame.SRCALPHA)
+        peephole.fill((255,255,255,0))
+        peephole.fill((0,0,0,32),(0,0,width,8))
+        peephole.fill((0,0,0,32),(0,height-8,width,8))
+        peephole.fill((0,0,0,64),(0,0,width,4))
+        peephole.fill((0,0,0,64),(0,height-4,width,4))
+        position = int(self.position)
+        peephole.blit(self.scroll, (0,0), (0, position, self.location.width, self.location.height))
+        screen.blit(peephole, self.location)
+
+    def advance(self, milliseconds):
+        dots = self.dots_per_second * milliseconds * self.rate / 1000.0
+        if self.position <= 0:
+            dots = max(dots, 0)
+        self.position += dots
+        if self.position >= self.end_position:
+            self.position = max(self.end_position, 0)
+            self.rate = 0
+
+    def advance_rapidly(self):
+        self.rate = 3
+
+    def advance_slowly(self):
+        self.rate = 1
+
+    def regress_rapidly(self):
+        self.rate = -2
+
+    def stop(self):
+        self.rate = 0

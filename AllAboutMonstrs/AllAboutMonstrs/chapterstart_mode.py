@@ -25,13 +25,21 @@ class ChapterStartMode(ModeOfOperation):
         self.menu.key_event(e)
         if e.key == pygame.K_RETURN:
             choice = self.menu.make_choice()
-            if choice:
-                if choice == "begin":
-                    self.next_mode = "Preparation"
-                elif choice == "back":
-                    self.next_mode = "Introductory"
-                self.finished = True
+            self.chosen_from_menu(choice)
         self.redraw()
+
+    def on_mousebuttondown(self, e):
+        choice = self.menu.mouse_event(e)
+        if choice:
+            self.chosen_from_menu(choice)
+
+    def chosen_from_menu(self, choice):
+        if choice:
+            if choice == "begin":
+                self.next_mode = "Preparation"
+            elif choice == "back":
+                self.next_mode = "Introductory"
+            self.finished = True
 
     def on_quit(self, e):
         self.finished = True
