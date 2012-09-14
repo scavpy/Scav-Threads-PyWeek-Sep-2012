@@ -76,7 +76,7 @@ wrk-victorianize        Victorianize the help in the information screen.        
 wrk-casualties          Account for the deaths of your troops.                                  ?
 
 aux-personalize         Provide each soldier with a name.                                       ?
-wrk-transition          Decide and implement a transition between Preparation and Onslaught.    ?
+wrk-transition          Decide and implement a transition between Preparation and Onslaught.    satisfactory
 snd-extra               Humans, fence, explosion, breaking, screams                             ?
 aux-pricetags           Show how much each item in the build menu costs and the name of it.     ?
 aux-littlehelp          Show game controls where relevant.                                      ?

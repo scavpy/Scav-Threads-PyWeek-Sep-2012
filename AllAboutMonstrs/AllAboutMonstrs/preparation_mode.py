@@ -46,7 +46,9 @@ class PreparationMode(ModeOfOperation):
         return self.result
 
     def on_keydown(self, e):
-        self.finished = True
+        key = e.key
+        if key in (pygame.K_SPACE, pygame.K_RETURN):
+            self.finished = True
 
     def on_quit(self, e):
         self.result = None
