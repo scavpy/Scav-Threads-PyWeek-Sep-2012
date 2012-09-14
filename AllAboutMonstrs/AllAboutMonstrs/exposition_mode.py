@@ -8,11 +8,13 @@ from modes import ModeOfOperation
 from style import PAGECOLOUR, PAGEMARGIN
 
 PREMISE = """Her Majesty Queen Victoria III Commands:
- 
+
  That a colony of the British Empire be established
  in the untamed wilderness of New Cumbria, where there
  are said to be untapped mineral resources and zoological
  wonders.
+
+ And that {0} be appointed governor of said colony.
 
  It is of vital importance to establish this colony
  for the glory of the British Empire and Her Majesty,
@@ -38,6 +40,7 @@ class ExpositionMode(ModeOfOperation):
     """ The mode by which the premise is communicated to
     a new initiate to the entertainment. """
     def operate(self, current_situation):
+        self.name = current_situation.savename
         self.initialize()
         self.redraw()
         self.finished = False
@@ -64,7 +67,7 @@ class ExpositionMode(ModeOfOperation):
         width = 800
         height = 480
         location = pygame.Rect(PAGEMARGIN, scroll_top, width, height)
-        self.exposition = gui.SelfAdvancingScroll(PREMISE, location, 30)
+        self.exposition = gui.SelfAdvancingScroll(PREMISE.format(self.name), location, 30)
 
     def redraw(self):
         blit = self.screen.blit

@@ -11,6 +11,7 @@ class IntroductoryMode(ModeOfOperation):
     """ The mode serving as an introduction. """
     def operate(self, current_situation):
         self.situation = current_situation
+        self.situation.in_game = False
         self.initialize()
         self.redraw()
         self.finished = False
@@ -35,7 +36,7 @@ class IntroductoryMode(ModeOfOperation):
         self.name_menu = gui.PunchCard((300,400))
         self.name_prompt = gui.make_textbox(
             (300,200),
-            "Punch a card with your name: ",
+            "Punch a card with your name, for the analytical engine:\n",
             400,
             )
         self.menu = self.main_menu
