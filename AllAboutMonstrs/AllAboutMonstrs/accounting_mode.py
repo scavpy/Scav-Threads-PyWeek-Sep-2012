@@ -112,9 +112,11 @@ class AccountingMode(ModeOfOperation):
         max_growth_from_space = max((housing_space - population),0)
         population_growth = min(max_growth_from_space,
                                 max_growth_from_crops)
+        if population < 5 and population_growth == 0:
+            population_growth = 1
         food -= population_growth*MEAL_SIZE
         # Income from crops
-        food_income = food*0x100
+        food_income = food*0x80
         
 
         note("Remaining balance", remaining_balance)

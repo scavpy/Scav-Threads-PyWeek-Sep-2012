@@ -128,6 +128,7 @@ class Unit(object):
         self.reload_time = time() + 5.0 / self.rapidity
         self.animation_frame = self.walking_animations + 1
         self.image = self.obtain_frame()
+        phonographs.play(self.attack_phonograph)
         return True
 
     def animate(self, ms):
@@ -222,6 +223,7 @@ class Cannon(Unit):
     footprint = 20,16
     area_of_awareness = (200,160)
     area_of_attack = (80, 64)
+    attack_phonograph = "cannon.ogg"
     pace = 100
     cost = 0x200
 
@@ -241,14 +243,13 @@ class Cannon(Unit):
             if self.rect_of_attack.colliderect(target.rect):
                 if self.attack():
                     target.harm(self.firepower)
-                    phonographs.play("cannon.ogg")
                     return [target]
 
 class Soldier(Unit):
     """ An infantry unit. """
     name = "Soldier"
     durability = 10
-    firepower = 1
+    firepower = 2
     velocity = 7
     rapidity = 3
     animated_chromograph_name = "units/soldier.png"
@@ -257,7 +258,8 @@ class Soldier(Unit):
     orientation_indices = (1,1,1,1,0,0,0,0)
     footprint = (10,10)
     area_of_awareness = (200,160)
-    area_of_attack = (70,56)
+    area_of_attack = (100,80)
+    attack_phonograph = "rifle.ogg"
     pace = 50
     cost = 0x000
     aliment = "Meat"
@@ -281,5 +283,4 @@ class Soldier(Unit):
             if self.rect_of_attack.colliderect(target.rect):
                 if self.attack():
                     target.harm(self.firepower)
-                    phonographs.play("rifle.ogg")
                     return [target]

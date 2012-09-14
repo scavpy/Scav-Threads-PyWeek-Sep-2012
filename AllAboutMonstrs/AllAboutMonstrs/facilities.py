@@ -93,8 +93,8 @@ class Facility(object):
 class Fence(Facility):
     name = "Wooden Fence"
     chromograph_suffix = "fence"
-    placement_phonograph("crack.ogg")
-    durability = 10
+    placement_phonograph = "crack.ogg"
+    durability = 40
     flammability = 2
     habitability = 0
     pace = 1000
@@ -121,7 +121,7 @@ class Fence(Facility):
 class Wall(Fence):
     name = "Brick Wall"
     chromograph_suffix = "wall"
-    durability = 40
+    durability = 100
     flammability = 0
     cost = 0x100
     placement_phonograph = "brick.ogg"
@@ -144,12 +144,12 @@ class Crops(Facility):
 
 class Housing(Facility):
     name = "Housing"
-    durability = 40
+    durability = 120
     habitability = 3
     animated_chromograph_name = "facilities/housing.png"
     standing_animations = 4
     obstruance = grid.obstruance("facility")
-    exclusion = grid.obstruance("notland")
+    exclusion = grid.obstruance("all")
     footprint = (grid.LOT_WIDTH-10, grid.LOT_DEPTH-8)
     cost = 0x300
     pace = 200
@@ -164,6 +164,6 @@ class Ship(Facility):
     standing_animations = 1
     conditions = 4
     obstruance = grid.obstruance("facility")
-    exclusion = grid.obstruance("notland")
+    exclusion = grid.obstruance("all")
     footprint = (128,40)
     cost = 0xa00

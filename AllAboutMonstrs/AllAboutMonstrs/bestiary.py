@@ -6,6 +6,7 @@ import random
 import units
 import facilities
 import grid
+import phonographs
 
 class Animal(units.Unit):
     """A description of the Animal"""
@@ -90,9 +91,9 @@ class Animal(units.Unit):
                        and not obstacles[i].destroyed()]
             if targets and not self.attacking:
                 target = targets[0]
-                self.attack()
-                target.harm(self.destructiveness)
-                return [target]
+                if self.attack():
+                    target.harm(self.destructiveness)
+                    return [target]
         directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
         self.orient(random.choice(directions))
 
@@ -185,6 +186,7 @@ class Trinitroceratops(Animal):
     footprint = (45,20)
     area_of_awareness = (100,80)
     area_of_attack = (25,20)
+    attack_phonograph = "munching.ogg"
 
     def __init__(self, location):
         super(Trinitroceratops, self).__init__(location)
@@ -228,6 +230,7 @@ class Explodocus(Animal):
     footprint = (70,56)
     area_of_awareness = (200, 160)
     area_of_attack = (75,61)
+    attack_phonograph = "munching.ogg"
 
     def __init__(self, location):
         super(Explodocus, self).__init__(location)
@@ -274,7 +277,7 @@ class Tankylosaurus(Animal):
     footprint = (40,32)
     area_of_awareness = (100,80)
     area_of_attack = (45,40) # special
-
+    attack_phonograph = "growl.ogg"
 
     def __init__(self, location):
         super(Tankylosaurus, self).__init__(location)
@@ -337,7 +340,7 @@ class Ferociraptor(Animal):
     footprint = (15,12)
     area_of_awareness = (150,120)
     area_of_attack = (10,8)
-
+    attack_phonograph = "raptor.ogg"
 
     def __init__(self, location):
         super(Ferociraptor, self).__init__(location)
@@ -370,7 +373,7 @@ class Blastosaurus(Animal):
     voratious eater of men, and a dangerously explosive creature
     best dispatched well away from any important structures."""
     name = "Blastosaurus rex"
-    durability = 30
+    durability = 70
     voracity = 18
     velocity = 5
     infernality = 3
@@ -384,7 +387,7 @@ class Blastosaurus(Animal):
     footprint = (45,33)
     area_of_awareness = (150,120)
     area_of_attack = (20,16)
-
+    attack_phonograph = "b-rex-mono.ogg"
 
     def __init__(self, location):
         super(Blastosaurus, self).__init__(location)
