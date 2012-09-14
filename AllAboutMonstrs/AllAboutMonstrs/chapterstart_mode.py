@@ -67,6 +67,13 @@ class ChapterStartMode(ModeOfOperation):
                                    ("Consult Encyclopaedia", "encyclopaedia"),
                                    ],300)
         self.situation.death_stats = defaultdict(int)
+        for category, name in chapter.inventions:
+            if category == "fences":
+                put_in = self.situation.fence_plans
+            elif category == "units":
+                put_in = self.situation.unit_plans
+            if name not in put_in:
+                put_in.append(name)
 
     def redraw(self):
         blit = self.screen.blit

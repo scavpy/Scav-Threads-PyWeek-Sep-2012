@@ -210,11 +210,12 @@ class Unit(object):
         
         
 class Cannon(Unit):
-    """ A simple artillery unit """
+    """ A simple artillery unit. Powerful, but useless without
+    good soldiers to man it."""
     name = "Cannon"
     durability = 15
     firepower = 10
-    velocity = 2
+    velocity = 0
     rapidity = 1
     depiction = "Cannon.png"
     placement_phonograph = "cannon-place.ogg"
@@ -227,7 +228,50 @@ class Cannon(Unit):
     area_of_attack = (80, 64)
     attack_phonograph = "cannon.ogg"
     pace = 100
-    cost = 0x200
+    cost = 0x180
+
+    def think(self, things):
+        """ Determine the tactics of the unit.
+        If it acted upon any thing else, return a list of such
+        things. Otherwise return a non-true value.
+        """
+        # Fire when any beast is attackable
+        from bestiary import Animal
+        indices = self.rect_of_awareness.collidelistall(things)
+        category = grid.obstruance("beast")
+        beasts = self.find_nearest([things[i] for i in indices
+                                    if things[i].obstruance & category])
+        crew = self.find_nearest([things[i] for i in indices
+                                   if things[i].human and not things[i].destroyed()])
+        if beasts and not self.attacking and crew:
+            target = beasts[0]
+            self.orient(self.orientation_towards(target.rect.center))
+            if self.rect_of_attack.colliderect(target.rect):
+                if self.attack():
+                    target.harm(self.firepower, "gunfire")
+                    return [target]
+
+class AnalyticalCannon(Unit):
+    """ A cannon operated by analytical engine, aimed using
+    a directional seismonstrograph. Fires rapidly and
+    accurately without a gun crew."""
+    name = "Analytical Cannon"
+    durability = 15
+    firepower = 5
+    velocity = 0
+    rapidity = 5
+    depiction = "AnalyticalCannon.png"
+    placement_phonograph = "cannon-place.ogg"
+    animated_chromograph_name = "units/analyticalcannon.png"
+    walking_animations = 1
+    attacking_animations = 2
+    orientation_indices = (2,1,1,1,3,0,0,0)
+    footprint = 20,16
+    area_of_awareness = (200,160)
+    area_of_attack = (80, 64)
+    attack_phonograph = "cannon.ogg"
+    pace = 100
+    cost = 0x400
 
     def think(self, things):
         """ Determine the tactics of the unit.

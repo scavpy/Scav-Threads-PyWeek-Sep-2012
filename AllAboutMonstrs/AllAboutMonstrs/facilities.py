@@ -94,7 +94,7 @@ class Fence(Facility):
     name = "Wooden Fence"
     chromograph_suffix = "fence"
     placement_phonograph = "crack.ogg"
-    durability = 40
+    durability = 20
     flammability = 2
     habitability = 0
     pace = 1000
@@ -121,7 +121,7 @@ class Fence(Facility):
 class Wall(Fence):
     name = "Brick Wall"
     chromograph_suffix = "wall"
-    durability = 100
+    durability = 80
     flammability = 0
     cost = 0x100
     placement_phonograph = "brick.ogg"

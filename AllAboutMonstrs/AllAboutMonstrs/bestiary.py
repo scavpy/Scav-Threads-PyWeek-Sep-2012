@@ -327,7 +327,7 @@ class Ferociraptor(Animal):
     and eaten by two others."""
     name = "Ferociraptor incandescens"
     durability = 11
-    voracity = 2
+    voracity = 12
     velocity = 8
     infernality = 2
     monstrosity = 5

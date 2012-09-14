@@ -44,7 +44,7 @@ vessels remaining and must protect them at all costs.",
             wave_of("Ferociraptor", -50, 200, 240, 500, 550),
             wave_of("Ferociraptor", -50, 200, 240, 500, 550) + wave_of("Trinitroceratops", -80, 360, 450)
             ],
-        inventions=[("units", "Cannon"), ("facilities","Fence")]
+        inventions=[("units", "Cannon"), ("fences","Fence")]
         ),
     Chapter(
         "Two","Desperate Times","boat.png",
@@ -57,7 +57,7 @@ vessels remaining and must protect them at all costs.",
             wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 550) + wave_of("Ferociraptor", -150, 300, 400, 500),
             wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 550) + wave_of("Tankylosaurus", -150, 300, 400)
             ],
-        inventions=[("units","AnalyticalCannon"), ("facilities","Wall")]
+        inventions=[("units","AnalyticalCannon"), ("fences","Wall")]
         ),
     Chapter(
         "Three","Desperate Times","boat.png",
