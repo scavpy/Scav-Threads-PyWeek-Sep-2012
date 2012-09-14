@@ -56,26 +56,35 @@ class IntroductoryMode(ModeOfOperation):
         self.menu.key_event(e)
         if e.key == pygame.K_RETURN:
             choice = self.menu.make_choice()
-            if choice in ["new","encyclopaedia","quit"]:
-                if choice == "new":
-                    self.situation.land_ho()
-                    self.situation.save_game()
-                    self.next_mode = "Exposition"
-                elif choice == "encyclopaedia":
-                    self.next_mode = "Encyclopaedia"
+            self.chosen_from_menu(choice)
+        self.redraw()
+
+    def on_mousebuttondown(self, e):
+        choice = self.menu.mouse_event(e)
+        if choice:
+            self.chosen_from_menu(choice)
+
+    def chosen_from_menu(self, choice):
+        if choice in ["new","encyclopaedia","quit"]:
+            if choice == "new":
+                self.situation.land_ho()
+                self.situation.save_game()
+                self.next_mode = "Exposition"
+            elif choice == "encyclopaedia":
+                self.next_mode = "Encyclopaedia"
+            self.finished = True
+        elif choice == "load":
+            self.open_load_menu()
+        elif choice == "back":
+            self.close_load_menu()
+        else:
+            try:
+                self.situation.load_game(choice)
+                self.next_mode = "ChapterStart"
                 self.finished = True
-            elif choice == "load":
-                self.open_load_menu()
-            elif choice == "back":
-                self.close_load_menu()
-            else:
-                try:
-                    self.situation.load_game(choice)
-                    self.next_mode = "ChapterStart"
-                    self.finished = True
-                except IOError:
-                    print("No such save file: %s"%choice)
-                    self.finished = True
+            except IOError:
+                print("No such save file: %s"%choice)
+                self.finished = True
         self.redraw()
 
     def open_load_menu(self):
