@@ -29,6 +29,15 @@ class Facility(object):
         self.image = self.obtain_frame()
         self.flash = False
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state["image"] = None
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.image = self.obtain_frame()
+
     def obtain_frame(self):
         """ obtain that portion of the animated chromograph
         that shows the facility in its current condition """

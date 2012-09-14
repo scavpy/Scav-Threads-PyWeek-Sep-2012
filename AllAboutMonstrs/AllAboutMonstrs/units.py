@@ -54,6 +54,15 @@ class Unit(object):
         self.reload_time = 0
         self.flash = False
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state["image"] = None
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.image = self.obtain_frame()
+
     
     def step_position(self):
         """ where will it be on the next step? """
