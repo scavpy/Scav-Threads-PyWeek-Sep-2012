@@ -92,7 +92,7 @@ class Animal(units.Unit):
             if targets and not self.attacking:
                 target = targets[0]
                 if self.attack():
-                    target.harm(self.destructiveness)
+                    target.harm(self.destructiveness, "trampled")
                     return [target]
         directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
         self.orient(random.choice(directions))
@@ -108,7 +108,7 @@ class Animal(units.Unit):
             if not self.attacking:
                 if self.rect_of_attack.colliderect(target.rect):
                     self.attack()
-                    target.harm(1)
+                    target.harm(1,"eaten")
                     self.satiety += 1
                     if self.satiety >= self.voracity:
                         self.bored = True
@@ -152,13 +152,13 @@ class Animal(units.Unit):
             d = quadrate_distance(thing)
             if d > quadrate_radius:
                 continue
-            thing.harm(self.infernality)
+            thing.harm(self.infernality, "exploded")
             targets.append(thing)
         return targets
 
-    def harm(self, quanta_of_destruction):
+    def harm(self, quanta_of_destruction, cause):
         """ Dinosaurs will sometimes explode for no readily apparent reason """
-        super(Animal, self).harm(quanta_of_destruction)
+        super(Animal, self).harm(quanta_of_destruction, cause)
         ratio = float(self.damage) / self.durability
         if ratio >= 1.0:
             return
@@ -318,7 +318,7 @@ class Tankylosaurus(Animal):
         if targets:
             self.attack()
         for target in targets:
-            target.harm(self.destructiveness)
+            target.harm(self.destructiveness, "trampled")
         return targets
 
 class Ferociraptor(Animal):
@@ -378,7 +378,7 @@ class Blastosaurus(Animal):
     velocity = 5
     infernality = 3
     monstrosity = 8
-    destructiveness = 4
+    destructiveness = 7
     depiction = "Blastosaurus.png"
     animated_chromograph_name = "units/blastosaurus.png"
     walking_animations = 2

@@ -29,8 +29,13 @@ class OnslaughtMode(ModeOfOperation):
             self.situation.update_status_bar(self.statusbar)
             self.render()
             self.dead_test()
+            self.win_test()
         phonographs.play("fanfare.ogg")
         phonographs.diminuendo(1000)
+        # calculate the death statistics
+        for u in self.situation.installations:
+            if u.human and u.destroyed():
+                self.situation.death_stats[u.killed_by] += 1
         return self.result
 
     def on_keydown(self, e):
@@ -128,6 +133,15 @@ class OnslaughtMode(ModeOfOperation):
             self.result = "ChapterStart"
             self.finished = True
 
+    def win_test(self):
+        if not any(d for d in self.dinosaurs if not d.destroyed()):
+            self.finished = True
+            situation = self.situation
+            num_waves = len(chapters.CHAPTERS[situation.chapter].waves)
+            situation.wave += 1
+            if situation.wave >= num_waves:
+                self.result = "Accounting"
+
     def move_dinosaurs(self, ms):
         situation = self.situation
         all_the_things = situation.installations + self.dinosaurs
@@ -138,12 +152,6 @@ class OnslaughtMode(ModeOfOperation):
             if d.finished:
                 self.dinosaurs.remove(d)
                 all_the_things.remove(d)
-        if not self.dinosaurs:
-            self.finished = True
-            num_waves = len(chapters.CHAPTERS[situation.chapter].waves)
-            situation.wave += 1
-            if situation.wave >= num_waves:
-                self.result = "Accounting"
 
     def move_units(self, ms):
         all_the_things = self.situation.installations + self.dinosaurs

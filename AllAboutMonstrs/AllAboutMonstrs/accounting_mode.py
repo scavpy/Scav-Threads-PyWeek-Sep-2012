@@ -112,8 +112,8 @@ class AccountingMode(ModeOfOperation):
         max_growth_from_space = max((housing_space - population),0)
         population_growth = min(max_growth_from_space,
                                 max_growth_from_crops)
-        if population < 5 and population_growth == 0:
-            population_growth = 1
+        if population < 5 and population_growth < 3:
+            population_growth = 3
         food -= population_growth*MEAL_SIZE
         # Income from crops
         food_income = food*0x80
@@ -132,12 +132,16 @@ class AccountingMode(ModeOfOperation):
             cnt[t] += 1
         for k, v in cnt.items():
             note(k + " slain", v)
-            trophy_income += 0x26 * v # 2 shillings and sixbence bounty per corpse
+            trophy_income += 0x40 * v # 4 shillings bounty per corpse
         situation.trophies = []
-        income = trophy_income + food_income
+        income = trophy_income + food_income + 0x100 # 1 pound bonus
 
         note("Income",lsb(income))
-        
+
+        # Death stats
+        for (k,v) in self.situation.death_stats.items():
+            note("Men " + k, v)
+            
         # Apply results
         situation.wealth += income
         situation.population += population_growth

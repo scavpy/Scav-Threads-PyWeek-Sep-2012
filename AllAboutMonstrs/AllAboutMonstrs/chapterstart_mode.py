@@ -1,4 +1,5 @@
 import pygame
+from collections import defaultdict
 
 import chromographs
 import gui
@@ -65,6 +66,7 @@ class ChapterStartMode(ModeOfOperation):
                                    ("We are scared!","back"),
                                    ("Consult Encyclopaedia", "encyclopaedia"),
                                    ],300)
+        self.situation.death_stats = defaultdict(int)
 
     def redraw(self):
         blit = self.screen.blit

@@ -53,6 +53,7 @@ class Unit(object):
         self.directions.center = (0,0)
         self.reload_time = 0
         self.flash = False
+        self.killed_by = None
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -152,7 +153,7 @@ class Unit(object):
         self.image = self.obtain_frame()
         return True # something was changed
 
-    def harm(self, quanta_of_destruction):
+    def harm(self, quanta_of_destruction, cause=None):
         """ Deal damage to the unit, possibly rendering it inactive """
         self.damage += quanta_of_destruction
         self.flash = True
@@ -162,6 +163,7 @@ class Unit(object):
             self.walking = False
             self.attacking = False
             self.image = self.obtain_frame()
+            self.killed_by = cause
 
     def destroyed(self):
         return self.damage >= self.durability
@@ -242,7 +244,7 @@ class Cannon(Unit):
             self.orient(self.orientation_towards(target.rect.center))
             if self.rect_of_attack.colliderect(target.rect):
                 if self.attack():
-                    target.harm(self.firepower)
+                    target.harm(self.firepower, "gunfire")
                     return [target]
 
 class Soldier(Unit):
@@ -282,5 +284,5 @@ class Soldier(Unit):
             self.orient(self.orientation_towards(target.rect.center))
             if self.rect_of_attack.colliderect(target.rect):
                 if self.attack():
-                    target.harm(self.firepower)
+                    target.harm(self.firepower, "gunfire")
                     return [target]

@@ -65,7 +65,7 @@ class Facility(object):
         self.image = self.obtain_frame()
         return True # something was changed
 
-    def harm(self, quanta_of_destruction):
+    def harm(self, quanta_of_destruction, cause):
         """ damage the structure, worsening its condition
         accordingly """
         self.damage += quanta_of_destruction
