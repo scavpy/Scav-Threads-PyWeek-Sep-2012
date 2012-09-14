@@ -36,7 +36,11 @@ class Animal(units.Unit):
         self.walking = True
         self.exploding = False
         self.blast_radius = self.footprint[0] * self.infernality
-        
+
+    def __repr__(self):
+        return "{0}({1},damage={2})".format(self.__class__.__name__,
+                                        self.rect, self.damage)
+    
     def attend_to_attack_area(self, centre):
         """ Beasts have close-in attacks """
         self.rect_of_attack.center = centre

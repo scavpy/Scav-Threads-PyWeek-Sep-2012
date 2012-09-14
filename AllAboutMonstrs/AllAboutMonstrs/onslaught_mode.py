@@ -34,7 +34,9 @@ class OnslaughtMode(ModeOfOperation):
         return self.result
 
     def on_keydown(self, e):
-        self.finished = True
+        if e.key == pygame.K_w:
+            print "Dinosaurs:", self.dinosaurs
+            self.finished = True
 
     def on_quit(self, e):
         self.result = None
