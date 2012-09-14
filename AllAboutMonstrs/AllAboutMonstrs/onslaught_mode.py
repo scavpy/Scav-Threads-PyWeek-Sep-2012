@@ -6,6 +6,7 @@ import data
 from modes import ModeOfOperation
 import gui
 import chromographs
+import phonographs
 import typefaces
 import units
 import bestiary
@@ -28,6 +29,8 @@ class OnslaughtMode(ModeOfOperation):
             self.situation.update_status_bar(self.statusbar)
             self.render()
             self.dead_test()
+        phonographs.play("fanfare.ogg")
+        phonographs.diminuendo(1000)
         return self.result
 
     def on_keydown(self, e):
@@ -66,6 +69,7 @@ class OnslaughtMode(ModeOfOperation):
         self.statusbar = gui.StatusBar()
         self.situation.update_status_bar(self.statusbar)
         self.selected_unit = None
+        # orchestrate the battle music
 
     def render(self):
         self.clear_screen(image=self.scenery)

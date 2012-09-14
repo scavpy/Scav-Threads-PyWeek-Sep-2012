@@ -52,7 +52,7 @@ wrk-housing             Placement, accounting and damage of housing.            
 wrk-deployment          Deploy and command infantry from housing.                               satisfactory
 
 wrk-sound               Add sound and sounds.                                                   satisfactory
-snd-music-1             Prepare musical accompaniment						?
+snd-music-1             Prepare musical accompaniment						satisfactory
 wrk-waves		Misfortunes to have the propensity to come in threes			satisfactory
 fix-houserage		Stop dinosaurs from attacking already ruined houses			satisfactory
 wrk-facilities-2	Brick walls    	    	          	     				satisfactory

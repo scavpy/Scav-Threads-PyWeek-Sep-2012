@@ -9,6 +9,7 @@ from pygame.display import get_surface, flip
 from modes import ModeOfOperation
 import typefaces
 import chromographs
+import phonographs
 import gui
 import chapters
 import facilities
@@ -63,6 +64,7 @@ class AccountingMode(ModeOfOperation):
             self.next_mode = "ChapterStart"
             # TODO - autosave
         self.ribbon = chromographs.obtain("flourish/ribbon-gold.png")
+        phonographs.orchestrate("intromusic.ogg")
 
     def assess(self):
         """
