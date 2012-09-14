@@ -7,7 +7,7 @@ import facilities
 import units
 from accounting_mode import lsb
 
-from math import sin, cos, sqrt, radians
+from math import sin, cos, sqrt, radians, pi
 
 def make_textbox(position,text,width,size="normal",colour=(0,0,0)):
     widget = SurfWidget(
@@ -70,13 +70,19 @@ class BuildMenu(object):
     def halfwheel(self,module,items,hemisphere):
         x,y = self.position
         result = []
-        r = self.optrad*2
-        angle = hemisphere * radians(180.0/(len(items)+1))
+        numitems = len(items)+1
+        d = self.optrad*2
+        if numitems > 3:
+            n = numitems*2
+            r = -(d * sin(((n-2)/(2*pi))*pi)) / sin((2*pi)/n)
+        else:
+            r = d
+        angle = hemisphere * radians(180.0/numitems)
         for i,item in enumerate(items):
             itemclass = getattr(module,item,None)
             img = chromographs.obtain("iconic/%s.png"%item)
             rect = img.get_rect()
-            rect.center = (x + cos(angle*(i+1))*r, y + sin(angle*(i+1))*r)
+            rect.center = (x + -cos(angle*(i+1))*r, y + sin(angle*(i+1))*r)
             opt = (itemclass,img,rect)
             result.append(opt)
         return result
