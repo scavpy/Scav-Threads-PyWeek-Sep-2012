@@ -108,6 +108,11 @@ class PreparationMode(ModeOfOperation):
         for inst in situation.installations[:]:
             if inst.destroyed():
                 situation.installations.remove(inst)
+        for unit in situation.get_units():
+            unit.damage = 0 # repair units automatically
+            unit.attacking = 0
+            unit.animation_frame = 1
+            unit.image = unit.obtain_frame()
     
     def render(self):
         self.clear_screen(image=self.scenery)
