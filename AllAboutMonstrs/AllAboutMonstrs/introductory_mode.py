@@ -32,6 +32,12 @@ class IntroductoryMode(ModeOfOperation):
                               ("Education","encyclopaedia"),
                               ("Termination","quit")],400)
         self.load_menu = self.prepare_load_menu()
+        self.name_menu = gui.PunchCard((300,400))
+        self.name_prompt = gui.make_textbox(
+            (300,200),
+            "Punch a card with your name: ",
+            400,
+            )
         self.menu = self.main_menu
         self.ribbon = chromographs.obtain("flourish/ribbon-white.png")
         phonographs.orchestrate("intromusic.ogg")
@@ -52,6 +58,8 @@ class IntroductoryMode(ModeOfOperation):
         self.clear_screen(colour=PAGECOLOUR)
         self.header.render(self.screen)
         self.menu.render(self.screen)
+        if self.menu == self.name_menu:
+            self.name_prompt.render(self.screen)
         self.screen.blit(self.ribbon,(850,-2))
         pygame.display.flip()
 
@@ -70,28 +78,38 @@ class IntroductoryMode(ModeOfOperation):
         self.menu.mouse_event(e)
 
     def chosen_from_menu(self, choice):
-        if choice in ["new","information","encyclopaedia","quit"]:
-            if choice == "new":
-                self.situation.land_ho()
-                self.situation.save_game()
-                self.next_mode = "Exposition"
-            elif choice == "information":
+        if choice in ["information","encyclopaedia","quit"]:
+            if choice == "information":
                 self.next_mode = "Information"
             elif choice == "encyclopaedia":
                 self.next_mode = "Encyclopaedia"
             self.finished = True
+        elif choice == "new":
+            self.menu = self.name_menu
         elif choice == "load":
             self.open_load_menu()
         elif choice == "back":
             self.close_load_menu()
         else:
-            try:
-                self.situation.load_game(choice)
-                self.next_mode = "ChapterStart"
-                self.finished = True
-            except IOError:
-                print("No such save file: %s"%choice)
-                self.finished = True
+            if self.menu == self.load_menu:
+                try:
+                    self.situation.load_game(choice)
+                    self.next_mode = "ChapterStart"
+                    self.finished = True
+                except IOError:
+                    print("No such save file: %s"%choice)
+            elif self.menu == self.name_menu:
+                if choice:
+                    self.start_new_game(choice)
+                else:
+                    self.menu = self.main_menu
+
+    def start_new_game(self,name):
+        self.situation.reset(name)
+        #self.situation.land_ho()
+        self.situation.save_game()
+        self.next_mode = "Exposition"
+        self.finished = True
 
     def open_load_menu(self):
         self.menu = self.load_menu

@@ -23,7 +23,10 @@ SHIP_RECTS = [
 class Situation(object):
     maxships = 4
     def __init__(self):
-        self.savename = "Save"
+        self.reset("Save")
+
+    def reset(self,name):
+        self.savename = name
         self.wealth = 0x1400  # in binary pence
         self.installations = []
         self.population = 5
