@@ -69,6 +69,11 @@ class OnslaughtMode(ModeOfOperation):
         self.finished = False
         self.result = "Preparation"
         self.statusbar = gui.StatusBar()
+        self.statusbar.push_messages(
+            "Protect your ships!",
+            "Click again on the field to direct a soldier",
+            "Click on a soldier to select them",
+            )
         self.situation.update_status_bar(self.statusbar)
         self.selected_unit = None
         # orchestrate the battle music

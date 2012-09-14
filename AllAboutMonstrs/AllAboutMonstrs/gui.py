@@ -188,6 +188,8 @@ class StatusBar(object):
     height = 120
     live_ship = chromographs.obtain("iconic/living-ship.png")
     dead_ship = chromographs.obtain("iconic/dead-ship.png")
+    gear = chromographs.obtain("iconic/wee-gear.png")
+    gearrect = gear.get_rect()
 
     def __init__(self):
         self.stats_table = None
@@ -195,6 +197,8 @@ class StatusBar(object):
         self.max_ships = 0
         self.last_build = None
         self.icon_rect = None
+        self.messages = None
+        self.message_stack = []
 
     def update(self, money, food, pop, last_build, ships, remaining):
         self.stats_table = typefaces.prepare_table(
@@ -207,17 +211,30 @@ class StatusBar(object):
         self.remaining_ships = remaining
         self.max_ships = ships
 
+    def push_messages(self, *messages):
+        for m in messages:
+            if len(self.message_stack) >= 4:
+                self.message_stack.pop(-1)
+            self.message_stack.insert(0,m)
+        self.messages = typefaces.prepare_passage(
+            "\n".join(self.message_stack),400,
+            colour=(240,240,240), size="small")
+
     def render(self,screen,onslaught = False):
         y = screen.get_height() - self.height
         pygame.draw.rect(screen,(0,0,0),(0,y,screen.get_width(),self.height))
         screen.blit(self.stats_table,(20,y+20))
-        self.icon_rect.center = (350,y+20)
+        self.icon_rect.center = (280,y+30)
+        self.gearrect.center = (280,y+30)
+        screen.blit(self.gear,self.gearrect)
         screen.blit(self.last_build,self.icon_rect)
         for i in range(self.max_ships):
             if i < self.remaining_ships:
-                screen.blit(self.live_ship,(450+i*100,y+10))
+                screen.blit(self.live_ship,(700+i*75,y+30))
             else:
-                screen.blit(self.dead_ship,(450+i*100,y+10))
+                screen.blit(self.dead_ship,(700+i*75,y+30))
+        if self.messages:
+            screen.blit(self.messages,(320,y+20))
 
 class TextFrame(object):
     head_end = chromographs.obtain("flourish/top-end.png")
