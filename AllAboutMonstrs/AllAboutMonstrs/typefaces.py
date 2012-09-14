@@ -74,15 +74,18 @@ def prepare_paragraph(text, width, size="normal", colour=(0,0,0)):
     font = FONTS[size]
     lines = []
     words = text.split()
-    lastline = None
-    line = words[0]
-    for i in range(1,len(words)):
-        lastline = line
-        line = line+" "+words[i]
-        w,h = font.size(line)
-        if w > width:
-            lines.append(lastline)
-            line = words[i]
+    if words:
+        lastline = None
+        line = words[0]
+        for i in range(1,len(words)):
+            lastline = line
+            line = line+" "+words[i]
+            w,h = font.size(line)
+            if w > width:
+                lines.append(lastline)
+                line = words[i]
+    else:
+        line = ""
     lines.append(line)
 
     parawidth = max(font.size(each)[0] for each in lines)

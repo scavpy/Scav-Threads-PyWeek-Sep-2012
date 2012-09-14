@@ -60,7 +60,7 @@ class IntroductoryMode(ModeOfOperation):
                 if choice == "new":
                     self.situation.land_ho()
                     self.situation.save_game()
-                    self.next_mode = "ChapterStart"
+                    self.next_mode = "Exposition"
                 elif choice == "encyclopaedia":
                     self.next_mode = "Encyclopaedia"
                 self.finished = True
