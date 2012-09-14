@@ -15,7 +15,8 @@ SCREENRES = (1024,768)
 def main(args):
     """ Here begins the operation of the analytical engine """
     pygame.display.init()
-    screen = pygame.display.set_mode(SCREENRES)
+    flags = pygame.FULLSCREEN if args.full else 0
+    screen = pygame.display.set_mode(SCREENRES, flags)
     pygame.display.set_caption("Blastosaurus Rex")
     if args.no_sound:
         phonographs.disable_sound()

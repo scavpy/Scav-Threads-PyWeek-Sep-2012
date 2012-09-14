@@ -32,6 +32,8 @@ class ModeOfOperation(object):
         operator depresses a key, on_keydown(e) will be
         performed. """
         for e in pygame.event.get():
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_F11:
+                pygame.display.toggle_fullscreen()
             whatkind = pygame.event.event_name(e.type)
             action = getattr(self, "on_" + whatkind.lower(), None)
             if action:
