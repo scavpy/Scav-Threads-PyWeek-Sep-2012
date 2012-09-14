@@ -46,7 +46,8 @@ class PreparationMode(ModeOfOperation):
         return self.result
 
     def on_keydown(self, e):
-        self.finished = True
+        if e.key in [K_SPACE,K_RETURN]:
+            self.finished = True
 
     def on_quit(self, e):
         self.result = None
@@ -135,6 +136,11 @@ class PreparationMode(ModeOfOperation):
         self.build_menu = BuildMenu(situation)
         self.statusbar = StatusBar()
         situation.update_status_bar(self.statusbar)
+        self.statusbar.push_messages(
+            "Hit Space bar or Return key to begin the Onslaught!",
+            "Left click to repeat the previous build",
+            "Right click to open build menu",
+            )
         for inst in situation.installations[:]:
             if inst.destroyed():
                 situation.installations.remove(inst)
