@@ -75,6 +75,7 @@ class PunchCard(object):
         screen.blit(self.textsurf,(x+dw,y+self.height/2))
 
 class BuildMenu(object):
+    spanner = chromographs.obtain("iconic/spanner.png")
     gear = chromographs.obtain("iconic/wee-gear.png")
     gearrect = gear.get_rect()
     optrad = gearrect.width//2
@@ -85,12 +86,15 @@ class BuildMenu(object):
         self.units = []
         self.options = []
         self.position = (0,0)
+        self.repairable = None
         self.centerrect = pygame.Rect(0,0,64,64)
         self.situation = situation
 
-    def open_menu(self,position,edge=False):
+    def open_menu(self,position,repairable=None,edge=False):
+        self.repairable = repairable
         self.is_open = True
         self.position = position
+        x,y = self.position
         self.centerrect.center = self.position
         if edge:
             self.facs = self.situation.fence_plans
@@ -101,8 +105,13 @@ class BuildMenu(object):
         self.options = self.halfwheel(facilities,self.facs,-1)
         self.options.extend(self.halfwheel(units,self.units,1))
         self.options.append((None,None,self.centerrect))
+        if repairable:
+            rect = self.spanner.get_rect()
+            rect.center = (x,y+self.optrad*4)
+            self.options.append(("REPAIR",self.spanner,rect))
 
     def close_menu(self):
+        self.repairable = None
         self.is_open = False
 
     def halfwheel(self,module,items,hemisphere):
@@ -136,7 +145,9 @@ class BuildMenu(object):
     def mouse_event(self, e):
         px,py = e.pos
         for itemclass,image,rect in self.options:
-            if itemclass and self.situation.can_afford_a(itemclass):
+            if itemclass == "REPAIR":
+                return itemclass
+            elif itemclass and self.situation.can_afford_a(itemclass):
                 x,y = rect.center
                 dx,dy = (px-x,py-y)
                 dist2 = dx*dx+dy*dy

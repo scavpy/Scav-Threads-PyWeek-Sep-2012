@@ -4,6 +4,7 @@
 
 from pygame.rect import Rect
 import chromographs
+import phonographs
 import grid
 
 
@@ -80,6 +81,12 @@ class Facility(object):
             self.condition = max((damage * self.conditions) // ruination, 1)
         self.image = self.obtain_frame()
 
+    def repair(self):
+        self.damage = 0
+        self.condition = 0
+        self.image = self.obtain_frame()
+        phonographs.play("cannon-place.ogg")
+
     def destroyed(self):
         return self.damage >= self.durability
 
@@ -148,6 +155,7 @@ class Housing(Facility):
     placement_phonograph = "brick.ogg"
 
 class Ship(Facility):
+    name = "Ship"
     vital = True
     durability = 1000
     habitability = 1
@@ -157,3 +165,4 @@ class Ship(Facility):
     obstruance = grid.obstruance("facility")
     exclusion = grid.obstruance("notland")
     footprint = (128,40)
+    cost = 0xa00

@@ -56,7 +56,10 @@ class PreparationMode(ModeOfOperation):
         if self.build_menu.is_open:
             choice = self.build_menu.mouse_event(e)
             if choice:
-                self.build_a_thing(choice)
+                if choice == "REPAIR":
+                    self.repair_facility(self.build_menu.repairable)
+                else:
+                    self.build_a_thing(choice)
             self.close_build_menu()
         else:
             edge = self.current_edge
@@ -75,12 +78,35 @@ class PreparationMode(ModeOfOperation):
                 self.open_build_menu(e.pos)
 
     def open_build_menu(self,position):
-        self.build_menu.open_menu(position,bool(self.current_edge))
+        fac = self.get_hovered_facility(position)
+        self.build_menu.open_menu(position,repairable=fac,edge=bool(self.current_edge))
         self.indicate_lot = False
 
     def close_build_menu(self):
         self.build_menu.close_menu()
         self.indicate_lot = True
+
+    def get_hovered_facility(self,pos):
+        choices = []
+        facilities = self.situation.get_facilities()
+        for f in facilities:
+            rect = f.image.get_rect()
+            rect.midbottom = f.rect.midbottom
+            if rect.collidepoint(pos):
+                choices.append(f)
+        if choices:
+            choices.sort(key=lambda x: x.rect.bottom, reverse=True)
+            fac = choices[0]
+            return fac
+        return None
+
+    def repair_facility(self, facility):
+        cost = int((float(facility.damage)/facility.durability)
+                   *facility.cost)
+        if cost <= self.situation.wealth:
+            facility.repair()
+            self.situation.wealth -= cost
+            self.situation.update_status_bar(self.statusbar)
 
     def build_a_thing(self,thingclass):
         if self.situation.can_afford_a(thingclass):
