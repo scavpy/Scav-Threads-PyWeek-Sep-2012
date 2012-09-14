@@ -108,6 +108,7 @@ class PreparationMode(ModeOfOperation):
         for inst in situation.installations[:]:
             if inst.destroyed():
                 situation.installations.remove(inst)
+        phonographs.orchestrate("intromusic.ogg")
     
     def render(self):
         self.clear_screen(image=self.scenery)
