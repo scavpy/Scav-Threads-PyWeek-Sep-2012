@@ -50,6 +50,7 @@ class ExpositionMode(ModeOfOperation):
         return self.next_mode
 
     def on_quit(self, e):
+        self.next_mode = None
         self.finished = True
 
     def initialize(self):
@@ -86,6 +87,19 @@ class ExpositionMode(ModeOfOperation):
         if evt.key == pygame.K_DOWN:
             self.exposition.advance_slowly()
         elif evt.key == pygame.K_UP:
+            self.exposition.advance_slowly()
+
+    def on_mousebuttondown(self, evt):
+        amount = 160
+        if evt.button == 1:
+            self.finished = True
+        elif evt.button == 4:
+            self.exposition.regress_rapidly()
+            self.exposition.advance(amount)
+            self.exposition.advance_slowly()
+        elif evt.button == 5:
+            self.exposition.advance_rapidly()
+            self.exposition.advance(amount)
             self.exposition.advance_slowly()
 
 
