@@ -72,3 +72,17 @@ wrk-repairs		Repair damaged facilities while preparing for an onslaught		?
 wrk-credits		Rolling presentation of congratulatory attributions   			?
 art-walls		Indicate the decrepitude of the brick walls				satisfactory
 wrk-tips                A mechanism by which tips can be presented wherever needed.             ?
+wrk-victorianize        Victorianize the help in the information screen.                        ?
+wrk-casualties          Account for the deaths of your troops.                                  ?
+
+aux-personalize         Provide each soldier with a name.                                       ?
+wrk-transition          Decide and implement a transition between Preparation and Onslaught.    ?
+snd-extra               Humans, fence, explosion, breaking, screams                             ?
+aux-pricetags           Show how much each item in the build menu costs and the name of it.     ?
+aux-littlehelp          Show game controls where relevant.                                      ?
+
+wrk-progress            Tech awarded in accounting.                                             ?
+wrk-encyclopaedia-2     Index page and new indicator in Encyclopaedia.                          ?
+wrk-balance             Make it fair: money, harm etc.                                          ?
+fix-explosions          Explosion animation de-wonked.                                          ?
+
