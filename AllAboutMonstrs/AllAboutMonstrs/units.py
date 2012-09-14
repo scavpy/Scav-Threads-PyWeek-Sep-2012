@@ -149,6 +149,7 @@ class Unit(object):
         if self.damage >= self.durability:
             self.obstruance = 0
             self.animation_frame = 0
+            self.walking = False
 
     def destroyed(self):
         return self.damage >= self.durability
