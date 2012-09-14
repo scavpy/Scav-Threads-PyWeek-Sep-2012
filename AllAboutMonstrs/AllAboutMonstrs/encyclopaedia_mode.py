@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 """
 The Encyclopaedia and Almanack of The Colony of ???
 """
@@ -26,63 +27,115 @@ class EncyclopaediaMode(ModeOfOperation):
     """ Whereby the operator of the device can be presented with
     the fruits of the latest researches in Natural Philosophy """
     def operate(self, current_situation):
-        self.page = 0
+        self.situation = current_situation
+        self.initialize()
         self.finished = False
-        self.next_mode = None
+        self.next_mode = "ChapterStart" if self.situation.in_game else "Introductory"
         self.backbutton = gui.make_menu((650,600),[("Regress","back")],200)
         self.draw_current_page()
         while not self.finished:
             ms = self.clock.tick(60)
             self.respond_to_the_will_of_the_operator()
+            self.draw_current_page()
         return self.next_mode
 
     def on_keydown(self, e):
-        if e.key in (pygame.K_RETURN, pygame.K_ESCAPE):
-            self.next_mode = "Introductory"
+        if e.key == pygame.K_ESCAPE:
             self.finished = True
+        elif self.page == "index":
+            self.index_menu.key_event(e)
+            if e.key == pygame.K_RETURN:
+                choice = self.index_menu.make_choice()
+                self.chosen_from_menu(choice)
         elif e.key == pygame.K_RIGHT:
-            self.page = (self.page + 1) % len(PAGES)
-            self.draw_current_page()
+            page = (self.page + 1) % len(PAGES)
+            self.prepare_encyclopaedia_page(page)
         elif e.key == pygame.K_LEFT:
-            self.page = (self.page - 1) % len(PAGES)
-            self.draw_current_page()
+            page = (self.page - 1) % len(PAGES)
+            self.prepare_encyclopaedia_page(page)
+        elif e.key in (pygame.K_RETURN, pygame.K_ESCAPE, pygame.K_UP):
+            self.page = "index"
+            self.prepare_index_page()
 
     def on_mousebuttondown(self, e):
-        choice = self.backbutton.mouse_event(e)
-        if choice:
-            self.next_mode = "Introductory"
-            self.finished = True
+        if self.page == "index":
+            choice = self.index_menu.mouse_event(e)
+            if choice:
+                self.chosen_from_menu(choice)
+        else:
+            choice = self.backbutton.mouse_event(e)
+            if choice:
+                self.prepare_index_page()
 
+    def chosen_from_menu(self, choice):
+        if choice == "regress":
+            self.finished = True
+        else:
+            self.prepare_encyclopaedia_page(choice)
+            
     def on_quit(self, e):
         self.finished = True
 
+    def initialize(self):
+        self.heading = typefaces.prepare_subtitle("Notable Attributes")
+        self.index_menu = None
+        self.prepare_index_page()
+        
     def draw_current_page(self):
-        paint = self.screen.blit
         self.clear_screen(colour=PAGECOLOUR)
-        module, name = PAGES[self.page]
+        if self.page == "index":
+            self.show_index_page()
+        else:
+            self.show_encyclopaedia_page()
+
+    def prepare_encyclopaedia_page(self, page):
+        self.page = page
+        module, name = PAGES[page]
         if module == "bestiary":
             self.ribbon = chromographs.obtain("flourish/ribbon-red.png")
-            page = getattr(bestiary, name)
+            article = getattr(bestiary, name)
         elif module =="units":
             self.ribbon = chromographs.obtain("flourish/ribbon-blue.png")
-            page = getattr(units, name)
-        title = typefaces.prepare_title(page.name.title())
-        paint(title,(PAGEMARGIN, PAGEMARGIN))
-        topy = y = title.get_rect().height + 2 * PAGEMARGIN
+            article = getattr(units, name)
+        elif module == "facilities":
+            self.ribbon = chromographs.obtain("flourish/ribbon-blue.png")
+            article = getattr(facilities, name)
+            
+        self.title = typefaces.prepare_title(article.name.title())
+        notables = [("{0}: ".format(n), getattr(article, n.lower()))
+                    for n in article.notable_attributes]
+        self.table = typefaces.prepare_table(notables)
+        self.information = typefaces.prepare_paragraph(article.__doc__, 600)
+        self.illustration = chromographs.obtain(article.depiction)
+
+    def show_encyclopaedia_page(self):
+        paint = self.screen.blit
+        paint(self.title,(PAGEMARGIN, PAGEMARGIN))
+        topy = y = self.title.get_rect().height + 2 * PAGEMARGIN
         x = self.screen.get_size()[0] // 2
-        heading = typefaces.prepare_subtitle("Notable Attributes")
-        paint(heading, (x,y))
-        y += heading.get_rect().height + PAGEMARGIN
-        notables = [("{0}: ".format(n), getattr(page, n.lower()))
-                    for n in page.notable_attributes]
-        table = typefaces.prepare_table(notables)
-        paint(table, (x,y))        
-        chromograph = chromographs.obtain(page.depiction)
-        paint(chromograph, (PAGEMARGIN, topy))
+        paint(self.heading, (x,y))
+        y += self.heading.get_rect().height + PAGEMARGIN
+        paint(self.table, (x,y))        
+        paint(self.illustration, (PAGEMARGIN, topy))
         paint(self.ribbon,(850,-2))
         self.backbutton.render(self.screen)
-        information = typefaces.prepare_paragraph(page.__doc__, 600)
-        paint(information, (PAGEMARGIN, topy + 400 + 2 * PAGEMARGIN))
+        paint(self.information, (PAGEMARGIN, topy + 400 + 2 * PAGEMARGIN))
         flip()
 
+    def prepare_index_page(self):
+        self.page = "index"
+        self.title = typefaces.prepare_title(u"ENCYCLOPÆDIA")
+        if not self.index_menu:
+            index_data = [(p[1], i) for (i,p) in enumerate(PAGES)]
+            index_data.append(("* Regress *","regress"))
+            top = self.title.get_height() + 2*PAGEMARGIN
+            self.index_menu = gui.make_menu((300,top), index_data, 400,
+                                            prompt="Table of Contents")
 
+
+
+    def show_index_page(self):
+        paint = self.screen.blit
+        paint(self.title,(PAGEMARGIN, PAGEMARGIN))
+        self.index_menu.render(self.screen)
+        flip()

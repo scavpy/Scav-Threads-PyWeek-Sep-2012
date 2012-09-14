@@ -12,6 +12,7 @@ class ChapterStartMode(ModeOfOperation):
     """ The mode by which one is informed of the current situation. """
     def operate(self, current_situation):
         self.situation = current_situation
+        self.situation.in_game = True
         self.initialize()
         self.redraw()
         self.finished = False

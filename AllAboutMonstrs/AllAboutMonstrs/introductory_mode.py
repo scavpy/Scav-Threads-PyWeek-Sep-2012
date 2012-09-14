@@ -11,6 +11,7 @@ class IntroductoryMode(ModeOfOperation):
     """ The mode serving as an introduction. """
     def operate(self, current_situation):
         self.situation = current_situation
+        self.situation.in_game = False
         self.initialize()
         self.redraw()
         self.finished = False

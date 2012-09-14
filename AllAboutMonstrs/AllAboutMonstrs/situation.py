@@ -39,6 +39,7 @@ class Situation(object):
         self.unit_plans = ["Cannon","Soldier"]
         self.last_build = Fence
         self.trophies = []
+        self.in_game = False
 
     def add_installation_if_possible(self, thing, charge=False):
         collisions = thing.rect.collidelistall(self.installations)
