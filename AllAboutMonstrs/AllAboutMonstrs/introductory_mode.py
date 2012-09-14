@@ -18,6 +18,7 @@ class IntroductoryMode(ModeOfOperation):
         while not self.finished:
             ms = self.clock.tick(60)
             self.respond_to_the_will_of_the_operator()
+            self.redraw()
         return self.next_mode
 
     def initialize(self):
@@ -58,12 +59,14 @@ class IntroductoryMode(ModeOfOperation):
         if e.key == pygame.K_RETURN:
             choice = self.menu.make_choice()
             self.chosen_from_menu(choice)
-        self.redraw()
 
     def on_mousebuttondown(self, e):
         choice = self.menu.mouse_event(e)
         if choice:
             self.chosen_from_menu(choice)
+
+    def on_mousemotion(self, e):
+        self.menu.mouse_event(e)
 
     def chosen_from_menu(self, choice):
         if choice in ["new","information","encyclopaedia","quit"]:
@@ -88,7 +91,6 @@ class IntroductoryMode(ModeOfOperation):
             except IOError:
                 print("No such save file: %s"%choice)
                 self.finished = True
-        self.redraw()
 
     def open_load_menu(self):
         self.menu = self.load_menu

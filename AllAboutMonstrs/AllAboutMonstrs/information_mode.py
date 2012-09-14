@@ -63,6 +63,12 @@ class InformationMode(ModeOfOperation):
             self.page = (self.page - 1) % len(HELP)
             self.draw_current_page()
 
+    def on_mousebuttondown(self,e):
+        choice = self.backbutton.mouse_event(e)
+        if choice:
+            self.next_mode = "Introductory"
+            self.finished = True
+
     def on_quit(self, e):
         self.finished = True
 

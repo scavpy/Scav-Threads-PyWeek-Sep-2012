@@ -73,8 +73,7 @@ class BuildMenu(object):
         numitems = len(items)+1
         d = self.optrad*2
         if numitems > 3:
-            n = numitems*2
-            r = -(d * sin(((n-2)/(2*pi))*pi)) / sin((2*pi)/n)
+            r = d+(numitems*5)
         else:
             r = d
         angle = hemisphere * radians(180.0/numitems)
@@ -205,16 +204,17 @@ class TextFrame(object):
         self.render_footer(screen)
 
     def mouse_event(self,event):
-        if event.button != 1:
-            return None
         mx, my = event.pos
         x, y = self.position
         y += self.headheight
-        for c in self.contents:
+        for i,c in enumerate(self.contents):
             if c.selectable:
                 rect = pygame.Rect(x, y, self.width, c.height)
                 if rect.collidepoint(mx, my):
-                    return c.command
+                    self.selected = (i,c)
+                    if (event.type == pygame.MOUSEBUTTONDOWN and
+                        event.button == 1):
+                        return c.command
             y += c.height
         return None
 
