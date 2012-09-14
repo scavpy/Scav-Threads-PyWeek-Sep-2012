@@ -53,11 +53,23 @@ vessels remaining and must protect them at all costs.",
         " are ever working on new developments to help"
         " fight them off.",
         waves=[
-            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550) + wave_of("Ferociraptor", -150, 200, 300, 400, 500),
-            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550) + wave_of("Ferociraptor", -150, 200, 300, 400, 500),
-            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 500, 550) + wave_of("Tankylosaurus", -150, 200, 300, 400, 500)
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 550) + wave_of("Ferociraptor", -150, 300, 400, 500),
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 550) + wave_of("Ferociraptor", -150, 300, 400, 500),
+            wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 550) + wave_of("Tankylosaurus", -150, 300, 400)
             ],
         inventions=[("units","AnalyticalCannon"), ("facilities","Wall")]
+        ),
+    Chapter(
+        "Three","Desperate Times","boat.png",
+        " Our defences are weakened and our resources badly stretched"
+        " by these monstrous herbivores.\n"
+        " God grant that nothing worse comes our way!",
+        waves=[
+            wave_of("Trinitroceratops", -50, 200, 240, 500, 550) + wave_of("Tankylosaurus", -150, 300, 400),
+            wave_of("Trinitroceratops", -50, 200, 240, 500, 550) + wave_of("Tankylosaurus", -150, 300, 400),
+            wave_of("Trinitroceratops", -50, 200, 550) + wave_of("Tankylosaurus", -150, 300, 400) + [("Blastosaurus", -80, 330)]
+            ],
+        inventions=[]
         ),
 ]
     
