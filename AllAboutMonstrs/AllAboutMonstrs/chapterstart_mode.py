@@ -12,6 +12,7 @@ class ChapterStartMode(ModeOfOperation):
     """ The mode by which one is informed of the current situation. """
     def operate(self, current_situation):
         self.situation = current_situation
+        self.situation.in_game = True
         self.initialize()
         self.redraw()
         self.finished = False
@@ -43,6 +44,8 @@ class ChapterStartMode(ModeOfOperation):
                 self.next_mode = "Preparation"
             elif choice == "back":
                 self.next_mode = "Introductory"
+            elif choice == "encyclopaedia":
+                self.next_mode = "Encyclopaedia"
             self.finished = True
 
     def on_quit(self, e):
@@ -57,9 +60,11 @@ class ChapterStartMode(ModeOfOperation):
                                           chapter.subtitle,
                                           chapter.summary,
                                           500,gap=12)
-        self.menu = gui.make_menu((700,600),
+        self.menu = gui.make_menu((700,550),
                                   [("We are prepared!","begin"),
-                                   ("We are scared!","back")],300)
+                                   ("We are scared!","back"),
+                                   ("Consult Encyclopaedia", "encyclopaedia"),
+                                   ],300)
 
     def redraw(self):
         blit = self.screen.blit

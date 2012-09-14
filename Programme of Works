@@ -82,7 +82,7 @@ aux-pricetags           Show how much each item in the build menu costs and the 
 aux-littlehelp          Show game controls where relevant.                                      ?
 
 wrk-progress            Tech awarded in accounting.                                             ?
-wrk-encyclopaedia-2     Index page and new indicator in Encyclopaedia.                          ?
+wrk-encyclopaedia-2     Index page and new indicator in Encyclopaedia.                          satisfactory
 wrk-balance             Make it fair: money, harm etc.                                          ?
 fix-explosions          Explosion animation de-wonked.                                          ?
 
