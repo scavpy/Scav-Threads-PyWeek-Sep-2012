@@ -55,7 +55,7 @@ class ChapterStartMode(ModeOfOperation):
 
     def initialize(self):
         situation = self.situation
-        chapter = chapters.CHAPTERS[situation.chapter]
+        chapter = chapters.open_chapter(situation.chapter)
         self.ribbon = chromographs.obtain("flourish/ribbon-white.png")
         self.portrait = chromographs.obtain("illustrations/%s"%chapter.illustration)
         self.title = typefaces.prepare_title("Chapter %s:"% chapter.number)
@@ -107,6 +107,7 @@ class ChapterStartMode(ModeOfOperation):
         blit(self.portrait, (PAGEMARGIN,100))
         self.menu.render(self.screen)
         self.summary.render(self.screen)
-        blit(self.table, (PAGEMARGIN, 100 + self.portrait.get_height() + PAGEMARGIN))
+        if self.table:
+            blit(self.table, (PAGEMARGIN, 100 + self.portrait.get_height() + PAGEMARGIN))
         blit(self.ribbon,(850,-2))
         pygame.display.flip()

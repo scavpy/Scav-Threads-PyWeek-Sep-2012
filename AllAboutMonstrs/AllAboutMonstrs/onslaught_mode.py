@@ -85,11 +85,11 @@ class OnslaughtMode(ModeOfOperation):
         self.titletext = typefaces.prepare_title("Onslaught of Enormities",colour=(255,64,64))
         self.scenery = chromographs.obtain("background.png")
         self.cursor = chromographs.obtain("iconic/unit-cursor.png")
-        chapter = chapters.CHAPTERS[self.situation.chapter]
+        self.chapter = chapters.open_chapter(self.situation.chapter)
         wave = self.situation.wave
-        self.dinosaurs = chapter.spawn_wave(wave)
+        self.dinosaurs = self.chapter.spawn_wave(wave)
         phonographs.play(self.dinosaurs[-1].attack_phonograph)
-        for name in chapter.beasts_in_this_chapter():
+        for name in self.chapter.beasts_in_this_chapter():
             if name not in self.situation.seen_dinosaurs:
                 self.situation.seen_dinosaurs.append(name)
         self.finished = False
@@ -161,7 +161,7 @@ class OnslaughtMode(ModeOfOperation):
         if not any(d for d in self.dinosaurs if not d.destroyed()):
             self.finished = True
             situation = self.situation
-            num_waves = len(chapters.CHAPTERS[situation.chapter].waves)
+            num_waves = len(self.chapter.waves)
             situation.wave += 1
             if situation.wave >= num_waves:
                 self.result = "Accounting"
@@ -183,7 +183,7 @@ class OnslaughtMode(ModeOfOperation):
             act = u.animate(ms)
             if not isinstance(u, units.Unit):
                 continue
-            if act and u.damage < u.durability:
+            if act and not u.destroyed():
                 targets = u.think(all_the_things)
                 if targets:
                     for d in targets:

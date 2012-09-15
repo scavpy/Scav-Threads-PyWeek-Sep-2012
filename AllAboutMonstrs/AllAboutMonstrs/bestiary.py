@@ -40,8 +40,11 @@ class Animal(units.Unit):
         self.blast_radius = self.footprint[0] * self.infernality
 
     def __repr__(self):
-        return "{0}({1},damage={2})".format(self.__class__.__name__,
-                                        self.rect, self.damage)
+        return ("{0}({1},damage={2},frame={3},walking={4},attacking={5},finished={6})"
+                .format(self.__class__.__name__,
+                        self.rect, self.damage,
+                        self.animation_frame,
+                        self.walking, self.attacking, self.finished))
     
     def attend_to_attack_area(self, centre):
         """ Beasts have close-in attacks """
@@ -99,6 +102,9 @@ class Animal(units.Unit):
                     target.harm(self.destructiveness, "trampled")
                     self.maybe_explode()
                     return [target]
+            elif not targets:
+                # yet somehow obstructed? become dangerously impatient
+                self.maybe_explode()
         directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
         self.orient(random.choice(directions))
 
@@ -323,10 +329,10 @@ class Tankylosaurus(Animal):
                    if things[i].obstruance & grid.obstruance("fence", "facility", "unit")
                    and not things[i].destroyed()]
         if targets:
-            self.attack()
-        for target in targets:
-            target.harm(self.destructiveness, "trampled")
-        return targets
+            if self.attack():
+                for target in targets:
+                    target.harm(self.destructiveness, "trampled")
+                return targets
 
 class Ferociraptor(Animal):
     """ A deadly and swift predator. Our foremost zoologist only
