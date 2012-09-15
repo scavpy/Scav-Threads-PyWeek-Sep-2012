@@ -110,10 +110,7 @@ class AccountingMode(ModeOfOperation):
         population = self.situation.population
         
         # Food produced
-        food_produced = 0
-        for item in situation.installations:
-            if isinstance(item, facilities.Crops):
-                food_produced += max(item.durability - item.damage, 0)
+        food_produced = self.situation.count_food()
 
         # Population growth
         food = food_produced
