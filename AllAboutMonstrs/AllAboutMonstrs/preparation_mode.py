@@ -140,9 +140,11 @@ class PreparationMode(ModeOfOperation):
         situation.update_status_bar(self.statusbar)
         self.statusbar.push_messages(
             "Hit Space bar or Return key to begin the Onslaught!",
+            "Be sure to build cannons and deploy soldiers!",
             "Left click to repeat the previous build",
             "Right click to open build menu",
             )
+        self.statusbar.flash(80)
         for inst in situation.installations[:]:
             if inst.destroyed():
                 situation.installations.remove(inst)

@@ -62,6 +62,9 @@ class OnslaughtMode(ModeOfOperation):
         else:
             if choices:
                 self.selected_unit = choices[0]
+        if self.selected_unit:
+            self.situation.last_build = self.selected_unit.__class__
+            self.situation.update_status_bar(self.statusbar)
 
     def get_units_at(self,pos):
         choices = []
@@ -92,9 +95,11 @@ class OnslaughtMode(ModeOfOperation):
         self.statusbar = gui.StatusBar()
         self.statusbar.push_messages(
             "Protect your ships!",
+            "Cannons need soldiers nearby to man them",
             "Click again on the field to direct a soldier",
             "Click on a soldier to select them",
             )
+        self.statusbar.flash(80)
         self.situation.update_status_bar(self.statusbar)
         self.selected_unit = None
         # orchestrate the battle music

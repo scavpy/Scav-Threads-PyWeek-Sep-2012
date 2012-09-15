@@ -52,7 +52,11 @@ class AccountingMode(ModeOfOperation):
         self.finished = True
 
     def on_keydown(self, e):
-        if e.key == pygame.K_RETURN:
+        if e.key in [pygame.K_RETURN,pygame.K_SPACE]:
+            self.finished = True
+
+    def on_mousebuttondown(self, e):
+        if e.button == 1:
             self.finished = True
 
     def initialize(self):
