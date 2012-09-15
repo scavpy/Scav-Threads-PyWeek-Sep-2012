@@ -4,6 +4,8 @@
 
 """
 
+import pygame
+
 try:
     from pygame import surfarray
 except ImportError:
@@ -18,5 +20,8 @@ if surfarray: #  The Numpy Apparatus has been installed.
         return redder
 else: # The Numpy Apparatus is not present.
     def reddened(chromograph):
-        """ give up and just return the image unaltered """
-        return chromograph
+        """ give up and just return a blank surface """
+        empty = pygame.surface.Surface((1,1), pygame.SRCALPHA)
+        empty.fill((0,0,0,0))
+        return empty
+
