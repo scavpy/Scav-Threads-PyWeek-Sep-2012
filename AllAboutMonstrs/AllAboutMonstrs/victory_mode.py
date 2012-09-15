@@ -26,6 +26,7 @@ class VictoryMode(ModeOfOperation):
         self.initialize()
         self.assess()
         self.finished = False
+        self.clock.tick(30)
         while not self.finished:
             ms = self.clock.tick(30)
             self.credits.advance(ms)
@@ -39,7 +40,7 @@ class VictoryMode(ModeOfOperation):
         self.finished = True
 
     def on_keydown(self, e):
-        if e.key == pygame.K_RETURN:
+        if e.key in (pygame.K_RETURN, pygame.K_SPACE):
             self.finished = True
 
     def initialize(self):
