@@ -117,7 +117,7 @@ class AccountingMode(ModeOfOperation):
             if population < 5 and population_growth < 3:
                 population_growth = 3
             # Income from crops
-            income += food*0x80
+            income += food*0x20
 
 
             note("Remaining balance", remaining_balance)

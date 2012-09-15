@@ -382,6 +382,7 @@ class Ferociraptor(Animal):
                 return self.deal_with_obstacles(obstacles)
             else:
                 self.orient(random.randint(0,7))
+                return None
         if not self.bored:
             food = self.seek_food(knowledge, "Meat")
             if food:
@@ -431,6 +432,7 @@ class Blastosaurus(Animal):
                 return self.deal_with_obstacles(obstacles)
             else:
                 self.orient(random.randint(0,7))
+                return None
         if not self.bored:
             food = self.seek_food(knowledge, "Meat")
             if food:

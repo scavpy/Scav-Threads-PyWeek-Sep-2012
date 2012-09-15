@@ -308,7 +308,7 @@ class Sheep(Unit):
     area_of_attack = (32,32)
     attack_phonograph = placement_phonograph = "mehhh.ogg"
     pace = 100
-    cost = 0x04
+    cost = 0x080
     aliment = "Meat"
     depiction = "Sheep.png"
 
