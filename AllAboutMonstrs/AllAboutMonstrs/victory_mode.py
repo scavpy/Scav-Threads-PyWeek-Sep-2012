@@ -27,8 +27,10 @@ class VictoryMode(ModeOfOperation):
         self.assess()
         self.finished = False
         while not self.finished:
-            self.clock.tick(30)
+            ms = self.clock.tick(30)
+            self.credits.advance(ms)
             self.respond_to_the_will_of_the_operator()
+            self.redraw()
         # go to the intro screen
         return "Introductory"
 
@@ -45,7 +47,11 @@ class VictoryMode(ModeOfOperation):
                                             .format(c))
                         for c in ("red","white","blue")]
         phonographs.orchestrate("victory.ogg", once=True)
-
+        location = pygame.Rect(PAGEMARGIN,100,500,600)
+        self.credits = gui.SelfAdvancingScroll(CREDITS, location, 20)
+        self.title = typefaces.prepare_title("Victory is Yours")
+        self.heading = typefaces.prepare_subtitle("Final Ledger Entries")
+        
     def assess(self):
         """
         Surviving housing raises the cap on maximum population.
@@ -68,22 +74,60 @@ class VictoryMode(ModeOfOperation):
             
         note("Final balance", lsb(situation.wealth))
         note("Final progress", situation.progress)
+        self.table = typefaces.prepare_table(notables)
 
+    def redraw(self):
         # display the report
         paint = self.screen.blit
         self.clear_screen(colour=PAGECOLOUR)
-        title = typefaces.prepare_title("Victory is Yours")
-        paint(title,(PAGEMARGIN, PAGEMARGIN))
-        topy = y = title.get_rect().height + PAGEMARGIN
-        x = self.screen.get_size()[0] // 2
-        heading = typefaces.prepare_subtitle("Final Ledger Entries")
-        paint(heading, (x,y))
-        y += heading.get_rect().height + PAGEMARGIN
-        table = typefaces.prepare_table(notables)
-        paint(table, (x,y))        
-        chromograph = chromographs.obtain("Victory.png")
-        paint(chromograph, (PAGEMARGIN, topy))
+        
+        paint(self.title,(PAGEMARGIN, PAGEMARGIN))
+        topy = y = self.title.get_rect().height + PAGEMARGIN
+        x = PAGEMARGIN*2 + 500
+        paint(self.heading, (x,y))
+        y += self.heading.get_rect().height + PAGEMARGIN
+        paint(self.table, (x,y))        
         for i, r in enumerate(self.ribbons):
             paint(r,(850 + 30 * i,-2))
+        self.credits.render(self.screen)
         flip()
         
+CREDITS = u"""
+⸙ Blastosaurus Rex ⸙
+
+An entertainment in the form of an interactive
+experience, performed upon the analytical engine.
+
+Chief Engineer:  Mr P Scavenger (scav)
+2nd Engineer: Mr Ichabod Threadworthy (Threads)
+
+The above take full responsibility for the parlous
+state of the artistic depictions and shoddy
+construction of the algorithmic installations.
+
+Our praise and gratitude goes to the following:
+
+☞ Mr George Douros for his superb Anaktoria font.
+(http://www.fonts2u.com/anaktoria.font)
+
+☞ The Skidmore College Orchestra for their
+delightful rendition of Tchaikovsky's 1812 Overture.
+(http://www.classiccat.net/tchaikovsky_pi/49.php)
+
+☞ The African Grey Parrot, for various sounds
+
+☞ The wife and the girlfriend of the engineers, for
+their patience.
+
+☞ Miscellaneous auditory fragments from
+(http://FreeSound.org)
+
+
+Our condemnation, opprobrium and censure fall on:
+
+☞ The audio system on Linux; specificially jackd,
+pulseaudio, ALSA and all combinations and
+interactions thereof and between, that make it
+nearly impossible to install a working audio
+system and sound editing software.
+"""
