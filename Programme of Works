@@ -76,14 +76,13 @@ wrk-casualties          Account for the deaths of your troops.                  
 aux-personalize         Provide each soldier with a name.                                       satisfactory
 
 wrk-transition          Decide and implement a transition between Preparation and Onslaught.    satisfactory
-snd-extra               Humans, screams                             	  			?
 aux-pricetags           Show how much each item in the build menu costs and the name of it.     satisfactory
 aux-littlehelp          Show game controls where relevant.                                      satisfactory
 wrk-encyclopaedia-2     Index page and new indicator in Encyclopaedia.                          satisfactory
 
-wrk-balance             Make it fair: money, harm etc.                                          ?
+wrk-balance             Make it fair: money, harm etc.                                          adequate
 fix-explosions          Explosion animation de-wonked.                                          satisfactory
-art-encyclopaedia	Pictures for ALL the pages of the Encyclopaedia				?
+art-encyclopaedia	Pictures for ALL the pages of the Encyclopaedia				satisfactory
 wrk-chapterN		Successively harder waves after victory					satisfactory
 fix-accounting		Give a generous bounty for exploded dinosaurs, prevent negative income	satisfactory
 
