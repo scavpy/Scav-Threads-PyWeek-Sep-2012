@@ -200,4 +200,5 @@ class Ship(Facility):
     exclusion = grid.obstruance("all")
     footprint = (128,40)
     cost = 0xa00
+    aliment = "Coal"
     depiction = "Ship.png"

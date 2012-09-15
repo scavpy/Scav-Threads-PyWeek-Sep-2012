@@ -112,15 +112,16 @@ class Animal(units.Unit):
     def seek_food(self, knowledge, kind="Vegetable"):
         """ seek food of the preferred kind """
         targets = self.find_nearest(f for f in knowledge
-                                    if f.aliment == kind
+                                    if f.aliment in (kind, "Coal")
                                     and not f.destroyed())
         if targets:
             target = targets[0]
             self.orient(self.orientation_towards(target.rect.center))
             if not self.attacking:
                 if self.rect_of_attack.colliderect(target.rect):
+                    damage = 1 if target.aliment == "Vegetable" else self.destructiveness
                     self.attack()
-                    target.harm(1,"eaten")
+                    target.harm(damage,"eaten")
                     self.satiety += 1
                     if self.satiety >= self.voracity:
                         self.bored = True

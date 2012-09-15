@@ -14,7 +14,7 @@ import gui
 import chapters
 import facilities
 
-from accounting_mode import lsb
+from gui import lsb
 
 from style import PAGEMARGIN, PAGECOLOUR
 

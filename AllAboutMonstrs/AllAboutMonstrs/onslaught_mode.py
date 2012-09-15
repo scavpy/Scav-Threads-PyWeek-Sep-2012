@@ -153,8 +153,7 @@ class OnslaughtMode(ModeOfOperation):
     
     def dead_test(self):
         if self.situation.ships_remaining() == 0:
-            self.situation.reload_game()
-            self.result = "ChapterStart"
+            self.result = "Accounting"
             self.finished = True
 
     def win_test(self):

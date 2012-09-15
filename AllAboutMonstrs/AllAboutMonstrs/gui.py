@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 import pygame
 from pygame.transform import flip,scale
 
@@ -6,7 +7,6 @@ import typefaces
 import facilities
 import units
 import re
-from accounting_mode import lsb
 
 from math import sin, cos, sqrt, radians, pi
 
@@ -29,6 +29,18 @@ def make_titledbox(position,title,text,width,titlesize="subtitle",
                      [titlewidget,
                       SpaceWidget(gap),
                       textwidget],width)
+
+def lsb(bence):
+    debit = bence < 0
+    if debit:
+        bence = -bence
+    pounds = bence >> 8
+    shillings = bence >> 4 & 0xf
+    bence = bence & 0xf
+    if not shillings: shillings = "-"
+    if not bence: bence = "-"
+    fmt = "(£{0} / {1} / {2} b)" if debit else "£{0} / {1} / {2} b"
+    return unicode(fmt.format(pounds, shillings, bence), "utf-8")
 
 def make_menu(position,options,width,prompt=None):
     contents = []

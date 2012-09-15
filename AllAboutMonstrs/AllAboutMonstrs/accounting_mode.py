@@ -18,17 +18,6 @@ from style import PAGEMARGIN, PAGECOLOUR
 
 MEAL_SIZE = 12
 
-def lsb(bence):
-    debit = bence < 0
-    if debit:
-        bence = -bence
-    pounds = bence >> 8
-    shillings = bence >> 4 & 0xf
-    bence = bence & 0xf
-    if not shillings: shillings = "-"
-    if not bence: bence = "-"
-    fmt = "(£{0} / {1} / {2} b)" if debit else "£{0} / {1} / {2} b"
-    return unicode(fmt.format(pounds, shillings, bence), "utf-8")
 
 class AccountingMode(ModeOfOperation):
     """ Whereby the current situation is assessed, and
@@ -41,10 +30,12 @@ class AccountingMode(ModeOfOperation):
         while not self.finished:
             self.clock.tick(30)
             self.respond_to_the_will_of_the_operator()
-        # go to the next chapter
-        self.situation.chapter += 1
-        self.situation.wave = 0
-        self.situation.save_game()
+        if self.defeated:
+            current_situation.reload_game()
+        else:
+            self.situation.chapter += 1
+            self.situation.wave = 0
+            self.situation.save_game()
         return self.next_mode
 
     def on_quit(self, e):
@@ -60,13 +51,14 @@ class AccountingMode(ModeOfOperation):
             self.finished = True
 
     def initialize(self):
-        if self.situation.chapter >= chapters.last_chapter():
-            # you have won
+        self.next_mode = "ChapterStart"
+        self.defeated = not self.situation.ships_remaining()
+
+        if not self.defeated and self.situation.chapter >= chapters.last_chapter():
             self.next_mode = "Victory"
-        else:
-            # you will proceed to next chapter
-            self.next_mode = "ChapterStart"
-        self.ribbon = chromographs.obtain("flourish/ribbon-gold.png")
+
+        colour = "black" if self.defeated else "gold"
+        self.ribbon = chromographs.obtain("flourish/ribbon-{0}.png".format(colour))
         phonographs.orchestrate("intromusic.ogg")
 
     def assess(self):
@@ -86,49 +78,53 @@ class AccountingMode(ModeOfOperation):
         situation = self.situation
         progress = 0
         notables = []
-
+        income = 0
+        population_growth = 0
+        
         def note(label, amount):
             notables.append([label+": ", amount])
-        # Remaining balance
-        remaining_balance = lsb(situation.wealth)
 
-        # Housing space
-        housing_space = sum([f.habitability
-                             for f in self.situation.get_facilities()])
-        progress += housing_space
+        if not self.defeated:
+            # Remaining balance
+            remaining_balance = gui.lsb(situation.wealth)
 
-        # Population
-        units = self.situation.get_units()
-        for u in units:
-            if u.human:
-                self.situation.population += 1
-                self.situation.installations.remove(u)
-                u.promote()
-                progress += 10 * u.rank
-                self.situation.reserves.append(u)
-        population = self.situation.population
-        
-        # Food produced
-        food_produced = self.situation.count_food()
+            # Housing space
+            housing_space = sum([f.habitability
+                                 for f in self.situation.get_facilities()])
+            progress += housing_space
 
-        # Population growth
-        food = food_produced
-        max_growth_from_crops = food//MEAL_SIZE
-        max_growth_from_space = max((housing_space - population),0)
-        population_growth = min(max_growth_from_space,
-                                max_growth_from_crops)
-        food -= population_growth*MEAL_SIZE
-        if population < 5 and population_growth < 3:
-            population_growth = 3
-        # Income from crops
-        food_income = food*0x80
-        
+            # Population
+            units = self.situation.get_units()
+            for u in units:
+                if u.human:
+                    self.situation.population += 1
+                    self.situation.installations.remove(u)
+                    u.promote()
+                    progress += 10 * u.rank
+                    self.situation.reserves.append(u)
+            population = self.situation.population
 
-        note("Remaining balance", remaining_balance)
-        note("Housing space", housing_space)
-        note("Population", self.situation.population)
-        note("Food produced", food_produced)
-        note("Population Growth", population_growth)
+            # Food produced
+            food_produced = self.situation.count_food()
+
+            # Population growth
+            food = food_produced
+            max_growth_from_crops = food//MEAL_SIZE
+            max_growth_from_space = max((housing_space - population),0)
+            population_growth = min(max_growth_from_space,
+                                    max_growth_from_crops)
+            food -= population_growth*MEAL_SIZE
+            if population < 5 and population_growth < 3:
+                population_growth = 3
+            # Income from crops
+            income += food*0x80
+
+
+            note("Remaining balance", remaining_balance)
+            note("Housing space", housing_space)
+            note("Population", self.situation.population)
+            note("Food produced", food_produced)
+            note("Population Growth", population_growth)
 
         trophy_income = 0
         # Trophies
@@ -140,9 +136,10 @@ class AccountingMode(ModeOfOperation):
             note(k + " slain", v)
             trophy_income += 0x100 * v # 1 pound bounty per dinosaur
         situation.trophies = []
-        income = trophy_income + food_income + 0x100 # 1 pound bonus
+        income += trophy_income + 0x100 # 1 pound bonus
 
-        note("Income",lsb(income))
+        if not self.defeated:
+            note("Income", gui.lsb(income))
 
         # Death stats
         for (k,v) in self.situation.death_stats.items():
@@ -153,14 +150,15 @@ class AccountingMode(ModeOfOperation):
         situation.population += population_growth
         situation.progress += progress
         note("RESULTS","")
-        note("  Closing Balance",lsb(situation.wealth))
+        note("  Closing Balance", gui.lsb(situation.wealth))
         note("  Current Population",situation.population)
         note("  Progress", progress)
 
         # display the report
         paint = self.screen.blit
         self.clear_screen(colour=PAGECOLOUR)
-        title = typefaces.prepare_title("Accounting Department")
+        caption = "You Were Defeated" if self.defeated else "Accounting Department"
+        title = typefaces.prepare_title(caption)
         paint(title,(PAGEMARGIN, PAGEMARGIN))
         topy = y = title.get_rect().height + 3 * PAGEMARGIN
         x = self.screen.get_size()[0] // 2
