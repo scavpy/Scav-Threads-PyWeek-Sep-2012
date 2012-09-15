@@ -10,6 +10,10 @@ from accounting_mode import lsb
 
 from math import sin, cos, sqrt, radians, pi
 
+WHITE = (255,255,255)
+RED = (255,0,0)
+
+
 def make_textbox(position,text,width,size="normal",colour=(0,0,0)):
     widget = SurfWidget(
         typefaces.prepare_passage(text,width,size=size,colour=colour))
@@ -113,7 +117,7 @@ class BuildMenu(object):
         self.options.append((None,None,self.centerrect))
         if repairable:
             rect = self.spanner.get_rect()
-            rect.center = (x,y+self.optrad*4)
+            rect.center = (x+self.optrad*2,y)
             self.options.append(("REPAIR",self.spanner,rect))
 
     def close_menu(self):
@@ -173,19 +177,26 @@ class BuildMenu(object):
     def update_pricetag(self, item):
         text = None
         r = self.repairable
+        colour = WHITE
         if item:
             if item == "REPAIR" and r:
                 cost = int((float(r.damage)/r.durability)*r.cost)
                 price = lsb(cost) if cost>0 else "free"
                 text = "Repair %s for %s"%(r.name,price)
+                if cost > self.situation.wealth:
+                    colour = RED
             elif item.human:
                 price = ("for %s"%lsb(item.cost)) if item.cost>0 else ""
+                if self.situation.population < 1 or item.cost > self.situation.wealth:
+                    colour = RED
                 text = "Deploy %s %s"%(item.name,price)
             else:
                 price = lsb(item.cost) if item.cost>0 else "free"
                 text = "Build %s for %s"%(item.name,price)
+                if item.cost > self.situation.wealth:
+                    colour = RED
         self.pricetag = typefaces.prepare(text, size="small",
-                                          colour=(255,255,255))
+                                          colour=colour)
 
 class StatusBar(object):
     height = 120
