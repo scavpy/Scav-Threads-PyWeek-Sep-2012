@@ -4,11 +4,12 @@ an accounting of its wealth and resources, and the attainments
 and acquisitions thereof.
 """
 from pygame.rect import Rect
-from facilities import Fence, Ship
+from facilities import Fence, Ship, Rock, Puddle, Bush
 
 import os
 import sys
 import pickle
+import random
 import grid
 from units import Soldier
 
@@ -68,9 +69,21 @@ class Situation(object):
         self.installations.sort(key=lambda i: i.rect.bottom)
 
     def land_ho(self):
+        plan = grid.TownPlanningOffice()
         for i in range(self.maxships):
             r = SHIP_RECTS[i]
             self.add_installation_if_possible(Ship, Rect(r))
+        numscenery = random.randint(0,10)
+        scenery = [Rock,Puddle,Bush]
+        bounds = grid.BOUNDS
+        x,y = bounds.topleft
+        for r in range(numscenery):
+            px = x+random.randrange(0,bounds.width-100)
+            py = y+random.randrange(0,bounds.height)
+            lot = plan.nearest_lot(px,py)
+            if lot:
+                thing = random.choice(scenery)
+                self.add_installation_if_possible(thing,lot)
         
     def can_afford_a(self, thing):
         return thing.cost <= self.wealth

@@ -202,3 +202,35 @@ class Ship(Facility):
     cost = 0xa00
     aliment = "Coal"
     depiction = "Ship.png"
+
+class Rock(Facility):
+    name = "Rock"
+    durability = 99999
+    conditions = 1
+    cost = 0x000
+    animated_chromograph_name = "facilities/rock.png"
+    obstruance = grid.obstruance("facility")
+    exclusion = grid.obstruance("all")
+    footprint = (40,24)
+
+class Puddle(Facility):
+    name = "Puddle"
+    durability = 99999
+    is_flat = True
+    cost = 0x000
+    animated_chromograph_name = "facilities/puddle.png"
+    conditions = 1
+    obstruance = grid.obstruance("land")
+    exclusion = grid.obstruance("facility","unit","land")
+    footprint = (40,24)
+
+class Bush(Facility):
+    name = "Bush"
+    durability = 24
+    aliment = "Vegetable"
+    animated_chromograph_name = "facilities/bush.png"
+    cost = 0x000
+    conditions = 3
+    obstruance = grid.obstruance("facility")
+    exclusion = grid.obstruance("all")
+    footprint = (40,24)
