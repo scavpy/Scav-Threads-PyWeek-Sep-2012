@@ -150,7 +150,7 @@ class Unit(object):
                 frame = 1
         self.animation_frame = frame
         self.image = self.obtain_frame()
-        return True # something was changed
+        return not self.destroyed()
 
     def harm(self, quanta_of_destruction, cause=None):
         """ Deal damage to the unit, possibly rendering it inactive """
@@ -222,7 +222,7 @@ class Cannon(Unit):
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 1
     attacking_animations = 2
-    orientation_indices = (2,1,1,1,3,0,0,0)
+    orientation_indices = (0,1,2,3,4,5,6,7)
     footprint = 20,16
     area_of_awareness = (200,160)
     area_of_attack = (80, 64)

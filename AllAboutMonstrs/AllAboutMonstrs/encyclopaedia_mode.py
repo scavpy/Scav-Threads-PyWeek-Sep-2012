@@ -9,7 +9,7 @@ from pygame.display import get_surface, flip
 from modes import ModeOfOperation
 import typefaces
 import chromographs
-import bestiary, units, facilities
+import all_things_known
 import gui
 
 from style import PAGEMARGIN, PAGECOLOUR
@@ -27,6 +27,7 @@ PAGES = [
     ("units","AnalyticalCannon"),
     ("bestiary","Blastosaurus"),
     ("bestiary","Explodocus"),
+    ("facilities","ConcreteWall"),
     ]
 
 class EncyclopaediaMode(ModeOfOperation):
@@ -101,15 +102,9 @@ class EncyclopaediaMode(ModeOfOperation):
     def prepare_encyclopaedia_page(self, page):
         self.page = page
         module, name = PAGES[page]
-        if module == "bestiary":
-            self.ribbon = chromographs.obtain("flourish/ribbon-red.png")
-            article = getattr(bestiary, name)
-        elif module =="units":
-            self.ribbon = chromographs.obtain("flourish/ribbon-blue.png")
-            article = getattr(units, name)
-        elif module == "facilities":
-            self.ribbon = chromographs.obtain("flourish/ribbon-blue.png")
-            article = getattr(facilities, name)
+        colour = {"units":"blue", "facilities":"blue", "bestiary":"red"}[module]
+        self.ribbon = chromographs.obtain("flourish/ribbon-{0}.png".format(colour))
+        article = all_things_known.find_by_name(name)
             
         self.title = typefaces.prepare_title(article.name.title())
         notables = [("{0}: ".format(n), getattr(article, n.lower()))
@@ -136,13 +131,14 @@ class EncyclopaediaMode(ModeOfOperation):
         self.page = "index"
         self.title = typefaces.prepare_title(u"ENCYCLOPÆDIA")
         if not self.index_menu:
-            index_data = [(p[1], i) for (i,p) in enumerate(PAGES)]
+            def fullname(i):
+                return all_things_known.find_by_name(PAGES[i][1]).name
+            index_data = [(fullname(i), i)
+                          for i in range(len(PAGES))]
             index_data.append(("* Regress *","regress"))
             top = self.title.get_height() + 2*PAGEMARGIN
             self.index_menu = gui.make_menu((300,top), index_data, 400,
                                             prompt="Table of Contents")
-
-
 
     def show_index_page(self):
         paint = self.screen.blit

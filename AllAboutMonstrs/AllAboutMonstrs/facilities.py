@@ -137,7 +137,7 @@ class Wall(Fence):
     depiction = "BrickWall.png"
 
 class ConcreteWall(Fence):
-    """More durable still, but somewhat impractically costly."""
+    """More durable than brick, but somewhat impracticably costly."""
     name = "Concrete Wall"
     chromograph_suffix = "concrete"
     durability = 300
