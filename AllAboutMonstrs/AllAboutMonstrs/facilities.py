@@ -191,7 +191,7 @@ class Ship(Facility):
     our return home."""
     name = "Ship"
     vital = True
-    durability = 1000
+    durability = 300
     habitability = 2
     animated_chromograph_name = "facilities/ship.png"
     standing_animations = 1

@@ -51,9 +51,9 @@ could have predicted.\n Worse still, it would appear that they have \
 developed an appetite for the coal on our ships. We have but four \
 vessels remaining and must protect them at all costs.",
         waves=[
-            wave_of("Ferociraptor", -50, 200, 240, 500, 550),
-            wave_of("Ferociraptor", -50, 200, 240, 500, 550),
-            wave_of("Ferociraptor", -50, 200, 240, 500, 550) + wave_of("Trinitroceratops", -80, 360, 450)
+            wave_of("Ferociraptor", -50, 200, 240, 300, 500, 550),
+            wave_of("Ferociraptor", -50, 200, 240, 300, 500, 550) + [("Trinitroceratops", -100, 400)],
+            wave_of("Ferociraptor", -50, 200, 240, 500, 550) + wave_of("Trinitroceratops", -100, 300, 360, 410)
             ],
         inventions=["Cannon"], fences=["Fence"],
         ),
@@ -100,7 +100,7 @@ def open_chapter(n):
     chapter = Chapter(str(n + 1), "Yet Worse Onslaughts", "bonus.png",
                       " After you returned, notionally victorious,"
                       " the colony continued to suffer increasingly"
-                      " serious attacks.", waves=[])
+                      " serious attacks.", waves=[], fences=["ConcreteWall"])
     assert chapter.illustration
     kinds = ["Ferociraptor"]
     if n & 1:
