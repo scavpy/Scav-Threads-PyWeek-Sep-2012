@@ -273,7 +273,7 @@ class Tankylosaurus(Animal):
     durability = 150
     voracity = 6
     velocity = 4
-    rapidity = 5
+    rapidity = 3
     monstrosity = 2
     destructiveness = 4
     depiction = "Tankylosaurus.png"
@@ -382,17 +382,19 @@ class Blastosaurus(Animal):
     name = "Blastosaurus rex"
     durability = 70
     voracity = 18
-    velocity = 5
+    velocity = 6
+    rapidity = 6
     infernality = 3
     monstrosity = 8
     destructiveness = 7
     depiction = "Blastosaurus.png"
     animated_chromograph_name = "units/blastosaurus.png"
-    walking_animations = 2
+    pace = 100
+    walking_animations = 4
     attacking_animations = 1
     orientation_indices = (1,0,0,0,0,1,1,1)
     footprint = (45,33)
-    area_of_awareness = (150,120)
+    area_of_awareness = (200,200)
     area_of_attack = (20,16)
     attack_phonograph = "b-rex-mono.ogg"
 
