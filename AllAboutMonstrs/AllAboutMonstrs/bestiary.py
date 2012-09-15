@@ -351,6 +351,7 @@ class Ferociraptor(Animal):
     durability = 11
     voracity = 12
     velocity = 8
+    rapidity = 8
     infernality = 2
     monstrosity = 5
     destructiveness = 3
