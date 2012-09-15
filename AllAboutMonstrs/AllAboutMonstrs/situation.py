@@ -103,14 +103,14 @@ class Situation(object):
     def save_game(self):
         path = os.path.join(self.get_save_dir(),
                             "%s-%d"%(self.savename,self.chapter))
-        savefile = open(path,"w")
+        savefile = open(path,"wb")
         data = self.__dict__
         pickle.dump(data,savefile,protocol=2)
         savefile.close()
 
     def load_game(self, savefile):
         path = os.path.join(self.get_save_dir(),savefile)
-        savefile = open(path,"r")
+        savefile = open(path,"rb")
         data = pickle.load(savefile)
         self.__dict__.update(data)
         savefile.close()
