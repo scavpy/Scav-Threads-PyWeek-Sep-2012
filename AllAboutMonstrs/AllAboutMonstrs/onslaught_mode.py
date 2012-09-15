@@ -48,21 +48,33 @@ class OnslaughtMode(ModeOfOperation):
         self.finished = True
 
     def on_mousebuttondown(self,e):
+        choices = self.get_units_at(e.pos)
         if self.selected_unit:
-            self.selected_unit.destination = e.pos
-            self.selected_unit = None
+            if not choices:
+                self.selected_unit.destination = e.pos
+            else:
+                choice = None
+                for c in choices:
+                    if c != self.selected_unit:
+                        choice = c
+                        break
+                self.selected_unit = choice
         else:
-            choices = []
-            units = self.situation.get_units()
-            for u in units:
-                rect = u.image.get_rect()
-                rect.midbottom = u.rect.midbottom
-                if rect.collidepoint(e.pos):
-                    choices.append(u)
             if choices:
-                choices.sort(key=lambda x: x.rect.bottom,
-                             reverse=True)
                 self.selected_unit = choices[0]
+
+    def get_units_at(self,pos):
+        choices = []
+        units = self.situation.get_units()
+        for u in units:
+            rect = u.image.get_rect()
+            rect.midbottom = u.rect.midbottom
+            if rect.collidepoint(pos):
+                choices.append(u)
+        if choices:
+            choices.sort(key=lambda x: x.rect.bottom,
+                         reverse=True)
+        return choices
 
     def initialize(self):
         self.titletext = typefaces.prepare_title("Onslaught of Enormities",colour=(255,64,64))
