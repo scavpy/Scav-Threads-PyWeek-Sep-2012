@@ -123,9 +123,10 @@ class Animal(units.Unit):
         """
         self.exploding = True
         self.obstruance = 0
+        self.pace = 40
         self.animated_chromograph_name = self.exploding_chromograph_name
-        self.attacking_frames = self.explosion_frames
-        self.walking_frames = 0
+        self.attacking_animations = self.explosion_frames
+        self.walking_animations = 0
         self.animation_frame = 1
         self.attacking = True
         self.rect_of_awareness.center = self.rect.center
