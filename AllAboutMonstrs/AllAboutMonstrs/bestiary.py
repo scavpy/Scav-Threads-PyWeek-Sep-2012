@@ -25,6 +25,7 @@ class Animal(units.Unit):
     obstruance = grid.obstruance("beast")
     exclusion = grid.obstruance("notland")
     exploding_chromograph_name = "units/explosion.png"
+    exploding_phonograph_name = "explosion.ogg"
     explosion_frames = 5
     aliment = None
 
@@ -133,6 +134,7 @@ class Animal(units.Unit):
         self.rect_of_awareness.center = self.rect.center
         self.orientation_indices = (0,) * 8
         self.image = self.obtain_frame()
+        phonographs.play(self.exploding_phonograph_name)
 
     def maybe_explode(self):
         if random.random()*100 < self.infernality:
