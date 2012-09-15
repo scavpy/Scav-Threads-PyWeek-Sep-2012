@@ -56,6 +56,8 @@ class Animal(units.Unit):
 
     def navigate(self, next_position):
         bounds = grid.BOUNDS
+        if self.bored:
+            self.maybe_explode()
         if bounds.contains(next_position):
             self.move(next_position)
             # don't go the wrong way for long
@@ -93,6 +95,7 @@ class Animal(units.Unit):
                 target = targets[0]
                 if self.attack():
                     target.harm(self.destructiveness, "trampled")
+                    self.maybe_explode()
                     return [target]
         directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
         self.orient(random.choice(directions))
@@ -129,6 +132,10 @@ class Animal(units.Unit):
         self.orientation_indices = (0,) * 8
         self.image = self.obtain_frame()
 
+    def maybe_explode(self):
+        if random.random()*100 < self.infernality:
+            self.explode()
+
     def damage_surrounding_area(self, things):
         if not self.attacking:
             #explosion is over
@@ -159,12 +166,8 @@ class Animal(units.Unit):
     def harm(self, quanta_of_destruction, cause):
         """ Dinosaurs will sometimes explode for no readily apparent reason """
         super(Animal, self).harm(quanta_of_destruction, cause)
-        ratio = float(self.damage) / self.durability
-        if ratio >= 1.0:
-            return
-        chance = ratio * self.infernality * 0.1
-        if random.random() < chance:
-            self.explode()
+        if not self.destroyed:
+            self.maybe_explode()
 
 class Trinitroceratops(Animal):
     """What do these beasts want? To rut and feed and trample with
