@@ -65,6 +65,8 @@ class OnslaughtMode(ModeOfOperation):
         if self.selected_unit:
             self.situation.last_build = self.selected_unit.__class__
             self.situation.update_status_bar(self.statusbar)
+            name = self.selected_unit.name_and_rank() if self.selected_unit.human else None
+            self.statusbar.set_unit_name(name)
 
     def get_units_at(self,pos):
         choices = []
@@ -185,9 +187,8 @@ class OnslaughtMode(ModeOfOperation):
                 targets = u.think(all_the_things)
                 if targets:
                     for d in targets:
-                        if d.destroyed():
+                        if d.destroyed() or d.exploding:
                             all_the_things.remove(d)
-                            self.dinosaurs.remove(d)
                             self.situation.trophies.append(d.name)
 
                 

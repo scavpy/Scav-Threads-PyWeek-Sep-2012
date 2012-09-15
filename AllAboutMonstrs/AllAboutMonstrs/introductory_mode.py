@@ -1,6 +1,7 @@
 import pygame
 
 import chromographs
+import phonographs
 from modes import ModeOfOperation
 import gui
 
@@ -41,6 +42,7 @@ class IntroductoryMode(ModeOfOperation):
             )
         self.menu = self.main_menu
         self.ribbon = chromographs.obtain("flourish/ribbon-white.png")
+        phonographs.orchestrate("intromusic.ogg")
 
     def prepare_load_menu(self):
         savedir = self.situation.get_save_dir()

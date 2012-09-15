@@ -85,6 +85,7 @@ class AccountingMode(ModeOfOperation):
         Killed but not exploded dinosaurs count to wealth (fuel).
         """
         situation = self.situation
+        progress = 0
         notables = []
 
         def note(label, amount):
@@ -95,6 +96,7 @@ class AccountingMode(ModeOfOperation):
         # Housing space
         housing_space = sum([f.habitability
                              for f in self.situation.get_facilities()])
+        progress += housing_space
 
         # Population
         units = self.situation.get_units()
@@ -102,6 +104,9 @@ class AccountingMode(ModeOfOperation):
             if u.human:
                 self.situation.population += 1
                 self.situation.installations.remove(u)
+                u.promote()
+                progress += 10 * u.rank
+                self.situation.reserves.append(u)
         population = self.situation.population
         
         # Food produced
@@ -116,9 +121,9 @@ class AccountingMode(ModeOfOperation):
         max_growth_from_space = max((housing_space - population),0)
         population_growth = min(max_growth_from_space,
                                 max_growth_from_crops)
+        food -= population_growth*MEAL_SIZE
         if population < 5 and population_growth < 3:
             population_growth = 3
-        food -= population_growth*MEAL_SIZE
         # Income from crops
         food_income = food*0x80
         
@@ -134,9 +139,10 @@ class AccountingMode(ModeOfOperation):
         cnt = Counter()
         for t in situation.trophies:
             cnt[t] += 1
+            progress += 5
         for k, v in cnt.items():
             note(k + " slain", v)
-            trophy_income += 0x40 * v # 4 shillings bounty per corpse
+            trophy_income += 0x100 * v # 1 pound bounty per dinosaur
         situation.trophies = []
         income = trophy_income + food_income + 0x100 # 1 pound bonus
 
@@ -149,11 +155,11 @@ class AccountingMode(ModeOfOperation):
         # Apply results
         situation.wealth += income
         situation.population += population_growth
-        situation.progress += 100
+        situation.progress += progress
         note("RESULTS","")
         note("  Closing Balance",lsb(situation.wealth))
         note("  Current Population",situation.population)
-        note("  Progress",100)
+        note("  Progress", progress)
 
         # display the report
         paint = self.screen.blit

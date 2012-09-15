@@ -10,6 +10,7 @@ import os
 import sys
 import pickle
 import grid
+from units import Soldier
 
 from math import ceil
 
@@ -29,6 +30,7 @@ class Situation(object):
         self.savename = name
         self.wealth = 0x1400  # in binary pence
         self.installations = []
+        self.reserves = []
         self.population = 5
         self.chapter = 0
         self.wave = 0
@@ -41,7 +43,8 @@ class Situation(object):
         self.trophies = []
         self.in_game = False
 
-    def add_installation_if_possible(self, thing, charge=False):
+    def add_installation_if_possible(self, thingclass, location, charge=False):
+        thing = thingclass(location)
         collisions = thing.rect.collidelistall(self.installations)
         if collisions:
             obstruance = thing.obstruance
@@ -53,6 +56,10 @@ class Situation(object):
             if thing.human:
                 if self.population > 0:
                     self.population -= 1
+                    if self.reserves:
+                        # Take a hardened veteran instead
+                        thing = self.reserves.pop(0)
+                        thing.rect.center = location.center
                 else:
                     return False
         self.installations.append(thing)
@@ -61,7 +68,7 @@ class Situation(object):
     def land_ho(self):
         for i in range(self.maxships):
             r = SHIP_RECTS[i]
-            self.add_installation_if_possible(Ship(Rect(r)))
+            self.add_installation_if_possible(Ship, Rect(r))
         
     def can_afford_a(self, thing):
         return thing.cost <= self.wealth
