@@ -197,7 +197,7 @@ class Trinitroceratops(Animal):
     velocity = 5
     rapidity = 5
     monstrosity = 1
-    destructiveness = 5
+    destructiveness = 8
     infernality = 8
     depiction = "Trinitroceratops.png"
     animated_chromograph_name = "units/trinitroceratops.png"
@@ -241,6 +241,7 @@ class Explodocus(Animal):
     rapidity = 3
     monstrosity = 4
     infernality = 10
+    destructiveness = 10
     depiction = "Explodocus.png"
     animated_chromograph_name = "units/explodocus.png"
     exploding_chromograph_name = "units/superexplode.png"
@@ -289,7 +290,7 @@ class Tankylosaurus(Animal):
     velocity = 4
     rapidity = 3
     monstrosity = 2
-    destructiveness = 4
+    destructiveness = 5
     depiction = "Tankylosaurus.png"
     animated_chromograph_name = "units/tankylosaurus.png"
     walking_animations = 2
@@ -352,7 +353,7 @@ class Ferociraptor(Animal):
     velocity = 8
     infernality = 2
     monstrosity = 5
-    destructiveness = 2
+    destructiveness = 3
     depiction = "Ferociraptor.png"
     animated_chromograph_name = "units/ferociraptor.png"
     walking_animations = 2
@@ -399,7 +400,7 @@ class Blastosaurus(Animal):
     rapidity = 6
     infernality = 3
     monstrosity = 8
-    destructiveness = 7
+    destructiveness = 10
     depiction = "Blastosaurus.png"
     animated_chromograph_name = "units/blastosaurus.png"
     pace = 100
