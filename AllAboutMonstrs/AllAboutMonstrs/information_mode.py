@@ -50,7 +50,13 @@ HELP = [
      "destination.\n "
      "Simple cannons will need a soldier to operate them, they "
      "will only fire if there is at least one soldier nearby. Perhaps one "
-     "day, modern science will change this, but for now, battle stations men!")
+     "day, modern science will change this, but for now, battle stations men!"),
+    ("Repairing","repairs.png","After a good old Onslaught, you may find "
+     "that your possessions are damaged and/or exploded. Never fear though! "
+     "As long as they were not completely destroyed, you can repair them for "
+     "a fraction of the original cost. This is particularly important for "
+     "your ships, as you will not be able to build any more than you have.\n "
+     "Better keep them in good shape with repairs."),
     ]
 
 TIPS = ["An entire field of crops (12 food) will gain you one more \

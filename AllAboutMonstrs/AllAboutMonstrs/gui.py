@@ -177,7 +177,7 @@ class BuildMenu(object):
             if item == "REPAIR" and r:
                 cost = int((float(r.damage)/r.durability)*r.cost)
                 price = lsb(cost) if cost>0 else "free"
-                text = "Repair %s for %s"%(r.name,lsb(cost))
+                text = "Repair %s for %s"%(r.name,price)
             elif item.human:
                 price = ("for %s"%lsb(item.cost)) if item.cost>0 else ""
                 text = "Deploy %s %s"%(item.name,price)
