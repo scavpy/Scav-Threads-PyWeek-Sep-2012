@@ -86,6 +86,7 @@ class OnslaughtMode(ModeOfOperation):
         self.situation.update_status_bar(self.statusbar)
         self.selected_unit = None
         # orchestrate the battle music
+        phonographs.orchestrate("onslaughtmusic.ogg")
 
     def render(self):
         self.clear_screen(image=self.scenery)

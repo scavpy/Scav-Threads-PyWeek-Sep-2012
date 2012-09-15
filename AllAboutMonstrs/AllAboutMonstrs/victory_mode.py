@@ -114,6 +114,10 @@ Our praise and gratitude goes to the following:
 delightful rendition of Tchaikovsky's 1812 Overture.
 (http://www.classiccat.net/tchaikovsky_pi/49.php)
 
+☞ Brett Parris, for his performance of Vaughan
+Williams' Tuba Concerto in F (3rd movement)
+(http://www.classiccat.net/vaughan_williams_r/_cifmf.php)
+
 ☞ The African Grey Parrot, for various sounds
 
 ☞ The wife and the girlfriend of the engineers, for
