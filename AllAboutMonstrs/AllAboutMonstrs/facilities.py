@@ -191,7 +191,7 @@ class Ship(Facility):
     our return home."""
     name = "Ship"
     vital = True
-    durability = 1000
+    durability = 300
     habitability = 2
     animated_chromograph_name = "facilities/ship.png"
     standing_animations = 1
@@ -200,4 +200,5 @@ class Ship(Facility):
     exclusion = grid.obstruance("all")
     footprint = (128,40)
     cost = 0xa00
+    aliment = "Coal"
     depiction = "Ship.png"

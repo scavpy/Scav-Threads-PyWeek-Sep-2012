@@ -84,9 +84,11 @@ class Animal(units.Unit):
             return
         if next_position.top < bounds.top:
             self.orient(5 if self.bored else 3)
+            self.move(next_position)
             return
         if next_position.bottom >= bounds.bottom:
             self.orient(7 if self.bored else 1)
+            self.move(next_position)
             return
 
     def deal_with_obstacles(self, obstacles):
@@ -99,32 +101,37 @@ class Animal(units.Unit):
                        and not obstacles[i].destroyed()]
             if targets and not self.attacking:
                 target = targets[0]
-                if self.attack():
-                    target.harm(self.destructiveness, "trampled")
+                if self.bite_target(target, self.destructiveness, "trampled"):
                     self.maybe_explode()
                     return [target]
             elif not targets:
                 # yet somehow obstructed? become dangerously impatient
-                self.maybe_explode()
+                self.maybe_explode(0.1)
         directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
         self.orient(random.choice(directions))
 
+    def bite_target(self, target, damage, cause="eaten"):
+        bite = self.attack()
+        if bite:
+            target.harm(damage, cause)
+        return bite
+    
     def seek_food(self, knowledge, kind="Vegetable"):
         """ seek food of the preferred kind """
         targets = self.find_nearest(f for f in knowledge
-                                    if f.aliment == kind
+                                    if f.aliment in (kind, "Coal")
                                     and not f.destroyed())
         if targets:
             target = targets[0]
             self.orient(self.orientation_towards(target.rect.center))
             if not self.attacking:
                 if self.rect_of_attack.colliderect(target.rect):
-                    self.attack()
-                    target.harm(1,"eaten")
-                    self.satiety += 1
-                    if self.satiety >= self.voracity:
-                        self.bored = True
-                    return [target]
+                    damage = 1 if target.aliment == "Vegetable" else self.destructiveness
+                    if self.bite_target(target, damage):
+                        self.satiety += damage
+                        if self.satiety >= self.voracity:
+                            self.bored = True
+                        return [target]
 
     def explode(self):
         """ The purpose of this operation requires little explanation.
@@ -143,8 +150,8 @@ class Animal(units.Unit):
         self.image = self.obtain_frame()
         phonographs.play(self.exploding_phonograph_name)
 
-    def maybe_explode(self):
-        if random.random()*100 < self.infernality:
+    def maybe_explode(self, factor_of_likelihood=1.0):
+        if random.random() * 100 / factor_of_likelihood < self.infernality:
             self.explode()
 
     def damage_surrounding_area(self, things):
@@ -190,7 +197,7 @@ class Trinitroceratops(Animal):
     velocity = 5
     rapidity = 5
     monstrosity = 1
-    destructiveness = 5
+    destructiveness = 8
     infernality = 8
     depiction = "Trinitroceratops.png"
     animated_chromograph_name = "units/trinitroceratops.png"
@@ -234,6 +241,7 @@ class Explodocus(Animal):
     rapidity = 3
     monstrosity = 4
     infernality = 10
+    destructiveness = 10
     depiction = "Explodocus.png"
     animated_chromograph_name = "units/explodocus.png"
     exploding_chromograph_name = "units/superexplode.png"
@@ -282,7 +290,7 @@ class Tankylosaurus(Animal):
     velocity = 4
     rapidity = 3
     monstrosity = 2
-    destructiveness = 4
+    destructiveness = 5
     depiction = "Tankylosaurus.png"
     animated_chromograph_name = "units/tankylosaurus.png"
     walking_animations = 2
@@ -345,7 +353,7 @@ class Ferociraptor(Animal):
     velocity = 8
     infernality = 2
     monstrosity = 5
-    destructiveness = 2
+    destructiveness = 3
     depiction = "Ferociraptor.png"
     animated_chromograph_name = "units/ferociraptor.png"
     walking_animations = 2
@@ -374,6 +382,7 @@ class Ferociraptor(Animal):
                 return self.deal_with_obstacles(obstacles)
             else:
                 self.orient(random.randint(0,7))
+                return None
         if not self.bored:
             food = self.seek_food(knowledge, "Meat")
             if food:
@@ -392,7 +401,7 @@ class Blastosaurus(Animal):
     rapidity = 6
     infernality = 3
     monstrosity = 8
-    destructiveness = 7
+    destructiveness = 10
     depiction = "Blastosaurus.png"
     animated_chromograph_name = "units/blastosaurus.png"
     pace = 100
@@ -423,11 +432,22 @@ class Blastosaurus(Animal):
                 return self.deal_with_obstacles(obstacles)
             else:
                 self.orient(random.randint(0,7))
+                return None
         if not self.bored:
             food = self.seek_food(knowledge, "Meat")
             if food:
                 return food
         self.navigate(next_position)
+
+    def bite_target(self, target, damage, cause="eaten"):
+        """ because one can get very weary of constant roaring """
+        bite = self.attack(audible=False)
+        if bite:
+            target.harm(damage, cause)
+            if target.destroyed():
+                phonographs.play(self.attack_phonograph)
+        return bite
+
 
 def wooly_retribution():
     from units import Sheep

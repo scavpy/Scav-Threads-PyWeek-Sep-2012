@@ -23,7 +23,7 @@ class Unit(object):
     notable_attributes = {"Firepower", "Durability", "Velocity","Rapidity"}
     walking_animations = 0
     attacking_animations = 0
-    orientation_frames = (0,0,0,0,0,0,0,0)
+    orientation_indices = (0,0,0,0,0,0,0,0)
     cost = 0xa00
     pace = 50
     obstruance = grid.obstruance("unit")
@@ -116,7 +116,7 @@ class Unit(object):
         return chromographs.obtain_frame(self.animated_chromograph_name,
                                          anim_col, anim_row,
                                          frames_wide, frames_tall)
-    def attack(self):
+    def attack(self, audible=True):
         """ Assume a ferocius aspect """
         if self.attacking or not self.attacking_animations:
             return
@@ -127,7 +127,8 @@ class Unit(object):
         self.reload_time = time() + 5.0 / self.rapidity
         self.animation_frame = self.walking_animations + 1
         self.image = self.obtain_frame()
-        phonographs.play(self.attack_phonograph)
+        if audible:
+            phonographs.play(self.attack_phonograph)
         return True
 
     def animate(self, ms):
@@ -222,7 +223,7 @@ class Cannon(Unit):
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 1
     attacking_animations = 2
-    orientation_indices = (2,1,1,1,3,0,0,0)
+    orientation_indices = (0,1,2,3,4,5,6,7)
     footprint = 20,16
     area_of_awareness = (200,160)
     area_of_attack = (80, 64)
@@ -307,7 +308,7 @@ class Sheep(Unit):
     area_of_attack = (32,32)
     attack_phonograph = placement_phonograph = "mehhh.ogg"
     pace = 100
-    cost = 0x04
+    cost = 0x080
     aliment = "Meat"
     depiction = "Sheep.png"
 
