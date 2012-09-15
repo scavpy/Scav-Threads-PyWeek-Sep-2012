@@ -293,6 +293,7 @@ class AnalyticalCannon(Unit):
 class Sheep(Unit):
     """ An edible unit. """
     name = "Sheep"
+    notable_attributes = ["Durability","Edibility","Velocity","Firepower"]
     durability = 6
     edibility = 6
     firepower = 0

@@ -106,7 +106,7 @@ class Fence(Facility):
     habitability = 0
     pace = 1000
     cost = 0x050
-    depiction = "Fence.png"
+    depiction = "WoodenFence.png"
 
     def __init__(self, location):
         self.damage = 0
@@ -134,7 +134,7 @@ class Wall(Fence):
     durability = 80
     cost = 0x100
     placement_phonograph = "brick.ogg"
-    depiction = "Wall.png"
+    depiction = "BrickWall.png"
 
 class ConcreteWall(Fence):
     """More durable still, but somewhat impractically costly."""
@@ -180,7 +180,7 @@ class Housing(Facility):
     cost = 0x300
     pace = 200
     placement_phonograph = "brick.ogg"
-    depiction = "House.png"
+    depiction = "Housing.png"
     
 class Ship(Facility):
     """The very symbol of British Naval dominance,

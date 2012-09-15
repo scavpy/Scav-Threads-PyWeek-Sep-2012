@@ -17,6 +17,7 @@ from style import PAGEMARGIN, PAGECOLOUR
 PAGES = [
     ("facilities","Housing"),
     ("facilities","Crops"),
+    ("units","Sheep"),
     ("facilities","Fence"),
     ("bestiary","Ferociraptor"),
     ("bestiary","Trinitroceratops"),
