@@ -68,6 +68,7 @@ class ExpositionMode(ModeOfOperation):
         height = 480
         location = pygame.Rect(PAGEMARGIN, scroll_top, width, height)
         self.exposition = gui.SelfAdvancingScroll(PREMISE.format(self.name), location, 30)
+        self.backbutton = gui.make_menu((700,655),[("Bypass","skip")],150)
 
     def redraw(self):
         blit = self.screen.blit
@@ -76,6 +77,7 @@ class ExpositionMode(ModeOfOperation):
         blit(self.subtitle, (PAGEMARGIN, self.subtitle_top))
         blit(self.ribbon,(850,-2))
         self.exposition.render(self.screen)
+        self.backbutton.render(self.screen)
         pygame.display.flip()
 
     def on_keydown(self, evt):
