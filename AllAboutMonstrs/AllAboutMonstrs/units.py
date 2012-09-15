@@ -407,3 +407,16 @@ class Soldier(Unit):
             self.rank += 1
         # literally
         self.durability = self.durability + 1
+
+class SteamCavalry(Soldier):
+    """ A powerful unit clad in steam powered armour. """
+    name = "Soldier"
+    durability = 26
+    firepower = 3
+    velocity = 8
+    rapidity = 10
+    animated_chromograph_name = "units/steam-cavalry.png"
+    area_of_awareness = (250,200)
+    area_of_attack = (125,100)
+    pace = 75
+    cost = 0x400

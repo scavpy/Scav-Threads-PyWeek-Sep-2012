@@ -57,10 +57,11 @@ class Situation(object):
             if thing.human:
                 if self.population > 0:
                     self.population -= 1
-                    if self.reserves:
-                        # Take a hardened veteran instead
-                        thing = self.reserves.pop(0)
-                        thing.rect.center = location.center
+                    for r in self.reserves:
+                        if isinstance(r,thingclass):
+                            thing = r
+                            thing.rect.center = location.center
+                            self.reserves.remove(r)
                 else:
                     return False
         self.installations.append(thing)
