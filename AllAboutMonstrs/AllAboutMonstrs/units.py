@@ -308,7 +308,7 @@ class Soldier(Unit):
     cost = 0x000
     aliment = "Meat"
     human = True
-    ranks = ["Pvt", "Corp", "Sgt", "Lt", "Capt", "Maj", "Lt Col", "Col", "Brig", "Gen"]
+    ranks = ["Pt", "Cpl", "Sgt", "Lt", "Capt", "Maj", "Col", "Brig", "Gen"]
 
     soldier_names = """Adam Alan Bob Bill Bert Bryn Chas Dai Dave Dick Dan Dara
         Ed Edd Eddy Fred Greg Hal Herb John Jim Jas Jack Jock Joe

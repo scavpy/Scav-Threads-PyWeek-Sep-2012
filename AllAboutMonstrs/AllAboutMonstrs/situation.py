@@ -59,6 +59,7 @@ class Situation(object):
                     if self.reserves:
                         # Take a hardened veteran instead
                         thing = self.reserves.pop(0)
+                        thing.rect.center = location.center
                 else:
                     return False
         self.installations.append(thing)

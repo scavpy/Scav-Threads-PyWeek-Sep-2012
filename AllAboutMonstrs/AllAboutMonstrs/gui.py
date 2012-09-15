@@ -232,7 +232,7 @@ class StatusBar(object):
 
     def set_unit_name(self, unit_name):
         if unit_name:
-            self.unit_name = typefaces.prepare(unit_name, size="small", colour=(255,255,255))
+            self.unit_name = typefaces.prepare(unit_name, size="small", colour=(255,255,240))
         else:
             self.unit_name = None
 
@@ -256,7 +256,7 @@ class StatusBar(object):
         if self.messages:
             screen.blit(self.messages,(320,y+20))
         if self.unit_name:
-            screen.blit(self.unit_name, (self.gearrect.left, self.gearrect.bottom + 5))
+            screen.blit(self.unit_name, (self.gearrect.left - 5, self.gearrect.bottom + 5))
 
 class TextFrame(object):
     head_end = chromographs.obtain("flourish/top-end.png")
