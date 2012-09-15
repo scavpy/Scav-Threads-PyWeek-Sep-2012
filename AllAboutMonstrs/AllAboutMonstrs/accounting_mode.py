@@ -102,6 +102,8 @@ class AccountingMode(ModeOfOperation):
             if u.human:
                 self.situation.population += 1
                 self.situation.installations.remove(u)
+                u.promote()
+                self.reserves.append(u)
         population = self.situation.population
         
         # Food produced

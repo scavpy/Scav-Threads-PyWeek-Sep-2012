@@ -118,7 +118,7 @@ class PreparationMode(ModeOfOperation):
         if self.situation.can_afford_a(thingclass):
             place = self.current_edge if self.current_edge else self.current_lot
             if place:
-                self.situation.add_installation_if_possible(thingclass(place),charge=True)
+                self.situation.add_installation_if_possible(thingclass, place, charge=True)
                 if hasattr(thingclass,"placement_phonograph"):
                     phonographs.play(thingclass.placement_phonograph)
                 self.situation.last_build = thingclass

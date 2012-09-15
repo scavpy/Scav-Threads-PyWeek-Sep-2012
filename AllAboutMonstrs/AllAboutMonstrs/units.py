@@ -19,7 +19,6 @@ def place_opposite(rect, ooclock, position):
             "midtop","topright","midright","bottomright")[ooclock]
     setattr(rect, attr, position)
 
-
 class Unit(object):
     notable_attributes = {"Firepower", "Durability", "Velocity","Rapidity"}
     walking_animations = 0
@@ -309,6 +308,20 @@ class Soldier(Unit):
     cost = 0x000
     aliment = "Meat"
     human = True
+    ranks = ["Pvt", "Corp", "Sgt", "Lt", "Capt", "Maj", "Lt Col", "Col", "Brig", "Gen"]
+
+    soldier_names = """Adam Alan Bob Bill Bert Bryn Chas Dai Dave Dick Dan Dara
+        Ed Edd Eddy Fred Greg Hal Herb John Jim Jas Jack Jock Joe
+        Leo Len Mo Olly Pete Paul Rob Rick Stan Sam Tom Will Zach Zeb
+        """.split()
+    random.shuffle(soldier_names)
+    next_name = 0
+
+    def __init__(self, location):
+        super(Soldier, self).__init__(location)
+        self.name = Soldier.soldier_names[Soldier.next_name]
+        Soldier.next_name = (Soldier.next_name + 1) % len(Soldier.soldier_names)
+        self.rank = 0
 
     def think(self, things):
         indices = self.rect_of_awareness.collidelistall(things)
@@ -329,3 +342,13 @@ class Soldier(Unit):
                 if self.attack():
                     target.harm(self.firepower, "gunfire")
                     return [target]
+
+    def name_and_rank(self):
+        return "{0} {1}".format(self.ranks[self.rank], self.name)
+
+    def promote(self):
+        """ become a hardened veteran """
+        if self.rank < len(Soldier.ranks) - 1:
+            self.rank += 1
+        # literally
+        self.durability = self.durability + 1
