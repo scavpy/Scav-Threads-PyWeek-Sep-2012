@@ -97,10 +97,16 @@ def random_wave(dino_names, hoard_size):
 def open_chapter(n):
     if n <= last_chapter():
         return CHAPTERS[n]
+    fences = []
+    tech = []
+    if n == 3:
+        fences.append("ConcreteWall")
+    elif n == 4:
+        tech.append("SteamCavalry")
     chapter = Chapter(str(n + 1), "Yet Worse Onslaughts", "bonus.png",
                       " After you returned, notionally victorious,"
                       " the colony continued to suffer increasingly"
-                      " serious attacks.", waves=[], fences=["ConcreteWall"])
+                      " serious attacks.", waves=[], fences=fences, inventions=tech)
     assert chapter.illustration
     kinds = ["Ferociraptor"]
     if n & 1:
