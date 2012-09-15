@@ -9,6 +9,7 @@ import chromographs
 import facilities
 import units
 import grid
+import chapters
 
 from gui import BuildMenu, StatusBar
 from modes import ModeOfOperation
@@ -133,6 +134,7 @@ class PreparationMode(ModeOfOperation):
         self.finished = False
         self.result = "Onslaught"
         situation = self.situation
+        self.new_inventions()
         self.build_menu = BuildMenu(situation)
         self.statusbar = StatusBar()
         situation.update_status_bar(self.statusbar)
@@ -150,7 +152,21 @@ class PreparationMode(ModeOfOperation):
             unit.animation_frame = 1
             unit.image = unit.obtain_frame()
         phonographs.orchestrate("intromusic.ogg")
-    
+
+    def new_inventions(self):
+        situation = self.situation
+        chapter = chapters.CHAPTERS[situation.chapter]
+        for name in chapter.inventions:
+            if name not in situation.unit_plans:
+                situation.unit_plans.append(name)
+        for name in chapter.fences:
+            if name not in situation.fence_plans:
+                situation.fence_plans.append(name)
+        for name in chapter.facilities:
+            if name not in situation.facility_plans:
+                situation.facility_plans.append(name)
+
+
     def render(self):
         self.clear_screen(image=self.scenery)
         self.screen.blit(self.titletext,(10,10))

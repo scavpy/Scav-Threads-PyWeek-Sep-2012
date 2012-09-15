@@ -72,6 +72,9 @@ class OnslaughtMode(ModeOfOperation):
         wave = self.situation.wave
         self.dinosaurs = chapter.spawn_wave(wave)
         phonographs.play(self.dinosaurs[-1].attack_phonograph)
+        for name in chapter.beasts_in_this_chapter():
+            if name not in self.situation.seen_dinosaurs:
+                self.situation.seen_dinosaurs.append(name)
         self.finished = False
         self.result = "Preparation"
         self.statusbar = gui.StatusBar()

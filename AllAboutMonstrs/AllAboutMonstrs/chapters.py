@@ -9,12 +9,15 @@ import units
 class Chapter(object):
     """ A container for information about a chapter """
     def __init__(self, number, subtitle="", illustration="",
-                 summary="", waves=[], inventions=[]):
+                 summary="", waves=(), fences=(),
+                 facilities=(), inventions=()):
         self.number = number
         self.subtitle = subtitle
         self.illustration = illustration
         self.summary = summary
         self.waves = waves
+        self.fences = fences
+        self.facilities = facilities
         self.inventions = inventions
 
     def spawn_wave(self, number):
@@ -27,6 +30,14 @@ class Chapter(object):
                 location.center = (west, south)
                 beasts.append(getattr(bestiary, genus)(location))
         return beasts
+
+    def beasts_in_this_chapter(self):
+        seen = []
+        for wave in self.waves:
+            for genus, west, south in wave:
+                if genus not in seen:
+                    seen.append(genus)
+        return seen
 
 def wave_of(genus, column, *rows):
     return [(genus, column, row) for row in rows]
@@ -44,7 +55,7 @@ vessels remaining and must protect them at all costs.",
             wave_of("Ferociraptor", -50, 200, 240, 500, 550),
             wave_of("Ferociraptor", -50, 200, 240, 500, 550) + wave_of("Trinitroceratops", -80, 360, 450)
             ],
-        inventions=[("units", "Cannon"), ("fences","Fence")]
+        inventions=["Cannon"], fences=["Fence"],
         ),
     Chapter(
         "Two","Desperate Times","boat.png",
@@ -57,10 +68,10 @@ vessels remaining and must protect them at all costs.",
             wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 550) + wave_of("Ferociraptor", -150, 300, 400, 500),
             wave_of("Trinitroceratops", -50, 200, 240, 300, 430, 550) + wave_of("Tankylosaurus", -150, 300, 400)
             ],
-        inventions=[("units","AnalyticalCannon"), ("fences","Wall")]
+        inventions=["AnalyticalCannon"], fences=["Wall"],
         ),
     Chapter(
-        "Three","Desperate Times","boat.png",
+        "Three","Calm Before The Storm","boat.png",
         " Our defences are weakened and our resources badly stretched"
         " by these monstrous herbivores.\n"
         " God grant that nothing worse comes our way!",
@@ -69,7 +80,6 @@ vessels remaining and must protect them at all costs.",
             wave_of("Trinitroceratops", -50, 200, 240, 500, 550) + wave_of("Tankylosaurus", -150, 300, 400),
             wave_of("Trinitroceratops", -50, 200, 550) + wave_of("Tankylosaurus", -150, 300, 400) + [("Blastosaurus", -80, 330)]
             ],
-        inventions=[]
         ),
 ]
     
