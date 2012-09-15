@@ -187,9 +187,8 @@ class OnslaughtMode(ModeOfOperation):
                 targets = u.think(all_the_things)
                 if targets:
                     for d in targets:
-                        if d.destroyed():
+                        if d.destroyed() or d.exploding:
                             all_the_things.remove(d)
-                            self.dinosaurs.remove(d)
                             self.situation.trophies.append(d.name)
 
                 

@@ -121,9 +121,9 @@ class AccountingMode(ModeOfOperation):
         max_growth_from_space = max((housing_space - population),0)
         population_growth = min(max_growth_from_space,
                                 max_growth_from_crops)
+        food -= population_growth*MEAL_SIZE
         if population < 5 and population_growth < 3:
             population_growth = 3
-        food -= population_growth*MEAL_SIZE
         # Income from crops
         food_income = food*0x80
         
@@ -142,7 +142,7 @@ class AccountingMode(ModeOfOperation):
             progress += 5
         for k, v in cnt.items():
             note(k + " slain", v)
-            trophy_income += 0x40 * v # 4 shillings bounty per corpse
+            trophy_income += 0x100 * v # 1 pound bounty per dinosaur
         situation.trophies = []
         income = trophy_income + food_income + 0x100 # 1 pound bonus
 

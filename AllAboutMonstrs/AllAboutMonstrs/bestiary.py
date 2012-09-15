@@ -170,7 +170,7 @@ class Animal(units.Unit):
     def harm(self, quanta_of_destruction, cause):
         """ Dinosaurs will sometimes explode for no readily apparent reason """
         super(Animal, self).harm(quanta_of_destruction, cause)
-        if not self.destroyed:
+        if not self.destroyed():
             self.maybe_explode()
 
 class Trinitroceratops(Animal):
