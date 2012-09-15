@@ -137,7 +137,9 @@ class Unit(object):
             return False # nothing to be done
         self.temporal_accumulator = 0
         frame = self.animation_frame
-        if self.attacking:
+        if self.destroyed():
+            frame = 0
+        elif self.attacking:
             frame += 1
             if frame > self.walking_animations + self.attacking_animations:
                 frame = 1
@@ -146,7 +148,6 @@ class Unit(object):
             frame += 1
             if frame > self.walking_animations:
                 frame = 1
-
         self.animation_frame = frame
         self.image = self.obtain_frame()
         return True # something was changed
@@ -176,7 +177,8 @@ class Unit(object):
 
     def find_obstacles(self, location, knowledge):
         """ find things that obstruct a rectangle such that this
-        unit may not occupy the same space if it were there """
+        unit may not occupy the same space if it were there.
+        """
         indices = location.collidelistall(knowledge)
         return [knowledge[i] for i in indices
                 if knowledge[i] is not self
@@ -234,7 +236,6 @@ class Cannon(Unit):
         things. Otherwise return a non-true value.
         """
         # Fire when any beast is attackable
-        from bestiary import Animal
         indices = self.rect_of_awareness.collidelistall(things)
         category = grid.obstruance("beast")
         beasts = self.find_nearest([things[i] for i in indices
@@ -277,10 +278,10 @@ class AnalyticalCannon(Unit):
         things. Otherwise return a non-true value.
         """
         # Fire when any beast is attackable
-        from bestiary import Animal
         indices = self.rect_of_awareness.collidelistall(things)
+        category = grid.obstruance("beast")
         beasts = self.find_nearest([things[i] for i in indices
-                                    if isinstance(things[i], Animal)])
+                                    if things[i].obstruance & category])
         if beasts and not self.attacking:
             target = beasts[0]
             self.orient(self.orientation_towards(target.rect.center))
