@@ -16,7 +16,7 @@ DESCRIPTION = open('README.txt').read()
 
 METADATA = {
     'name':APP_NAME,
-    'version':          '0.9.0',
+    'version':          '0.9.1',
     'license':          """GPL""",
     'description':      """Blastosaurus Rex - Defend your colony against exploding dinosaurs""",
     'author':           """Scav,Threads""",

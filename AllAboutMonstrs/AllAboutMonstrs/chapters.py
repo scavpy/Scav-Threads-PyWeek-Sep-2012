@@ -81,6 +81,29 @@ vessels remaining and must protect them at all costs.",
             wave_of("Trinitroceratops", -50, 200, 550) + wave_of("Tankylosaurus", -150, 300, 400) + [("Blastosaurus", -80, 330)]
             ],
         ),
+    Chapter(
+        "Four","A Comical Interlude","boat.png",
+        " Only yesterday we saw the most remarkably silly creature.\n"
+        " However, I hope it doesn't approach the colony. It looks"
+        " to be of alarming size.",
+        waves=[
+            wave_of("Tankylosaurus", -150, 300, 400, 500) + wave_of("Trinitroceratops",-50, 100, 250, 550, 400),
+            wave_of("Tankylosaurus", -50, 200, 240, 500, 550) + wave_of("Blastosaurus", -150, 300, 400),
+            wave_of("Trinitroceratops", -50, 200, 550) + wave_of("Ferociraptor", -150, 300, 400) + [("Explodocus", -80, 330)]
+            ],
+        ),
+    Chapter(
+        "Five","Last Stand","boat.png",
+        " A Radiotelegram was received this morning to the effect that"
+        " if we can hold out one more day, we can be rescued, and"
+        " our mission will be deemed a success!",
+        waves=[
+            wave_of("Trinitroceratops", -50, 200, 240, 500, 550) + wave_of("Blastosaurus", -150, 300, 400),
+            wave_of("Tankylosaurus", -50, 200, 240, 350, 500, 550) + wave_of("Tankylosaurus", -150, 300, 400),
+            wave_of("Trinitroceratops", -50, 200, 550) +
+            wave_of("Tankylosaurus", -150, 300, 400) + [("Explodocus", -200, 200)] +
+            wave_of("Blastosaurus", -300, 250, 350, 450, 550)]
+        ),
 ]
 
 def last_chapter():
