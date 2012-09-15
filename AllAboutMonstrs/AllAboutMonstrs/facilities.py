@@ -135,6 +135,15 @@ class Wall(Fence):
     cost = 0x100
     placement_phonograph = "brick.ogg"
     depiction = "Wall.png"
+
+class ConcreteWall(Fence):
+    """More durable still, but somewhat impractically costly."""
+    name = "Concrete Wall"
+    chromograph_suffix = "concrete"
+    durability = 300
+    cost = 0x300
+    placement_phonograph = "brick.ogg"
+    depiction = "ConcreteWall.png"
     
 class Crops(Facility):
     """Without food, the population of the colony cannot grow,
