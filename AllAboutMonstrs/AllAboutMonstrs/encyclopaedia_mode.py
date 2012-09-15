@@ -15,10 +15,15 @@ import gui
 from style import PAGEMARGIN, PAGECOLOUR
 
 PAGES = [
+    ("facilities","Housing"),
+    ("facilities","Crops"),
+    ("facilities","Fence"),
     ("bestiary","Ferociraptor"),
     ("bestiary","Trinitroceratops"),
     ("units","Cannon"),
+    ("facilities","Wall"),
     ("bestiary","Tankylosaurus"),
+    ("units","AnalyticalCannon"),
     ("bestiary","Blastosaurus"),
     ("bestiary","Explodocus"),
     ]
@@ -60,7 +65,7 @@ class EncyclopaediaMode(ModeOfOperation):
     def on_mousebuttondown(self, e):
         if self.page == "index":
             choice = self.index_menu.mouse_event(e)
-            if choice:
+            if choice is not None:
                 self.chosen_from_menu(choice)
         else:
             choice = self.backbutton.mouse_event(e)

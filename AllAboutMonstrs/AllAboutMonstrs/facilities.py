@@ -9,7 +9,9 @@ import grid
 
 
 class Facility(object):
-    notable_attributes = {"Durability","Flammability","Habitability"}
+    notable_attributes = {"Durability","Habitability"}
+    durability = 1
+    habitability = 0
     standing_animations = 1
     cost = 0x100
     conditions = 4 # good, serviceable, dilapidated, ruined
@@ -90,15 +92,21 @@ class Facility(object):
     def destroyed(self):
         return self.damage >= self.durability
 
+    
 class Fence(Facility):
+    """A simple wooden fence deters or slows most of the
+    monstrous inhabitants of this island.
+    Except the larger ones which simply destroy it,
+    and the smaller ones which jump over it.
+    """
     name = "Wooden Fence"
     chromograph_suffix = "fence"
     placement_phonograph = "crack.ogg"
     durability = 20
-    flammability = 2
     habitability = 0
     pace = 1000
     cost = 0x050
+    depiction = "Fence.png"
 
     def __init__(self, location):
         self.damage = 0
@@ -119,20 +127,24 @@ class Fence(Facility):
         self.flash = False
 
 class Wall(Fence):
+    """Much more durable than the wooden fence, but somewhat more expensive
+    to build."""
     name = "Brick Wall"
     chromograph_suffix = "wall"
     durability = 80
-    flammability = 0
     cost = 0x100
     placement_phonograph = "brick.ogg"
-
+    depiction = "Wall.png"
+    
 class Crops(Facility):
+    """Without food, the population of the colony cannot grow,
+    and soldiers cannot be recruited. Surplus food will be traded
+    to increase the wealth available to buy other things."""
     name = "Cabbages"
     is_flat = True
-    notable_attributes = {"Edibility","Flammability","Habitability"}
+    notable_attributes = {"Edibility","Habitability"}
     edibility = 12
     durability = 12
-    flammability = 1
     habitability = 0
     placement_phonograph = "dig.ogg"
     animated_chromograph_name = "facilities/crops.png"
@@ -141,8 +153,13 @@ class Crops(Facility):
     footprint = (grid.LOT_WIDTH, grid.LOT_DEPTH)
     cost = 0x028
     aliment = "Vegetable"
+    depiction = "Crops.png"
 
 class Housing(Facility):
+    """Without housing, the population of the colony has no
+    room to grow. Although some soldiers can live on the
+    ships, it's not particularly comfortable or conducive to
+    procreation."""
     name = "Housing"
     durability = 120
     habitability = 3
@@ -154,12 +171,19 @@ class Housing(Facility):
     cost = 0x300
     pace = 200
     placement_phonograph = "brick.ogg"
-
+    depiction = "House.png"
+    
 class Ship(Facility):
+    """The very symbol of British Naval dominance,
+    the Stephenson Class Ironclad colony vessel
+    carries supplies, equipment and marines to far
+    lands, to claim those lands for her Majesty.
+    They are also the only means available for
+    our return home."""
     name = "Ship"
     vital = True
     durability = 1000
-    habitability = 1
+    habitability = 2
     animated_chromograph_name = "facilities/ship.png"
     standing_animations = 1
     conditions = 4
@@ -167,3 +191,4 @@ class Ship(Facility):
     exclusion = grid.obstruance("all")
     footprint = (128,40)
     cost = 0xa00
+    depiction = "Ship.png"
