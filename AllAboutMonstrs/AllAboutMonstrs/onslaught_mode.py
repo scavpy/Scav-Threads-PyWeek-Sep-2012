@@ -99,7 +99,8 @@ class OnslaughtMode(ModeOfOperation):
             "Click again on the field to direct a soldier",
             "Click on a soldier to select them",
             )
-        self.statusbar.flash(80)
+        if self.situation.chapter == 0:
+            self.statusbar.flash(80)
         self.situation.update_status_bar(self.statusbar)
         self.selected_unit = None
         # orchestrate the battle music

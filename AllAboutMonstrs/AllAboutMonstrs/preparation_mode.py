@@ -144,7 +144,8 @@ class PreparationMode(ModeOfOperation):
             "Left click to repeat the previous build",
             "Right click to open build menu",
             )
-        self.statusbar.flash(80)
+        if self.situation.chapter == 0:
+            self.statusbar.flash(80)
         for inst in situation.installations[:]:
             if inst.destroyed():
                 situation.installations.remove(inst)
