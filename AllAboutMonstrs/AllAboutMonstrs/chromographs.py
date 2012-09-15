@@ -35,7 +35,13 @@ def obtain_portion(chromograph_name, portion):
     chromograph = PORTIONS.get(key)
     if not chromograph:
         surface = obtain(chromograph_name)
-        chromograph = surface.subsurface(portion)
+        try:
+            chromograph = surface.subsurface(portion)
+        except ValueError:
+            portion.topleft = (0,0)
+            portion.height = min(surface.height,portion.height)
+            portion.width = min(surface.width,portion.width)
+            chromograph = surface.subsurface(portion)            
         PORTIONS[key] = chromograph
     return chromograph
 
@@ -48,6 +54,8 @@ def obtain_frame(chromograph_name, frame_col, frame_row, frames_wide, frames_tal
     chromograph = FRAMES.get(key)
     if not chromograph:
         surface = obtain(chromograph_name)
+        frame_col = min(max(0,frame_col),frames_wide-1)
+        frame_row = min(max(0,frame_row),frames_tall-1)
         width, height = surface.get_size()
         portion_width = width // frames_wide
         portion_height = height // frames_tall
