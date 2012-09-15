@@ -8,9 +8,9 @@ if __name__ == "__main__":
         help="Commence a particular mode of operation")
     add("--debug-rectangles", default=False, action="store_true",
         help="Make visible the footprint rectangles")
-    add("--no-sound", default=False, action="store_true",
-        help="Ignore all sound output")
     add("--full", default=False, action="store_true",
         help="Full-screen")
+    add("--sheep", default=False, action="store_true",
+        help="sheep")
     args = ap.parse_args()
     AllAboutMonstrs.__main__.main(args)

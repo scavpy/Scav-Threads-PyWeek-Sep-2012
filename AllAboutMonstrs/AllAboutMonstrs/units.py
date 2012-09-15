@@ -290,6 +290,58 @@ class AnalyticalCannon(Unit):
                     target.harm(self.firepower, "gunfire")
                     return [target]
 
+class Sheep(Unit):
+    """ An edible unit. """
+    name = "Sheep"
+    durability = 6
+    edibility = 6
+    firepower = 0
+    velocity = 6
+    animated_chromograph_name = "units/sheep.png"
+    walking_animations = 2
+    attacking_animations = 1
+    orientation_indices = (0,0,0,0,1,1,1,1)
+    footprint = (24,24)
+    area_of_awareness = (200,160)
+    area_of_attack = (32,32)
+    attack_phonograph = placement_phonograph = "mehhh.ogg"
+    pace = 100
+    cost = 0x04
+    aliment = "Meat"
+    depiction = "Sheep.png"
+
+    def think(self, things):
+        indices = self.rect_of_awareness.collidelistall(things)
+        beast = grid.obstruance("beast")
+        dangers = self.find_nearest(things[i] for i in indices
+                                    if things[i].obstruance & beast)
+        if dangers:
+            danger = dangers[0]
+            self.walking = True
+            direction = (self.orientation_towards(danger.rect.center)+4)%8
+            self.orient(direction)
+            self.navigate(self.step_position())
+            fear = 2
+        else:
+            flock = self.find_nearest([things[i] for i in indices
+                                       if isinstance(things[i],Sheep)
+                                       and things[i] != self])
+            if flock:
+                choice = random.choice(flock)
+                x,y = self.rect.center
+                ox,oy = choice.rect.center
+                dx,dy = (ox-x,oy-y)
+                dist2 = dx*dx+dy*dy
+                if 1024 < dist2 <= 4096:
+                    self.walking = True
+                    self.orient(self.orientation_towards((ox,oy)))
+                    self.navigate(self.step_position())
+                else:
+                    self.walking = False
+            fear = 1
+        if random.random() < 0.01*fear:
+            phonographs.play(self.attack_phonograph)
+
 class Soldier(Unit):
     """ An infantry unit. """
     name = "Soldier"

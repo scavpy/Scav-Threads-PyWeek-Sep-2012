@@ -38,7 +38,7 @@ class Situation(object):
         self.seen_dinosaurs = []
         self.facility_plans = ["Crops","Housing"]
         self.fence_plans = []
-        self.unit_plans = ["Soldier"]
+        self.unit_plans = ["Soldier","Sheep"]
         self.last_build = Fence
         self.trophies = []
         self.in_game = False
@@ -90,9 +90,13 @@ class Situation(object):
         return [u for u in self.installations
                 if u.obstruance & grid.obstruance("unit")]
 
+    def count_food(self):
+        return sum([max(c.durability-c.damage,0)
+                    for c in self.installations
+                    if hasattr(c,"edibility")])
+
     def update_status_bar(self, statusbar):
-        food = sum([max(c.durability - c.damage, 0)
-                    for c in self.installations if hasattr(c,"edibility")])
+        food = self.count_food()
         remaining = self.ships_remaining()
         statusbar.update(self.wealth, food, self.population, self.last_build, self.maxships, self.ships_remaining())
 
