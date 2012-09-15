@@ -150,7 +150,7 @@ class Unit(object):
                 frame = 1
         self.animation_frame = frame
         self.image = self.obtain_frame()
-        return True # something was changed
+        return not self.destroyed()
 
     def harm(self, quanta_of_destruction, cause=None):
         """ Deal damage to the unit, possibly rendering it inactive """
