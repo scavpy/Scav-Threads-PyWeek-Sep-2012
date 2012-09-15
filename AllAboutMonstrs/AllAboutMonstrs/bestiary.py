@@ -84,9 +84,11 @@ class Animal(units.Unit):
             return
         if next_position.top < bounds.top:
             self.orient(5 if self.bored else 3)
+            self.move(next_position)
             return
         if next_position.bottom >= bounds.bottom:
             self.orient(7 if self.bored else 1)
+            self.move(next_position)
             return
 
     def deal_with_obstacles(self, obstacles):
@@ -99,16 +101,21 @@ class Animal(units.Unit):
                        and not obstacles[i].destroyed()]
             if targets and not self.attacking:
                 target = targets[0]
-                if self.attack():
-                    target.harm(self.destructiveness, "trampled")
+                if self.bite_target(target, self.destructiveness, "trampled"):
                     self.maybe_explode()
                     return [target]
             elif not targets:
                 # yet somehow obstructed? become dangerously impatient
-                self.maybe_explode()
+                self.maybe_explode(0.1)
         directions = (0,1,2,3,4,5,6,7) + ((4,5,6) if self.bored else (1,2,3))
         self.orient(random.choice(directions))
 
+    def bite_target(self, target, damage, cause="eaten"):
+        bite = self.attack()
+        if bite:
+            target.harm(damage, cause)
+        return bite
+    
     def seek_food(self, knowledge, kind="Vegetable"):
         """ seek food of the preferred kind """
         targets = self.find_nearest(f for f in knowledge
@@ -120,12 +127,11 @@ class Animal(units.Unit):
             if not self.attacking:
                 if self.rect_of_attack.colliderect(target.rect):
                     damage = 1 if target.aliment == "Vegetable" else self.destructiveness
-                    self.attack()
-                    target.harm(damage,"eaten")
-                    self.satiety += 1
-                    if self.satiety >= self.voracity:
-                        self.bored = True
-                    return [target]
+                    if self.bite_target(target, damage):
+                        self.satiety += damage
+                        if self.satiety >= self.voracity:
+                            self.bored = True
+                        return [target]
 
     def explode(self):
         """ The purpose of this operation requires little explanation.
@@ -144,8 +150,8 @@ class Animal(units.Unit):
         self.image = self.obtain_frame()
         phonographs.play(self.exploding_phonograph_name)
 
-    def maybe_explode(self):
-        if random.random()*100 < self.infernality:
+    def maybe_explode(self, factor_of_likelihood=1.0):
+        if random.random() * 100 / factor_of_likelihood < self.infernality:
             self.explode()
 
     def damage_surrounding_area(self, things):
@@ -429,6 +435,16 @@ class Blastosaurus(Animal):
             if food:
                 return food
         self.navigate(next_position)
+
+    def bite_target(self, target, damage, cause="eaten"):
+        """ because one can get very weary of constant roaring """
+        bite = self.attack(audible=False)
+        if bite:
+            target.harm(damage, cause)
+            if target.destroyed():
+                phonographs.play(self.attack_phonograph)
+        return bite
+
 
 def wooly_retribution():
     from units import Sheep

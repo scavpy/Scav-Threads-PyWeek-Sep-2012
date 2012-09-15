@@ -116,7 +116,7 @@ class Unit(object):
         return chromographs.obtain_frame(self.animated_chromograph_name,
                                          anim_col, anim_row,
                                          frames_wide, frames_tall)
-    def attack(self):
+    def attack(self, audible=True):
         """ Assume a ferocius aspect """
         if self.attacking or not self.attacking_animations:
             return
@@ -127,7 +127,8 @@ class Unit(object):
         self.reload_time = time() + 5.0 / self.rapidity
         self.animation_frame = self.walking_animations + 1
         self.image = self.obtain_frame()
-        phonographs.play(self.attack_phonograph)
+        if audible:
+            phonographs.play(self.attack_phonograph)
         return True
 
     def animate(self, ms):
