@@ -44,6 +44,10 @@ class EncyclopaediaMode(ModeOfOperation):
             self.draw_current_page()
         return self.next_mode
 
+    def on_quit(self, e):
+        self.next_mode = None
+        self.finished = True
+
     def on_keydown(self, e):
         if e.key == pygame.K_ESCAPE:
             self.finished = True
@@ -72,14 +76,14 @@ class EncyclopaediaMode(ModeOfOperation):
             if choice:
                 self.prepare_index_page()
 
+    def on_mousemotion(self, e):
+        self.index_menu.mouse_event(e)
+
     def chosen_from_menu(self, choice):
         if choice == "regress":
             self.finished = True
         else:
             self.prepare_encyclopaedia_page(choice)
-            
-    def on_quit(self, e):
-        self.finished = True
 
     def initialize(self):
         self.heading = typefaces.prepare_subtitle("Notable Attributes")
