@@ -84,6 +84,12 @@ def obstruance(*things):
         obst |= b
     return obst
 
+def rect_in_bounds(rect):
+    return (BOUNDS.contains(rect) and
+            not WATER_RECT.colliderect(rect))
+
+def in_water(rect):
+    return WATER_RECT.colliderect(rect)
 
 class DeterminationOfPlausibility(unittest.TestCase):
     def setUp(self):

@@ -58,13 +58,14 @@ class Animal(units.Unit):
         bounds = grid.BOUNDS
         if self.bored:
             self.maybe_explode()
-        if bounds.contains(next_position):
+        if grid.rect_in_bounds(next_position):
             self.move(next_position)
             # don't go the wrong way for long
             if self.going_the_wrong_way() and random.random() < 0.1:
                 self.go_the_right_way()
             return
-        if next_position.right >= bounds.right:
+        if (next_position.right >= bounds.right or
+            grid.in_water(next_position)):
             self.bored = True
             self.orient(6) # go straight back
             return

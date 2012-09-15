@@ -79,8 +79,7 @@ class Unit(object):
         self.attend_to_surroundings()
 
     def navigate(self, next_position):
-        bounds = grid.BOUNDS
-        if bounds.contains(next_position):
+        if grid.rect_in_bounds(next_position):
             self.move(next_position)
 
     def move(self, location):

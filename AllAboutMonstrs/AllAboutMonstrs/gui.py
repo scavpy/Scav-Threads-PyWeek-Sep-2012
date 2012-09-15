@@ -44,6 +44,8 @@ class PunchCard(object):
 
     def __init__(self, position):
         self.position = position
+        self.message = typefaces.prepare("Return key to punch the card",
+                                         size="small")
         self.text = ""
         self.update()
 
@@ -73,6 +75,7 @@ class PunchCard(object):
         screen.blit(self.bg,(x,y))
         dw = (self.width - self.textsurf.get_width()) / 2
         screen.blit(self.textsurf,(x+dw,y+self.height/2))
+        screen.blit(self.message, (x+80,y+self.height-50))
 
 class BuildMenu(object):
     spanner = chromographs.obtain("iconic/spanner.png")
@@ -190,6 +193,8 @@ class StatusBar(object):
     dead_ship = chromographs.obtain("iconic/dead-ship.png")
     gear = chromographs.obtain("iconic/wee-gear.png")
     gearrect = gear.get_rect()
+    intensity = 80
+    slowness = 4.0
 
     def __init__(self):
         self.stats_table = None
@@ -199,6 +204,10 @@ class StatusBar(object):
         self.icon_rect = None
         self.messages = None
         self.message_stack = []
+        self.flashing = 0
+
+    def flash(self,frames):
+        self.flashing = frames
 
     def update(self, money, food, pop, last_build, ships, remaining):
         self.stats_table = typefaces.prepare_table(
@@ -233,6 +242,10 @@ class StatusBar(object):
                 screen.blit(self.live_ship,(700+i*75,y+30))
             else:
                 screen.blit(self.dead_ship,(700+i*75,y+30))
+        if self.flashing:
+            self.flashing -= 1
+            glow = int((sin(self.flashing/self.slowness)+1)*(self.intensity/2))
+            pygame.draw.rect(screen,(glow,glow,glow),(320,y+20,350,95))
         if self.messages:
             screen.blit(self.messages,(320,y+20))
 
