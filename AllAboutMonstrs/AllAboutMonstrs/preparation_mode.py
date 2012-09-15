@@ -158,7 +158,7 @@ class PreparationMode(ModeOfOperation):
 
     def new_inventions(self):
         situation = self.situation
-        chapter = chapters.CHAPTERS[situation.chapter]
+        chapter = chapters.open(situation.chapter)
         for name in chapter.inventions:
             if name not in situation.unit_plans:
                 situation.unit_plans.append(name)

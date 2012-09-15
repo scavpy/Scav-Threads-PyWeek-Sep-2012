@@ -55,7 +55,7 @@ class ChapterStartMode(ModeOfOperation):
 
     def initialize(self):
         situation = self.situation
-        chapter = chapters.CHAPTERS[situation.chapter]
+        chapter = chapters.open_chapter(situation.chapter)
         self.ribbon = chromographs.obtain("flourish/ribbon-white.png")
         self.portrait = chromographs.obtain("illustrations/%s"%chapter.illustration)
         self.title = typefaces.prepare_title("Chapter %s:"% chapter.number)

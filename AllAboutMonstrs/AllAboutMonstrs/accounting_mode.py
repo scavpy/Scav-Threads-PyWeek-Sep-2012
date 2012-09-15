@@ -60,13 +60,12 @@ class AccountingMode(ModeOfOperation):
             self.finished = True
 
     def initialize(self):
-        if (self.situation.chapter + 1) >= len(chapters.CHAPTERS):
+        if self.situation.chapter >= chapters.last_chapter():
             # you have won
             self.next_mode = "Victory"
         else:
             # you will proceed to next chapter
             self.next_mode = "ChapterStart"
-            # TODO - autosave
         self.ribbon = chromographs.obtain("flourish/ribbon-gold.png")
         phonographs.orchestrate("intromusic.ogg")
 

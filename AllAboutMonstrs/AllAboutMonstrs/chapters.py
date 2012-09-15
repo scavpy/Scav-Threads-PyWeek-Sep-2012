@@ -3,8 +3,7 @@
 """
 from pygame import Rect
 import bestiary
-import facilities
-import units
+import random
 
 class Chapter(object):
     """ A container for information about a chapter """
@@ -82,4 +81,31 @@ vessels remaining and must protect them at all costs.",
             ],
         ),
 ]
+
+def last_chapter():
+    return len(CHAPTERS) - 1
+
+def random_wave(dino_names, hoard_size):
+    wave = []
+    for i in xrange(hoard_size):
+        wave.append((random.choice(dino_names), random.randint(-300, -50), random.randint(200, 600)))
+    return wave
+    
+def open_chapter(n):
+    if n <= last_chapter():
+        return CHAPTERS[n]
+    chapter = Chapter(str(n + 1), "Yet Worse Onslaughts", "bonus.png",
+                      " After you returned, notionally victorious,"
+                      "the colony continued to suffer increasingly"
+                      "serious attacks.")
+    kinds = ["Ferociraptor"]
+    if n & 1:
+        kinds.append("Trinitroceratops")
+    if n & 2:
+        kinds.append("Tankylosaurus")
+    if n & 4:
+        kinds.append("Blastosaurus")
+    if n & 8:
+        kinds.append("Explodocus")
+    dinos_per_wave = 6 + 3 * n
     
