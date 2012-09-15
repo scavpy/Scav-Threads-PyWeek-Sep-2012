@@ -129,12 +129,10 @@ their patience.
 ☞ Miscellaneous auditory fragments from
 (http://FreeSound.org)
 
+☞ Dinosaur Comics, for inspiration.
+(http://www.qwantz.com)
 
-Our condemnation, opprobrium and censure fall on:
+☞ Neal Stephenson, for the Baroque Cycle
 
-☞ The audio system on Linux; specificially jackd,
-pulseaudio, ALSA and all combinations and
-interactions thereof and between, that make it
-nearly impossible to install a working audio
-system and sound editing software.
+☞ Michael Crichton, for Jurassic Park
 """
