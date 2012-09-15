@@ -89,7 +89,7 @@ class OnslaughtMode(ModeOfOperation):
         wave = self.situation.wave
         self.dinosaurs = self.chapter.spawn_wave(wave)
         phonographs.play(self.dinosaurs[-1].attack_phonograph)
-        for name in chapter.beasts_in_this_chapter():
+        for name in self.chapter.beasts_in_this_chapter():
             if name not in self.situation.seen_dinosaurs:
                 self.situation.seen_dinosaurs.append(name)
         self.finished = False
@@ -183,7 +183,7 @@ class OnslaughtMode(ModeOfOperation):
             act = u.animate(ms)
             if not isinstance(u, units.Unit):
                 continue
-            if act and u.damage < u.durability:
+            if act and not u.destroyed():
                 targets = u.think(all_the_things)
                 if targets:
                     for d in targets:

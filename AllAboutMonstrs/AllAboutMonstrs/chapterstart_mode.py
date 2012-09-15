@@ -107,6 +107,7 @@ class ChapterStartMode(ModeOfOperation):
         blit(self.portrait, (PAGEMARGIN,100))
         self.menu.render(self.screen)
         self.summary.render(self.screen)
-        blit(self.table, (PAGEMARGIN, 100 + self.portrait.get_height() + PAGEMARGIN))
+        if self.table:
+            blit(self.table, (PAGEMARGIN, 100 + self.portrait.get_height() + PAGEMARGIN))
         blit(self.ribbon,(850,-2))
         pygame.display.flip()

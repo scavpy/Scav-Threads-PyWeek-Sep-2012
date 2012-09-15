@@ -4,6 +4,7 @@
 from pygame import Rect
 import bestiary
 import random
+import grid
 
 class Chapter(object):
     """ A container for information about a chapter """
@@ -88,7 +89,9 @@ def last_chapter():
 def random_wave(dino_names, hoard_size):
     wave = []
     for i in xrange(hoard_size):
-        wave.append((random.choice(dino_names), random.randint(-300, -50), random.randint(200, 600)))
+        wave.append((random.choice(dino_names),
+                     random.randint(-800, -20),
+                     random.randint(grid.NORTHERN_LIMIT + 30, grid.SOUTHERN_LIMIT - 30)))
     return wave
     
 def open_chapter(n):
@@ -96,8 +99,9 @@ def open_chapter(n):
         return CHAPTERS[n]
     chapter = Chapter(str(n + 1), "Yet Worse Onslaughts", "bonus.png",
                       " After you returned, notionally victorious,"
-                      "the colony continued to suffer increasingly"
-                      "serious attacks.")
+                      " the colony continued to suffer increasingly"
+                      " serious attacks.", waves=[])
+    assert chapter.illustration
     kinds = ["Ferociraptor"]
     if n & 1:
         kinds.append("Trinitroceratops")
@@ -108,4 +112,7 @@ def open_chapter(n):
     if n & 8:
         kinds.append("Explodocus")
     dinos_per_wave = 6 + 3 * n
+    for wave in 0,1,2:
+        chapter.waves.append(random_wave(kinds, dinos_per_wave + wave))
+    return chapter
     

@@ -71,7 +71,10 @@ class VictoryMode(ModeOfOperation):
 
         def note(label, amount):
             notables.append([label+": ", amount])
-            
+
+        bonus = 0x20 * situation.progress
+        situation.wealth += bonus
+        note("Victory bonus:", lsb(bonus))
         note("Final balance", lsb(situation.wealth))
         note("Final progress", situation.progress)
         self.table = typefaces.prepare_table(notables)
