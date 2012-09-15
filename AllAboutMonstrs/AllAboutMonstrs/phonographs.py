@@ -10,15 +10,16 @@ SOUND_ON = True
 MUSIC_PLAYING = None
 
 def play(phonograph_name):
-    if SOUND_ON:
-        phonograph = PHONOGRAPHS.get(phonograph_name)
-        if not phonograph:
-            try:
-                phonograph = load_phonograph(phonograph_name)
-            except pygame.error:
-                print("Missing sound: %s"%phonograph_name)
-                return
-        phonograph.play()
+    if not SOUND_ON:
+        return
+    phonograph = PHONOGRAPHS.get(phonograph_name)
+    if not phonograph:
+        try:
+            phonograph = load_phonograph(phonograph_name)
+        except pygame.error:
+            print("Missing sound: %s"%phonograph_name)
+            return
+    phonograph.play()
 
 def load_phonograph(phonograph_name):
     path = data.filepath(
@@ -40,6 +41,8 @@ def enable_sound():
     SOUND_ON = True
 
 def orchestrate(phonograph_name, once=False):
+    if not SOUND_ON:
+        return
     global MUSIC_PLAYING
     if MUSIC_PLAYING == phonograph_name:
         return
@@ -52,6 +55,8 @@ def orchestrate(phonograph_name, once=False):
     MUSIC_PLAYING = phonograph_name
         
 def diminuendo(milliseconds):
+    if not SOUND_ON:
+        return
     music.fadeout(milliseconds)
     global MUSIC_PLAYING
     MUSIC_PLAYING = None

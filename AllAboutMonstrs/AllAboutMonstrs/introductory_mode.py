@@ -1,5 +1,6 @@
 import pygame
 
+import bestiary
 import chromographs
 import phonographs
 from modes import ModeOfOperation
@@ -24,6 +25,9 @@ class IntroductoryMode(ModeOfOperation):
         return self.next_mode
 
     def initialize(self):
+        if self.situation.args.sheep:
+            bestiary.wooly_retribution()
+            self.situation.args.sheep = False
         self.header = gui.make_textbox((250,PAGEMARGIN),
                                        "BLASTOSAURUS REX",500,
                                        size="title")

@@ -8,6 +8,7 @@ import facilities
 import grid
 import phonographs
 
+
 class Animal(units.Unit):
     """A description of the Animal"""
     notable_attributes = ("Durability","Voracity","Monstrosity",
@@ -352,7 +353,6 @@ class Ferociraptor(Animal):
     def __init__(self, location):
         super(Ferociraptor, self).__init__(location)
 
-
     def think(self, things):
         """ Determine the volition of the beast.
         If it act upon any thing else, return a list of such
@@ -422,3 +422,16 @@ class Blastosaurus(Animal):
             if food:
                 return food
         self.navigate(next_position)
+
+def wooly_retribution():
+    from units import Sheep
+    Sheep.aliment = None
+    for k in [Ferociraptor,Blastosaurus,Trinitroceratops,Explodocus,
+              Tankylosaurus]:
+        k.animated_chromograph_name = "units/sheep.png"
+        k.walking_animations = Sheep.walking_animations
+        k.attacking_animations = Sheep.attacking_animations
+        k.orientation_indices = Sheep.orientation_indices
+        k.footprint = Sheep.footprint
+        k.attack_phonograph = Sheep.attack_phonograph
+        k.infernality += 2
