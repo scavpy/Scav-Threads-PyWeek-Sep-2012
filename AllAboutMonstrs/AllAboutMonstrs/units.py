@@ -150,7 +150,7 @@ class Unit(object):
                 frame = 1
         self.animation_frame = frame
         self.image = self.obtain_frame()
-        return not self.destroyed()
+        return True # something was changed
 
     def harm(self, quanta_of_destruction, cause=None):
         """ Deal damage to the unit, possibly rendering it inactive """
@@ -222,7 +222,7 @@ class Cannon(Unit):
     animated_chromograph_name = "units/cannon.png"
     walking_animations = 1
     attacking_animations = 2
-    orientation_indices = (0,1,2,3,4,5,6,7)
+    orientation_indices = (2,1,1,1,3,0,0,0)
     footprint = 20,16
     area_of_awareness = (200,160)
     area_of_attack = (80, 64)
@@ -291,7 +291,7 @@ class AnalyticalCannon(Unit):
                     return [target]
 
 class Sheep(Unit):
-    """ An edible unit. """
+    """ There are many surprising uses for this creature. """
     name = "Sheep"
     notable_attributes = ["Durability","Edibility","Velocity","Firepower"]
     durability = 6
