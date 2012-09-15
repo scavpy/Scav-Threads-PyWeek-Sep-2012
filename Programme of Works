@@ -75,7 +75,7 @@ wrk-tips                A mechanism by which tips can be presented wherever need
 wrk-victorianize        Victorianize the help in the information screen.                        ?
 wrk-casualties          Account for the deaths of your troops.                                  satisfactory
 
-aux-personalize         Provide each soldier with a name.                                       ?
+aux-personalize         Provide each soldier with a name.                                       pending
 wrk-transition          Decide and implement a transition between Preparation and Onslaught.    satisfactory
 snd-extra               Humans, fence, explosion, breaking, screams                             ?
 aux-pricetags           Show how much each item in the build menu costs and the name of it.     satisfactory
@@ -84,5 +84,5 @@ aux-littlehelp          Show game controls where relevant.                      
 wrk-progress            Tech awarded in accounting.                                             ?
 wrk-encyclopaedia-2     Index page and new indicator in Encyclopaedia.                          satisfactory
 wrk-balance             Make it fair: money, harm etc.                                          ?
-fix-explosions          Explosion animation de-wonked.                                          ?
+fix-explosions          Explosion animation de-wonked.                                          satisfactory
 
